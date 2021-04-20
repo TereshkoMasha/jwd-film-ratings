@@ -1,4 +1,7 @@
-package db;
+package com.epam.db;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.sql.*;
 import java.util.Map;
@@ -6,7 +9,9 @@ import java.util.Properties;
 import java.util.concurrent.Executor;
 
 public class ConnectionProxy implements Connection {
-    private Connection connection;
+    private final Logger logger = LogManager.getLogger(ConnectionProxy.class);
+
+    private final Connection connection;
 
     public ConnectionProxy(Connection connection) {
         this.connection = connection;
@@ -53,14 +58,17 @@ public class ConnectionProxy implements Connection {
     }
 
     @Override
-    public void close() throws SQLException {
-        new ConnectionPool().close(this);
-        System.out.println("A");
+    public void close() {
+        ConnectionPool.getInstance().releaseConnection(this);
     }
 
-    public void forceClose() throws SQLException {
-        System.out.println("b");
-        connection.close();
+    public void closeConnection() throws SQLException {
+        try {
+            connection.close();
+        } catch (SQLException e) {
+            logger.error("Unable to close the connection", e);
+        }
+
     }
 
     @Override
