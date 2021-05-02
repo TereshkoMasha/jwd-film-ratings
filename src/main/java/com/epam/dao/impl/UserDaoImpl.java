@@ -1,11 +1,14 @@
 package com.epam.dao.impl;
 
-import com.epam.dao.AbstractController;
 import com.epam.dao.UserDao;
 import com.epam.db.ConnectionPool;
 import com.epam.entity.User;
-import com.epam.entity.UserRole;
+import com.epam.entity.enums.Appraisal;
+import com.epam.entity.enums.UserRole;
+import com.epam.entity.enums.UserStatus;
 import com.epam.exception.DAOException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -16,37 +19,46 @@ import java.util.List;
 import java.util.Optional;
 
 
-public class UserDaoImpl extends AbstractController<User, Integer> implements UserDao {
+public class UserDaoImpl extends AbstractDaoImpl<User> implements UserDao {
+    private static final Logger LOGGER = LogManager.getLogger(UserDaoImpl.class);
+    public static final UserDaoImpl INSTANCE = new UserDaoImpl(ConnectionPool.getInstance());
 
-    public static UserDaoImpl INSTANCE = new UserDaoImpl(ConnectionPool.getInstance());
-
-    private UserDaoImpl(ConnectionPool connectionPool) {
+    public UserDaoImpl(ConnectionPool connectionPool) {
         super(connectionPool);
     }
 
-
     private static final String SQL_CREATE = "INSERT INTO user (name, password, login, role_id, rating)" +
             "VALUES (?, ?, ?, ?, ?)";
-    private static final String SQL_FIND_ALL = "SELECT FROM user(id, name, login, password, role_id, rating)";
+    private static final String SQL_UPDATE_PASSWORD = "UPDATE user SET password = ? WHERE id = ? ";
     private static final String SQL_UPDATE_LOGIN = "UPDATE user SET login = ? WHERE password = ? ";
+    private static final String SQL_UPDATE_STATUS = "UPDATE user SET status = ? WHERE id = ? ";
+    private static final String SQL_UPDATE_RATING = "UPDATE user SET rating = ? WHERE id = ? ";
+
     private static final String SQL_DELETE = "DELETE FROM user WHERE id = ? ";
-    private static final String SQL_FIND_BY_ID = "SELECT FROM user (name, password, login, role_id, rating) WHERE id = ?";
-    private static final String SQL_FIND_ALL_BY_ROLE_ID = "SELECT FROM user (name, password, login, role_id, rating) WHERE role_id = ?";
+
+    private static final String SQL_FIND_ALL = "SELECT * FROM user";
+    private static final String SQL_FIND_ALL_BY_ROLE_ID = "SELECT * FROM user WHERE role_id = ?";
+    private static final String SQL_FIND_BY_ID = "SELECT * FROM user WHERE id = ? ";
+    private static final String SQL_FIND_ALL_BY_RATING = "SELECT FROM user WHERE rating > ?";
+    private static final String SQL_FIND_BY_LOGIN_PASSWORD = "SELECT * FROM user WHERE login= ? AND password= ?";
+    private static final String SQL_FIND_BY_LOGIN = "SELECT * FROM user WHERE login= ?";
 
     @Override
     protected void prepareCreateStatement(PreparedStatement preparedStatement, User entity) throws SQLException {
         preparedAllUserStatements(preparedStatement, entity);
     }
 
-    @Override
-    protected void prepareUpdateStatement(PreparedStatement preparedStatement, User entity) throws SQLException {
-        preparedAllUserStatements(preparedStatement, entity);
-        preparedStatement.setInt(7, entity.getID());
+    protected String getSqlFindByLoginPassword() {
+        return SQL_FIND_BY_LOGIN_PASSWORD;
     }
 
     @Override
     protected String getUpdateSql() {
-        return SQL_UPDATE_LOGIN;
+        return SQL_UPDATE_PASSWORD;
+    }
+
+    public static String getUpdateRatingSql() {
+        return SQL_UPDATE_RATING;
     }
 
     @Override
@@ -73,64 +85,158 @@ public class UserDaoImpl extends AbstractController<User, Integer> implements Us
         return SQL_FIND_ALL_BY_ROLE_ID;
     }
 
-    private void preparedAllUserStatements(PreparedStatement preparedStatement, User user) throws SQLException {
-        preparedStatement.setInt(1, user.getID());
-        preparedStatement.setString(2, user.getName());
-        preparedStatement.setString(3, user.getPassword());
-        preparedStatement.setString(4, user.getLogin());
-        preparedStatement.setInt(5, user.getID());
-        preparedStatement.setDouble(6, user.getRating());
+    protected String getFindAllByRatingSql() {
+        return SQL_FIND_ALL_BY_RATING;
+    }
+
+    protected static String getUpdatePasswordSql() {
+        return SQL_UPDATE_PASSWORD;
+    }
+
+    protected static String getUpdateLoginSql() {
+        return SQL_UPDATE_LOGIN;
+    }
+
+    protected static String getUpdateStatusSql() {
+        return SQL_UPDATE_STATUS;
+    }
+
+    protected static String getFindByLoginSql() {
+        return SQL_FIND_BY_LOGIN;
     }
 
     @Override
     protected Optional<User> parseResultSet(ResultSet resultSet) throws SQLException {
-        User user = new User();
+        var user = new User();
         user.setId(resultSet.getInt("id"));
         user.setName(resultSet.getString("name"));
         user.setLogin(resultSet.getString("login"));
         user.setPassword(resultSet.getString("password"));
         user.setRole(UserRole.resolveRoleById(resultSet.getInt("role_id")));
-        user.setRating(resultSet.getDouble("rating"));
+        user.setUserRating(resultSet.getDouble("rating"));
         return Optional.of(user);
     }
 
+    private void preparedAllUserStatements(PreparedStatement preparedStatement, User user) throws SQLException {
+        preparedStatement.setInt(1, user.getID());
+        preparedStatement.setString(2, user.getName());
+        preparedStatement.setString(3, user.getPassword());
+        preparedStatement.setString(4, user.getLogin());
+        preparedStatement.setInt(5, user.getRole().getId());
+        preparedStatement.setDouble(6, user.getUserRating());
+    }
+
     @Override
-    public List<User> findAllByRoleID(Integer id) throws DAOException {
+    public List<User> findAllByRoleID(Integer id) {
         List<User> userList = new ArrayList<>();
         try (Connection connection = connectionPool.getConnection()) {
             try (PreparedStatement statement = connection.prepareStatement(getFindALLByRoleId())) {
-                ResultSet resultSet = statement.executeQuery();
+                statement.setInt(1, id);
+                var resultSet = statement.executeQuery();
                 while (resultSet.next()) {
-                    Optional<User> entityOptional = parseResultSet(resultSet);
-                    entityOptional.ifPresent(userList::add);
+                    Optional<User> optionalUser = parseResultSet(resultSet);
+                    optionalUser.ifPresent(userList::add);
                 }
             }
         } catch (SQLException | InterruptedException e) {
-
-            throw new DAOException(e);
+            LOGGER.error(new DAOException(e));
+            Thread.currentThread().interrupt();
         }
         return userList;
     }
 
     @Override
-    public int getUserRoleId(String login) throws DAOException {
-        int roleId = 0;
+    public Integer getUserRoleId(String login) throws DAOException {
+        var roleId = 0;
         try (Connection connection = connectionPool.getConnection()) {
-            try (PreparedStatement statement = connection.prepareStatement(getFindByIdSql())) {
+            try (PreparedStatement statement = connection.prepareStatement(getFindByLoginSql())) {
                 statement.setString(1, login);
-                ResultSet resultSet = statement.executeQuery();
+                var resultSet = statement.executeQuery();
                 while (resultSet.next()) {
                     roleId = resultSet.getInt("role_id");
                 }
             }
         } catch (SQLException | InterruptedException e) {
-            throw new DAOException(e);
+            LOGGER.error(new DAOException(e));
+            Thread.currentThread().interrupt();
         }
         return roleId;
     }
 
     @Override
-    public Optional<User> findByLogin(String login) throws DAOException {
-        return Optional.empty();
+    public boolean findUserByLogin(String login) {
+        var state = false;
+        try (Connection connection = connectionPool.getConnection()) {
+            try (PreparedStatement statement = connection.prepareStatement(getFindByLoginSql())) {
+                statement.setString(1, login);
+                var resultSet = statement.executeQuery();
+                state = resultSet.next();
+            }
+
+        } catch (SQLException | InterruptedException e) {
+            LOGGER.error(new DAOException(e));
+            Thread.currentThread().interrupt();
+        }
+        return state;
     }
+
+
+    @Override
+    public boolean findUserByLoginAndPassword(String login, String password) throws DAOException {
+        var state = false;
+        try (Connection connection = connectionPool.getConnection()) {
+            try (PreparedStatement statement = connection.prepareStatement(getSqlFindByLoginPassword())) {
+                statement.setString(1, login);
+                statement.setString(2, password);
+                var resultSet = statement.executeQuery();
+                state = resultSet.next();
+            }
+
+        } catch (SQLException | InterruptedException e) {
+            LOGGER.error(new DAOException(e));
+            Thread.currentThread().interrupt();
+        }
+        return state;
+    }
+
+
+    @Override
+    public boolean updateUserStatus(UserStatus userStatus, Integer id) throws DAOException {
+        try (Connection connection = connectionPool.getConnection()) {
+            try (var preparedStatement = connection.prepareStatement(getUpdateStatusSql())) {
+                Optional<User> user = getById(id);
+                if (user.isPresent()) {
+                    preparedStatement.setInt(1, userStatus.getId());
+                    preparedStatement.setInt(2, id);
+                    if (preparedStatement.executeUpdate() != 0) {
+                        return true;
+                    }
+                }
+            }
+        } catch (SQLException | InterruptedException e) {
+            LOGGER.error("Failed to update entity", new DAOException(e));
+            Thread.currentThread().interrupt();
+        }
+        return false;
+    }
+
+//    @Override
+//    public boolean updateUserRating(Appraisal rating, Integer id) throws DAOException {
+//        try (Connection connection = connectionPool.getConnection()) {
+//            try (var preparedStatement = connection.prepareStatement(getUpdateRatingSql())) {
+//                Optional<User> user = getById(id);
+//                if (user.isPresent()) {
+//                    preparedStatement.setInt(1, rating.getStars());
+//                    preparedStatement.setInt(2, id);
+//                    if (preparedStatement.executeUpdate() != 0) {
+//                        return true;
+//                    }
+//                }
+//            }
+//        } catch (SQLException | InterruptedException e) {
+//            LOGGER.error("Failed to update entity", new DAOException(e));
+//            Thread.currentThread().interrupt();
+//        }
+//        return false;
+//    }
 }
