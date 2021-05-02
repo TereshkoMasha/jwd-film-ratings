@@ -63,12 +63,7 @@ public class ConnectionProxy implements Connection {
     }
 
     public void closeConnection() throws SQLException {
-        try {
-            connection.close();
-        } catch (SQLException e) {
-            logger.error("Unable to close the connection", e);
-        }
-
+        connection.close();
     }
 
     @Override

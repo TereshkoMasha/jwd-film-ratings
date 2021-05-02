@@ -6,8 +6,5 @@ public interface BaseEntity {
 
     void setId(int id);
 
-    String getName();
-
-    void setName(String name);
 
 }
