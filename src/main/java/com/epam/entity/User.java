@@ -8,8 +8,11 @@ public class User extends AbstractBaseEntity {
     private String password;
     private String name;
     private UserRole role;
-    private UserStatus status;
-    private Double userRating;
+    private UserStatus userStatus;
+
+    public User() {
+
+    }
 
     public String getLogin() {
         return login;
@@ -25,14 +28,6 @@ public class User extends AbstractBaseEntity {
 
     public UserRole getRole() {
         return role;
-    }
-
-    public UserStatus getStatus() {
-        return status;
-    }
-
-    public Double getUserRating() {
-        return userRating;
     }
 
     public void setLogin(String login) {
@@ -51,11 +46,12 @@ public class User extends AbstractBaseEntity {
         this.role = role;
     }
 
-    public void setStatus(UserStatus status) {
-        this.status = status;
+    public UserStatus getUserStatus() {
+        return userStatus;
     }
 
-    public void setUserRating(Double userRating) {
-        this.userRating = userRating;
+    public void setUserStatus(UserStatus userStatus) {
+        this.userStatus = userStatus;
     }
 }
+

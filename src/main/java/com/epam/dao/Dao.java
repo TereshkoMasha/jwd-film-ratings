@@ -10,8 +10,6 @@ public interface Dao<T extends BaseEntity> {
 
     void create(T entity) throws DAOException;
 
-    boolean update(T entity) throws DAOException;
-
     void deleteById(Integer id) throws DAOException;
 
     Optional<T> getById(Integer id) throws DAOException;

@@ -25,7 +25,7 @@ public abstract class AbstractDaoImpl<T extends BaseEntity> implements Dao<T> {
         this.connectionPool = connectionPool;
     }
 
-    protected abstract void prepareCreateStatement(PreparedStatement preparedStatement, T entity) throws SQLException;
+    protected abstract void prepareStatement(PreparedStatement preparedStatement, T entity) throws SQLException;
 
     protected abstract Optional<T> parseResultSet(ResultSet resultSet) throws SQLException, DAOException;
 
@@ -39,35 +39,19 @@ public abstract class AbstractDaoImpl<T extends BaseEntity> implements Dao<T> {
 
     protected abstract String getFindByIdSql();
 
+    public abstract boolean update(final T entity) throws DAOException;
 
     @Override
     public void create(final T entity) throws DAOException {
         try (Connection connection = connectionPool.getConnection();) {
             try (var preparedStatement = connection.prepareStatement(getCreateSql())) {
-                prepareCreateStatement(preparedStatement, entity);
+                prepareStatement(preparedStatement, entity);
                 preparedStatement.execute();
             }
         } catch (SQLException | InterruptedException e) {
             LOGGER.error("Failed to create entity", new DAOException(e));
             Thread.currentThread().interrupt();
         }
-    }
-
-    @Override
-    public boolean update(final T entity) throws DAOException {
-        var updated = false;
-        try (Connection connection = connectionPool.getConnection()) {
-            try (var preparedStatement = connection.prepareStatement(getUpdateSql())) {
-                prepareCreateStatement(preparedStatement, entity);
-                if (preparedStatement.executeUpdate() != 0) {
-                    updated = true;
-                }
-            }
-        } catch (SQLException | InterruptedException e) {
-            LOGGER.error("Failed to update entity", new DAOException());
-            Thread.currentThread().interrupt();
-        }
-        return updated;
     }
 
     @Override
@@ -100,7 +84,6 @@ public abstract class AbstractDaoImpl<T extends BaseEntity> implements Dao<T> {
             Thread.currentThread().interrupt();
         }
     }
-
 
     @Override
     public Optional<T> getById(Integer id) throws DAOException {

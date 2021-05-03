@@ -1,7 +1,6 @@
 package com.epam.service.impl;
 
 import com.epam.dao.impl.UserDaoImpl;
-import com.epam.entity.enums.Appraisal;
 import com.epam.entity.User;
 import com.epam.entity.enums.UserRole;
 import com.epam.entity.enums.UserStatus;
@@ -18,21 +17,12 @@ public class UserServiceImpl implements UserService {
     private static final UserDaoImpl userDao = UserDaoImpl.INSTANCE;
 
     @Override
-    public void create(User user) {
-        try {
-            userDao.create(user);
-        } catch (DAOException e) {
-            LOGGER.error(e);
-        }
-    }
-
-    @Override
-    public boolean registerUser(String login, String password, UserRole userRole, UserStatus status) {
+    public boolean registerUser(String login, String password, String name) {
         var user = new User();
         user.setLogin(login);
         user.setPassword(password);
-        user.setRole(userRole);
-        user.setStatus(status);
+        user.setName(name);
+        user.setRole(UserRole.USER);
         create(user);
         return true;
     }
@@ -116,15 +106,13 @@ public class UserServiceImpl implements UserService {
         return userList;
     }
 
-//    @Override
-//    public boolean updateRating(Appraisal appraisal, Integer id) {
-//        try {
-//            return userDao.updateUserRating(appraisal, id);
-//        } catch (DAOException e) {
-//            LOGGER.error(e);
-//        }
-//        return false;
-//    }
+    private void create(User user) {
+        try {
+            userDao.create(user);
+        } catch (DAOException e) {
+            LOGGER.error(e);
+        }
+    }
 
     @Override
     public boolean updateStatus(UserStatus status, int userId) {
@@ -135,5 +123,4 @@ public class UserServiceImpl implements UserService {
         }
         return false;
     }
-
 }

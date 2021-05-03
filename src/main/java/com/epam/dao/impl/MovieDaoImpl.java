@@ -39,7 +39,7 @@ public class MovieDaoImpl extends AbstractDaoImpl<Movie> implements MovieDao {
     }
 
     @Override
-    protected void prepareCreateStatement(PreparedStatement preparedStatement, Movie entity) throws SQLException {
+    protected void prepareStatement(PreparedStatement preparedStatement, Movie entity) throws SQLException {
         preparedAllMovieStatements(preparedStatement, entity);
     }
 
@@ -103,6 +103,24 @@ public class MovieDaoImpl extends AbstractDaoImpl<Movie> implements MovieDao {
     }
 
     @Override
+    public boolean update(Movie entity) {
+        var updated = false;
+        try (Connection connection = connectionPool.getConnection()) {
+            try (var preparedStatement = connection.prepareStatement(getUpdateSql())) {
+                preparedStatement.setString(1, entity.getName());
+                preparedStatement.setInt(2, entity.getID());
+                if (preparedStatement.executeUpdate() != 0) {
+                    updated = true;
+                }
+            }
+        } catch (SQLException | InterruptedException e) {
+            LOGGER.error("Failed to update movie", new DAOException(e.getMessage()));
+            Thread.currentThread().interrupt();
+        }
+        return updated;
+    }
+
+    @Override
     public Optional<Movie> findByName(String name) throws DAOException {
         try (Connection connection = connectionPool.getConnection()) {
             try (PreparedStatement statement = connection.prepareStatement(getFindByNameSql())) {
@@ -112,7 +130,7 @@ public class MovieDaoImpl extends AbstractDaoImpl<Movie> implements MovieDao {
                 return parseResultSet(resultSet);
             }
         } catch (SQLException | InterruptedException e) {
-            LOGGER.error(new DAOException(e));
+            LOGGER.error(new DAOException(e.getMessage()));
             Thread.currentThread().interrupt();
         }
         return Optional.empty();
@@ -131,7 +149,7 @@ public class MovieDaoImpl extends AbstractDaoImpl<Movie> implements MovieDao {
                 }
             }
         } catch (SQLException | InterruptedException e) {
-            LOGGER.error(new DAOException(e));
+            LOGGER.error(new DAOException(e.getMessage()));
             Thread.currentThread().interrupt();
         }
         return movies;
@@ -150,7 +168,7 @@ public class MovieDaoImpl extends AbstractDaoImpl<Movie> implements MovieDao {
                 }
             }
         } catch (SQLException | InterruptedException e) {
-            LOGGER.error(new DAOException(e));
+            LOGGER.error(new DAOException(e.getMessage()));
             Thread.currentThread().interrupt();
         }
         return movies;

@@ -17,8 +17,6 @@ public interface UserDao {
 
     boolean updateUserStatus(UserStatus userStatus, Integer id) throws DAOException;
 
-    //boolean updateUserRating(Appraisal rating, Integer id) throws DAOException;
-
     Integer getUserRoleId(String login) throws DAOException;
 
 }
