@@ -17,7 +17,7 @@ public class ConnectionPool {
     private static ConnectionPool instance;
     private static final ReentrantLock lock = new ReentrantLock();
     private static final AtomicBoolean INSTANCE_INITIALIZE = new AtomicBoolean(false);
-    private static final BlockingQueue<ConnectionProxy> availableConnections = new LinkedBlockingQueue<>(DatabaseConfiguration.getInstance().getMaxPoolSize());
+    private static final BlockingQueue<Connection> availableConnections = new LinkedBlockingQueue<>(DatabaseConfiguration.getInstance().getMaxPoolSize());
     private static final Queue<Connection> usedConnections = new LinkedBlockingQueue<>();
 
     private ConnectionPool() {
@@ -57,8 +57,8 @@ public class ConnectionPool {
         }
     }
 
-    public ConnectionProxy getConnection() throws InterruptedException {
-        ConnectionProxy connection = null;
+    public Connection getConnection() throws InterruptedException {
+        Connection connection = null;
         try {
             connection = availableConnections.take();
             usedConnections.offer(connection);
@@ -70,20 +70,9 @@ public class ConnectionPool {
     }
 
 
-    public void releaseConnection(ConnectionProxy proxy) {
+    public void releaseConnection(Connection proxy) {
         if (availableConnections.offer(proxy)) {
             usedConnections.remove(proxy);
-        }
-    }
-
-    public void closePool() {
-        for (var i = 0; i < availableConnections.size(); i++) {
-            try {
-                availableConnections.take().closeConnection();
-            } catch (SQLException | InterruptedException e) {
-                LOGGER.error("Connection pool close error", e);
-                Thread.currentThread().interrupt();
-            }
         }
     }
 }

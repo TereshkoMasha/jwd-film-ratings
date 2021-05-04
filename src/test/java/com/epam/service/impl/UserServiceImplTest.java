@@ -1,16 +1,57 @@
 package com.epam.service.impl;
 
-import com.epam.exception.DAOException;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class UserDaoImplTest {
-
+class UserServiceImplTest {
+    private final UserServiceImpl userService = new UserServiceImpl();
 
     @Test
-    void getById() throws DAOException {
-        UserServiceImpl userService = new UserServiceImpl();
-        assertEquals("Masha", userService.getById(2).get().getName());
+    void registerUser() {
     }
+
+    @Test
+    void changePassword() {
+    }
+
+    @Test
+    void testFindByLoginPositive() {
+        assertTrue(userService.findByLogin("masha2"));
+    }
+
+    @Test
+    void testFindByLoginNegative() {
+        assertFalse(userService.findByLogin("jacson1991"));
+    }
+
+    @Test
+    void getUserRoleId() {
+    }
+
+    @Test
+    void findUser() {
+    }
+
+    @Test
+    void update() {
+    }
+
+    @Test
+    void deleteById() {
+    }
+
+    @Test
+    void getById() {
+    }
+
+    @Test
+    void findAll() {
+    }
+
+    @Test
+    void updateStatus() {
+    }
+
 }

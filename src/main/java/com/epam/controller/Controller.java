@@ -3,6 +3,7 @@ package com.epam.controller;
 import com.epam.command.Command;
 import com.epam.command.RoteType;
 import com.epam.command.factory.CommandFactory;
+import jakarta.servlet.annotation.WebServlet;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -14,6 +15,7 @@ import java.io.IOException;
 import java.util.Optional;
 
 
+@WebServlet(name = "Controller", urlPatterns = {"/controller"})
 public class Controller extends HttpServlet {
     private static final Logger LOGGER = LogManager.getLogger(Controller.class);
 
