@@ -32,7 +32,7 @@ public class Controller extends HttpServlet {
     private void processRequest(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         try {
 
-            var commandFactory = new CommandFactory();
+            CommandFactory commandFactory = new CommandFactory();
             String commandName = request.getParameter("command");
             Optional<String> requestCommand = Optional.ofNullable(commandName);
             Optional<Command> command = commandFactory.defineCommand(requestCommand);

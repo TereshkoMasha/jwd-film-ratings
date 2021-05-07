@@ -20,11 +20,11 @@ public final class DatabaseConfiguration {
 
     private void initConfiguration() {
         var properties = PropertyReaderUtil.readProperties();
-        url = properties.getProperty("com.epam.db.url");
-        user = properties.getProperty("com.epam.db.user");
-        password = properties.getProperty("com.epam.db.password");
-        initPoolSize = Integer.parseInt(properties.getProperty("com.epam.db.initpoolsize"));
-        maxPoolSize = Integer.parseInt(properties.getProperty("com.epam.db.maxpoolsize"));
+        url = properties.getProperty("db.url");
+        user = properties.getProperty("user");
+        password = properties.getProperty("password");
+        initPoolSize = Integer.parseInt(properties.getProperty("initpoolsize"));
+        maxPoolSize = Integer.parseInt(properties.getProperty("maxpoolsize"));
     }
 
     public String getUrl() {

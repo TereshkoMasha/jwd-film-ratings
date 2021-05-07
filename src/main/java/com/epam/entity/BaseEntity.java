@@ -4,7 +4,7 @@ public interface BaseEntity {
 
     Integer getID();
 
-    void setId(int id);
+    void setId(Integer id);
 
 
 }

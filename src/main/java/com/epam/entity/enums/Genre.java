@@ -58,4 +58,5 @@ public enum Genre {
     public Integer getId() {
         return id;
     }
+
 }

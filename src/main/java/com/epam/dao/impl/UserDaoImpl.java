@@ -26,7 +26,7 @@ public class UserDaoImpl extends AbstractDaoImpl<User> implements UserDao {
         super(connectionPool);
     }
 
-    private static final String SQL_CREATE = "INSERT INTO user (name, password, login, role_id, rating)" +
+    private static final String SQL_CREATE = "INSERT INTO user (name, password, login, role_id, status_id rating)" +
             "VALUES (?, ?, ?, ?, ?)";
     private static final String SQL_UPDATE_PASSWORD = "UPDATE user SET password = ? WHERE id = ? ";
     private static final String SQL_UPDATE_LOGIN = "UPDATE user SET login = ? WHERE password = ? ";
@@ -98,13 +98,14 @@ public class UserDaoImpl extends AbstractDaoImpl<User> implements UserDao {
 
     @Override
     protected Optional<User> parseResultSet(ResultSet resultSet) throws SQLException {
-        var user = new User();
+        User user = User.builder()
+                .setName(resultSet.getString("name"))
+                .setLogin(resultSet.getString("login"))
+                .setPassword(resultSet.getString("password"))
+                .setRole(UserRole.resolveRoleById(resultSet.getInt("role_id")))
+                .setStatus(UserStatus.resolveRoleById(resultSet.getInt("status_id")))
+                .setRating(resultSet.getDouble("rating")).build();
         user.setId(resultSet.getInt("id"));
-        user.setName(resultSet.getString("name"));
-        user.setLogin(resultSet.getString("login"));
-        user.setPassword(resultSet.getString("password"));
-        user.setRole(UserRole.resolveRoleById(resultSet.getInt("role_id")));
-        user.setUserStatus(UserStatus.resolveRoleById(resultSet.getInt("rating")));
         return Optional.of(user);
     }
 
@@ -113,13 +114,15 @@ public class UserDaoImpl extends AbstractDaoImpl<User> implements UserDao {
         preparedStatement.setString(2, user.getPassword());
         preparedStatement.setString(3, user.getLogin());
         preparedStatement.setInt(4, user.getRole().getId());
+        preparedStatement.setInt(5, user.getStatus().getId());
+        preparedStatement.setDouble(6, user.getRating());
     }
 
     @Override
     public boolean update(User entity) throws DAOException {
         var updated = false;
         try (Connection connection = connectionPool.getConnection()) {
-            try (var preparedStatement = connection.prepareStatement(getUpdateSql())) {
+            try (PreparedStatement preparedStatement = connection.prepareStatement(getUpdateSql())) {
                 preparedStatement.setString(1, entity.getPassword());
                 preparedStatement.setInt(2, entity.getID());
                 if (preparedStatement.executeUpdate() != 0) {
@@ -139,7 +142,7 @@ public class UserDaoImpl extends AbstractDaoImpl<User> implements UserDao {
         try (Connection connection = connectionPool.getConnection()) {
             try (PreparedStatement statement = connection.prepareStatement(getFindALLByRoleId())) {
                 statement.setInt(1, id);
-                var resultSet = statement.executeQuery();
+                ResultSet resultSet = statement.executeQuery();
                 while (resultSet.next()) {
                     Optional<User> optionalUser = parseResultSet(resultSet);
                     optionalUser.ifPresent(userList::add);
@@ -158,7 +161,7 @@ public class UserDaoImpl extends AbstractDaoImpl<User> implements UserDao {
         try (Connection connection = connectionPool.getConnection()) {
             try (PreparedStatement statement = connection.prepareStatement(getFindByLoginSql())) {
                 statement.setString(1, login);
-                var resultSet = statement.executeQuery();
+                ResultSet resultSet = statement.executeQuery();
                 while (resultSet.next()) {
                     roleId = resultSet.getInt("role_id");
                 }
@@ -172,11 +175,11 @@ public class UserDaoImpl extends AbstractDaoImpl<User> implements UserDao {
 
     @Override
     public boolean findUserByLogin(String login) {
-        var state = false;
+        boolean state = false;
         try (Connection connection = connectionPool.getConnection()) {
             try (PreparedStatement statement = connection.prepareStatement(getFindByLoginSql())) {
                 statement.setString(1, login);
-                var resultSet = statement.executeQuery();
+                ResultSet resultSet = statement.executeQuery();
                 state = resultSet.next();
             }
 
@@ -189,12 +192,12 @@ public class UserDaoImpl extends AbstractDaoImpl<User> implements UserDao {
 
     @Override
     public boolean findUserByLoginAndPassword(String login, String password) throws DAOException {
-        var state = false;
+        boolean state = false;
         try (Connection connection = connectionPool.getConnection()) {
             try (PreparedStatement statement = connection.prepareStatement(getSqlFindByLoginPassword())) {
                 statement.setString(1, login);
                 statement.setString(2, password);
-                var resultSet = statement.executeQuery();
+                ResultSet resultSet = statement.executeQuery();
                 state = resultSet.next();
             }
 
@@ -208,7 +211,7 @@ public class UserDaoImpl extends AbstractDaoImpl<User> implements UserDao {
     @Override
     public boolean updateUserStatus(UserStatus userStatus, Integer id) throws DAOException {
         try (Connection connection = connectionPool.getConnection()) {
-            try (var preparedStatement = connection.prepareStatement(getUpdateStatusSql())) {
+            try (PreparedStatement preparedStatement = connection.prepareStatement(getUpdateStatusSql())) {
                 Optional<User> user = getById(id);
                 if (user.isPresent()) {
                     preparedStatement.setInt(1, userStatus.getId());

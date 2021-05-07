@@ -18,18 +18,20 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public boolean registerUser(String login, String password, String name) {
-        var user = new User();
-        user.setLogin(login);
-        user.setPassword(password);
-        user.setName(name);
-        user.setRole(UserRole.USER);
+        User user = User.builder()
+                .setName(name)
+                .setLogin(login)
+                .setPassword(password)
+                .setRole(UserRole.USER)
+                .setStatus(UserStatus.VERIFIED)
+                .setRating(5.0).build();
         create(user);
         return true;
     }
 
     @Override
     public boolean changePassword(User user, String newPassword) {
-        user.setPassword(newPassword);
+        User.builder().of(user).setPassword(newPassword);
         try {
             return userDao.update(user);
         } catch (DAOException e) {
@@ -39,7 +41,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean findByLogin(String login) {
+    public boolean findByLogin(String login) throws DAOException {
         return userDao.findUserByLogin(login);
     }
 
@@ -75,8 +77,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void deleteById(Integer id) {
-        userDao.deleteById(id);
+    public boolean deleteById(Integer id) {
+        return userDao.deleteById(id);
     }
 
     @Override

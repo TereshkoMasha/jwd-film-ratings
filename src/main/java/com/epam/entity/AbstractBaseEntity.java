@@ -10,7 +10,7 @@ public abstract class AbstractBaseEntity implements BaseEntity {
     }
 
     @Override
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 }

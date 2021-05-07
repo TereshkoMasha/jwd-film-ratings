@@ -1,45 +1,56 @@
 package com.epam.service.impl;
 
+import com.epam.entity.User;
+import com.epam.exception.DAOException;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
 
 class UserServiceImplTest {
     private final UserServiceImpl userService = new UserServiceImpl();
 
     @Test
-    void registerUser() {
-    }
-
-    @Test
     void changePassword() {
+        User user = Mockito.mock(User.class);
+        String password = "43573954";
+        Mockito.when(user.getID()).thenReturn(6);
+        Mockito.when(user.getPassword()).thenReturn(password);
+        assertTrue(userService.changePassword(user, password));
     }
 
     @Test
-    void testFindByLoginPositive() {
-        assertTrue(userService.findByLogin("masha2"));
+    void testFindByLoginPositive() throws DAOException {
+        assertTrue(userService.findByLogin("masha"));
     }
 
     @Test
-    void testFindByLoginNegative() {
+    void testFindByLoginNegative() throws DAOException {
         assertFalse(userService.findByLogin("jacson1991"));
     }
 
     @Test
     void getUserRoleId() {
+        assertEquals(2, userService.getUserRoleId("masha"));
     }
 
     @Test
     void findUser() {
+        assertTrue(userService.findUser("masha", "123"));
+    }
+
+
+    @Test
+    void deleteById() {
+        int id = 7;
+        assertTrue(userService.deleteById(id));
     }
 
     @Test
     void update() {
-    }
-
-    @Test
-    void deleteById() {
     }
 
     @Test

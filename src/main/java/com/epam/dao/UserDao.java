@@ -1,6 +1,5 @@
 package com.epam.dao;
 
-import com.epam.entity.enums.Appraisal;
 import com.epam.entity.User;
 import com.epam.entity.enums.UserStatus;
 import com.epam.exception.DAOException;

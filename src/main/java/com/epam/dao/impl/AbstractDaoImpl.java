@@ -44,7 +44,7 @@ public abstract class AbstractDaoImpl<T extends BaseEntity> implements Dao<T> {
     @Override
     public void create(final T entity) throws DAOException {
         try (Connection connection = connectionPool.getConnection();) {
-            try (var preparedStatement = connection.prepareStatement(getCreateSql())) {
+            try (PreparedStatement preparedStatement = connection.prepareStatement(getCreateSql())) {
                 prepareStatement(preparedStatement, entity);
                 preparedStatement.execute();
             }
@@ -58,8 +58,8 @@ public abstract class AbstractDaoImpl<T extends BaseEntity> implements Dao<T> {
     public List<T> findAll() throws DAOException {
         List<T> entitiesList = new ArrayList<>();
         try (Connection connection = connectionPool.getConnection()) {
-            try (var preparedStatement = connection.prepareStatement(getFindAllSql())) {
-                var resultSet = preparedStatement.executeQuery();
+            try (PreparedStatement preparedStatement = connection.prepareStatement(getFindAllSql())) {
+                ResultSet resultSet = preparedStatement.executeQuery();
                 while (resultSet.next()) {
                     Optional<T> entityOptional = parseResultSet(resultSet);
                     entityOptional.ifPresent(entitiesList::add);
@@ -73,25 +73,27 @@ public abstract class AbstractDaoImpl<T extends BaseEntity> implements Dao<T> {
     }
 
     @Override
-    public void deleteById(Integer id) {
+    public boolean deleteById(Integer id) {
         try (Connection connection = connectionPool.getConnection()) {
-            try (var preparedStatement = connection.prepareStatement(getDeleteSql())) {
-                preparedStatement.setObject(1, id);
+            try (PreparedStatement preparedStatement = connection.prepareStatement(getDeleteSql())) {
+                preparedStatement.setInt(1, id);
                 preparedStatement.execute();
+                return true;
             }
         } catch (SQLException | InterruptedException e) {
             LOGGER.error("Failed to delete entity", new DAOException(e));
             Thread.currentThread().interrupt();
         }
+        return false;
     }
 
     @Override
     public Optional<T> getById(Integer id) throws DAOException {
         Optional<T> entityOptional = Optional.empty();
         try (Connection connection = connectionPool.getConnection()) {
-            try (var preparedStatement = connection.prepareStatement(getFindByIdSql())) {
+            try (PreparedStatement preparedStatement = connection.prepareStatement(getFindByIdSql())) {
                 preparedStatement.setInt(1, id);
-                var resultSet = preparedStatement.executeQuery();
+                ResultSet resultSet = preparedStatement.executeQuery();
                 while (resultSet.next()) {
                     entityOptional = parseResultSet(resultSet);
                 }

@@ -5,9 +5,10 @@ import com.epam.exception.UnknownEntityException;
 import java.util.Locale;
 
 public enum UserStatus {
-    VERIFIED(1),
-    BANNED(2),
-    UNCONFIRMED(3);
+    BANNED(0),
+    LOW(1),
+    MEDIUM(2),
+    HIGH(3);
 
     private final Integer id;
 
