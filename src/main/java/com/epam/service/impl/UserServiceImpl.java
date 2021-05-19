@@ -23,7 +23,7 @@ public class UserServiceImpl implements UserService {
                 .setLogin(login)
                 .setPassword(password)
                 .setRole(UserRole.USER)
-                .setStatus(UserStatus.VERIFIED)
+                .setStatus(UserStatus.LOW)
                 .setRating(5.0).build();
         create(user);
         return true;
@@ -41,7 +41,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean findByLogin(String login) throws DAOException {
+    public Optional<User> findByLogin(String login) throws DAOException {
         return userDao.findUserByLogin(login);
     }
 

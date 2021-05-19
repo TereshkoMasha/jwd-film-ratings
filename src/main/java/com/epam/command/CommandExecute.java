@@ -1,28 +1,24 @@
 package com.epam.command;
 
 public class CommandExecute {
-    RoteType roteType;
+    RouteType routeType;
     private String pagePath;
 
-    public CommandExecute(RoteType roteType, String pagePath) {
-        this.roteType = roteType;
+    public CommandExecute(RouteType routeType, String pagePath) {
+        this.routeType = routeType;
         this.pagePath = pagePath;
     }
 
-    public CommandExecute(RoteType roteType) {
-        this.roteType = roteType;
-    }
-
-    public RoteType getRoteType() {
-        return roteType;
+    public RouteType getRouteType() {
+        return routeType;
     }
 
     public String getPagePath() {
         return pagePath;
     }
 
-    public void setRoteType(RoteType roteType) {
-        this.roteType = roteType;
+    public void setRouteType(RouteType routeType) {
+        this.routeType = routeType;
     }
 
     public void setPagePath(String pagePath) {

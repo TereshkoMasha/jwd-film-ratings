@@ -1,7 +1,9 @@
 package com.epam.command.factory;
 
-import com.epam.command.Command;
+import com.epam.command.AttributeName;
+import com.epam.command.CommandRequest;
 import com.epam.command.CommandType;
+import com.epam.command.RequestData;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -12,14 +14,16 @@ import java.util.Optional;
 public class CommandFactory {
     private static final Logger LOGGER = LogManager.getLogger(CommandFactory.class);
 
-    public Optional<Command> defineCommand(Optional<String> commandType) {
-        Optional<Command> command = Optional.empty();
+    public Optional<CommandRequest> defineCommand(RequestData requestData) {
+        Optional<CommandRequest> optionalCommand = Optional.empty();
+        String command = requestData.getRequestParameter(AttributeName.COMMAND);
+        CommandType commandType = CommandType.valueOf(upper(command));
         try {
-            command = commandType.map(m -> CommandType.valueOf(upper(m)).getCommand());
+            optionalCommand = Optional.of(commandType.getCommand());
         } catch (IllegalArgumentException e) {
             LOGGER.error("Exception while command define", e);
         }
-        return command;
+        return optionalCommand;
     }
 
     public static String upper(String name) {

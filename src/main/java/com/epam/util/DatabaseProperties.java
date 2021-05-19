@@ -1,25 +1,25 @@
-package com.epam.db;
+package com.epam.util;
 
 
-import com.epam.util.PropertyReaderUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public final class DatabaseConfiguration {
-    private static final Logger LOGGER = LogManager.getLogger(DatabaseConfiguration.class);
-    private static DatabaseConfiguration instance;
+import java.util.Properties;
+
+public final class DatabaseProperties {
+    private static final Logger LOGGER = LogManager.getLogger(DatabaseProperties.class);
     private String url;
     private String user;
     private String password;
     private Integer initPoolSize;
     private Integer maxPoolSize;
 
-    private DatabaseConfiguration() {
-        initConfiguration();
+    DatabaseProperties(Properties properties) {
+        initConfiguration(properties);
+        LOGGER.info("Database config added successfully");
     }
 
-    private void initConfiguration() {
-        var properties = PropertyReaderUtil.readProperties();
+    private void initConfiguration(Properties properties) {
         url = properties.getProperty("db.url");
         user = properties.getProperty("user");
         password = properties.getProperty("password");
@@ -45,14 +45,6 @@ public final class DatabaseConfiguration {
 
     public Integer getMaxPoolSize() {
         return maxPoolSize;
-    }
-
-    public static DatabaseConfiguration getInstance() {
-        if (instance == null) {
-            instance = new DatabaseConfiguration();
-            LOGGER.info("Database config added successfully");
-        }
-        return instance;
     }
 
 

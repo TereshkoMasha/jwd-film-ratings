@@ -1,15 +1,12 @@
 package com.epam.command.impl.common;
 
-import com.epam.command.Command;
-import com.epam.command.CommandExecute;
+import com.epam.command.*;
 
-import javax.servlet.http.HttpServletRequest;
-
-public class LogoutCommand implements Command {
-
-
+public class LogoutCommand implements CommandRequest {
     @Override
-    public CommandExecute executeCommand(HttpServletRequest request) {
-        return null;
+    public CommandExecute executeCommand(RequestData request) {
+        request.setInvalidated(true);
+        CommandExecute commandExecute = new CommandExecute(RouteType.REDIRECT, Destination.MAIN_PAGE.getPath());
+        return commandExecute;
     }
 }

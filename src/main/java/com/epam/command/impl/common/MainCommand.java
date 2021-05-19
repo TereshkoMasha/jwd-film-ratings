@@ -1,16 +1,12 @@
 package com.epam.command.impl.common;
 
-import com.epam.command.Command;
-import com.epam.command.CommandExecute;
-import com.epam.command.Destination;
-import com.epam.command.RoteType;
+import com.epam.command.*;
 
-import javax.servlet.http.HttpServletRequest;
 
-public class MainCommand implements Command {
+public class MainCommand implements CommandRequest {
     @Override
-    public CommandExecute executeCommand(HttpServletRequest request) {
-        var commandExecute = new CommandExecute(RoteType.REDIRECT);
+    public CommandExecute executeCommand(RequestData request) {
+        CommandExecute commandExecute = new CommandExecute(RouteType.REDIRECT, Destination.MAIN_PAGE.getPath());
         commandExecute.setPagePath(Destination.MAIN_PAGE.getPath());
         return commandExecute;
     }

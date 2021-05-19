@@ -9,13 +9,13 @@ public enum CommandType {
     LOGIN(new LoginCommand()),
     LOGOUT(new LogoutCommand());
 
-    Command command;
+    CommandRequest command;
 
-    CommandType(Command command) {
+    CommandType(CommandRequest command) {
         this.command = command;
     }
 
-    public Command getCommand() {
+    public CommandRequest getCommand() {
         return command;
     }
 }

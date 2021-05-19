@@ -13,7 +13,7 @@ public interface UserService {
 
     boolean changePassword(User user, String newPassword);
 
-    boolean findByLogin(String login) throws DAOException;
+    Optional<User> findByLogin(String login) throws DAOException;
 
     boolean updateStatus(UserStatus status, int userId);
 

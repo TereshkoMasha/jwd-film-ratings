@@ -1,6 +1,6 @@
 package com.epam.command;
 
-public enum RoteType {
+public enum RouteType {
     FORWARD,
     REDIRECT;
 }

@@ -174,20 +174,21 @@ public class UserDaoImpl extends AbstractDaoImpl<User> implements UserDao {
     }
 
     @Override
-    public boolean findUserByLogin(String login) {
-        boolean state = false;
+    public Optional<User> findUserByLogin(String login) {
+        Optional<User> entityOptional = Optional.empty();
         try (Connection connection = connectionPool.getConnection()) {
-            try (PreparedStatement statement = connection.prepareStatement(getFindByLoginSql())) {
-                statement.setString(1, login);
-                ResultSet resultSet = statement.executeQuery();
-                state = resultSet.next();
+            try (PreparedStatement preparedStatement = connection.prepareStatement(getFindByLoginSql())) {
+                preparedStatement.setString(1, login);
+                ResultSet resultSet = preparedStatement.executeQuery();
+                while (resultSet.next()) {
+                    entityOptional = parseResultSet(resultSet);
+                }
             }
-
         } catch (SQLException | InterruptedException e) {
-            LOGGER.error(new DAOException(e.getMessage()));
+            LOGGER.error(new DAOException(e));
             Thread.currentThread().interrupt();
         }
-        return state;
+        return entityOptional;
     }
 
     @Override

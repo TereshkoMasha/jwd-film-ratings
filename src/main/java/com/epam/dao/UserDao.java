@@ -5,6 +5,7 @@ import com.epam.entity.enums.UserStatus;
 import com.epam.exception.DAOException;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface UserDao {
 
@@ -12,7 +13,7 @@ public interface UserDao {
 
     boolean findUserByLoginAndPassword(String login, String password) throws DAOException;
 
-    boolean findUserByLogin(String login) throws DAOException;
+    Optional<User> findUserByLogin(String login) throws DAOException;
 
     boolean updateUserStatus(UserStatus userStatus, Integer id) throws DAOException;
 

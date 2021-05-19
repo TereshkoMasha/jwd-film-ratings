@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
@@ -24,12 +23,7 @@ class UserServiceImplTest {
 
     @Test
     void testFindByLoginPositive() throws DAOException {
-        assertTrue(userService.findByLogin("masha"));
-    }
-
-    @Test
-    void testFindByLoginNegative() throws DAOException {
-        assertFalse(userService.findByLogin("jacson1991"));
+        assertEquals(userService.findByLogin("masha").get().getName(), "masha");
     }
 
     @Test
