@@ -36,7 +36,6 @@ class UserServiceImplTest {
         assertTrue(userService.findUser("masha", "123"));
     }
 
-
     @Test
     void deleteById() {
         int id = 7;
@@ -44,19 +43,9 @@ class UserServiceImplTest {
     }
 
     @Test
-    void update() {
-    }
-
-    @Test
     void getById() {
+        User user = Mockito.mock(User.class);
+        Mockito.when(user.getID()).thenReturn(1);
+        assertEquals(userService.getById(1).get().getID(), user.getID());
     }
-
-    @Test
-    void findAll() {
-    }
-
-    @Test
-    void updateStatus() {
-    }
-
 }

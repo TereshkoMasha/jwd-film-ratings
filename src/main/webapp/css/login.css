@@ -1,155 +1,92 @@
-body {
-    font-family: Arial, sans-serif;
-    padding: 0;
-    margin: 0;
-    color: #222;
+@import url(https://fonts.googleapis.com/css?family=Open+Sans:400,700);
 
-}
 
-header {
-    background-color: #183147;
-    height: 50px;
-}
-
-div {
-    box-sizing: border-box;
-}
-
-.container {
-    height: 400px;
-    width: 900px;
-    background-color: white;
-    margin: 100px auto;
-    font-size: 20px;
-    font-weight: bold;
-    text-align: center;
-    padding-top: 10px;
-}
-
-.login-box {
-    position: absolute;
-    top: 45%;
-    left: 50%;
+#login {
     width: 400px;
-    padding: 40px;
-    transform: translate(-50%, -50%);
-    background: rgba(24, 49, 71, 0.9);
-    box-sizing: border-box;
-    box-shadow: 0 15px 25px rgba(0, 0, 0, .6);
-    border-radius: 10px;
-}
-
-.login-box h2 {
-    margin: 0 0 30px;
-    padding: 0;
-    color: #fff;
-    text-align: center;
-}
-
-.login-box .user-box {
-    position: relative;
-}
-
-.login-box .user-box input {
-    width: 100%;
-    padding: 10px 0;
+    margin: 160px auto;
     font-size: 16px;
-    color: #fff;
-    margin-bottom: 30px;
-    border: none;
-    border-bottom: 1px solid #fff;
-    outline: none;
-    background: transparent;
-}
-
-.login-box .user-box label {
-    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
     top: 0;
-    left: 0;
-    padding: 10px 0;
-    font-size: 16px;
-    color: #fff;
-    pointer-events: none;
-    transition: .5s;
+    position: absolute;
+    display: none;
+}
+#login:target {display: block;}
+
+/* Reset top and bottom margins from certain elements */
+.login-header,
+#login p {
+    margin-top: 0;
+    margin-bottom: 0;
 }
 
-.login-box .user-box input:focus ~ label,
-.login-box .user-box input:valid ~ label {
-    top: -20px;
-    left: 0;
-    color: #d0faff;
-    font-size: 12px;
+/* The triangle form is achieved by a CSS hack */
+.login-triangle {
+    width: 0;
+    margin-right: auto;
+    margin-left: auto;
+    border: 12px solid transparent;
+    border-bottom-color: #ee6c4d;
 }
 
-.login-box form a {
-    position: relative;
-    display: inline-block;
-    padding: 10px 20px;
-    color: #eeeeee;
-    font-size: 16px;
-    text-decoration: none;
-    text-transform: uppercase;
-    overflow: hidden;
-    transition: .5s;
-    margin-top: 40px;
-    letter-spacing: 4px
-}
-
-.login-box a:hover {
-    background: rgba(210, 248, 252, 0.51);
-    color: #fff;
-    border-radius: 5px;
-    box-shadow: 0 0 50px #dbdbdb,
-    0 0 15px rgba(210, 248, 252, 0.82),
-    0 0 10px rgba(210, 248, 252, 0.68),
-    0 0 10px rgba(210, 248, 252, 0.6);
-}
-
-.logo {
-    margin-top: 41px;
-    float: left;
-}
-
-nav {
-    float: right;
-    margin-top: 20px;
-}
-
-.menu {
-    padding: 0;
-    margin: 0;
-    display: block;
-}
-
-.menu li {
-    float: left;
-    display: block;
-    margin-right: 41px;
-
-}
-
-.menu a {
-    color: #f1f1f1;
-    text-decoration: none;
-    font-size: 14px;
-}
-
-
-h2 {
-    font-family: Candara Light, sans-serif;
-    font-size: 25px;
-    color: black;
-    font-weight: 100;
+.login-header {
+    background: #ee6c4d;
+    padding: 20px;
+    font-size: 1.4em;
+    font-weight: normal;
     text-align: center;
-    margin: 80px;
+    text-transform: uppercase;
+    color: #fff;
 }
 
-footer {
-    background: #16324a;
-    height: 150px;
+.login-container {
+    background: #ebebeb;
+    padding: 12px;
 }
 
-.container_footer {
-    overflow: hidden;
+/* Every row inside .login-container is defined with p tags */
+#login p {
+    padding: 12px;
+}
+
+#login input {
+    box-sizing: border-box;
+    display: block;
     width: 100%;
+    border-width: 1px;
+    border-style: solid;
+    padding: 16px;
+    outline: 0;
+    font-family: inherit;
+    font-size: 0.95em;
+}
+
+#login input[type="text"],
+#login input[type="password"] {
+    background: #fff;
+    border-color: #bbb;
+    color: #555;
+}
+
+/* Text fields' focus effect */
+#login input[type="text"]:focus,
+#login input[type="password"]:focus {
+    border-color: #888;
+}
+
+#login input[type="submit"] {
+    background: #ee6c4d;
+    border-color: transparent;
+    color: #fff;
+    cursor: pointer;
+}
+
+#login input[type="submit"]:hover {
+    background: #ee6c4d;
+}
+
+/* Buttons' focus effect */
+#login input[type="submit"]:focus {
+    border-color: #ee6c4d;
 }

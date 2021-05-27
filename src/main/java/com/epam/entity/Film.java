@@ -7,18 +7,22 @@ import java.sql.Time;
 import java.util.List;
 import java.util.Objects;
 
-public class Movie extends AbstractBaseEntity {
+public class Film extends AbstractBaseEntity {
     private final String name;
     private final String tagline;
+    private final String description;
     private final Time duration;
     private final Genre genre;
+    private final String poster;
     private final int releaseYear;
     private final Country releaseCountry;
     private final List<MovieCrewMember> movieCrew;
 
-    private Movie(Builder builder) {
+    private Film(Builder builder) {
         this.name = builder.name;
+        this.poster = builder.poster;
         this.tagline = builder.tagline;
+        this.description = builder.description;
         this.duration = builder.duration;
         this.genre = builder.genre;
         this.releaseYear = Objects.requireNonNull(builder.releaseYear, "releaseYear");
@@ -59,11 +63,21 @@ public class Movie extends AbstractBaseEntity {
         return movieCrew;
     }
 
+    public String getPoster() {
+        return poster;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
     public static class Builder {
         private String name;
         private String tagline;
+        private String description;
         private Time duration;
         private Genre genre;
+        private String poster;
         private Integer releaseYear;
         private Country releaseCountry;
         private List<MovieCrewMember> movieCrew;
@@ -73,6 +87,11 @@ public class Movie extends AbstractBaseEntity {
 
         public Builder setName(String name) {
             this.name = name;
+            return this;
+        }
+
+        public Builder setPoser(String poster) {
+            this.poster = poster;
             return this;
         }
 
@@ -106,19 +125,26 @@ public class Movie extends AbstractBaseEntity {
             return this;
         }
 
-        public Builder of(Movie movie) {
-            this.name = movie.name;
-            this.tagline = movie.tagline;
-            this.duration = movie.duration;
-            this.genre = movie.genre;
-            this.releaseYear = movie.releaseYear;
-            this.releaseCountry = movie.releaseCountry;
-            this.movieCrew = movie.movieCrew;
+        public Builder setDescription(String description) {
+            this.description = description;
             return this;
         }
 
-        public Movie build() {
-            return new Movie(this);
+        public Builder of(Film film) {
+            this.name = film.name;
+            this.poster = film.poster;
+            this.tagline = film.tagline;
+            this.description = film.description;
+            this.duration = film.duration;
+            this.genre = film.genre;
+            this.releaseYear = film.releaseYear;
+            this.releaseCountry = film.releaseCountry;
+            this.movieCrew = film.movieCrew;
+            return this;
+        }
+
+        public Film build() {
+            return new Film(this);
         }
     }
 
@@ -126,26 +152,13 @@ public class Movie extends AbstractBaseEntity {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Movie movie = (Movie) o;
-        return releaseYear == movie.releaseYear && name.equals(movie.name) && tagline.equals(movie.tagline) && duration.equals(movie.duration) && genre == movie.genre && releaseCountry.equals(movie.releaseCountry) && Objects.equals(movieCrew, movie.movieCrew);
+        Film film = (Film) o;
+        return releaseYear == film.releaseYear && Objects.equals(name, film.name) && Objects.equals(tagline, film.tagline) && Objects.equals(description, film.description) && Objects.equals(duration, film.duration) && genre == film.genre && Objects.equals(poster, film.poster) && Objects.equals(releaseCountry, film.releaseCountry) && Objects.equals(movieCrew, film.movieCrew);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, tagline, duration, genre, releaseYear, releaseCountry, movieCrew);
-    }
-
-    @Override
-    public String toString() {
-        return "Movie{" +
-                "name='" + name + '\'' +
-                ", tagline='" + tagline + '\'' +
-                ", duration=" + duration +
-                ", genre=" + genre +
-                ", releaseYear=" + releaseYear +
-                ", releaseCountry=" + releaseCountry +
-                ", movieCrew=" + movieCrew +
-                '}';
+        return Objects.hash(name, tagline, description, duration, genre, poster, releaseYear, releaseCountry, movieCrew);
     }
 }
 

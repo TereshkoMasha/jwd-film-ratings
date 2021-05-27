@@ -22,7 +22,7 @@ public class UserDaoImpl extends AbstractDaoImpl<User> implements UserDao {
     private static final Logger LOGGER = LogManager.getLogger(UserDaoImpl.class);
     public static final UserDaoImpl INSTANCE = new UserDaoImpl(ConnectionPool.getInstance());
 
-    public UserDaoImpl(ConnectionPool connectionPool) {
+    protected UserDaoImpl(ConnectionPool connectionPool) {
         super(connectionPool);
     }
 

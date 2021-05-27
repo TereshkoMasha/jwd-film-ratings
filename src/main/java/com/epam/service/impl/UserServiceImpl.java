@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Optional;
 
 public class UserServiceImpl implements UserService {
-    private static final Logger LOGGER = LogManager.getLogger(UserServiceImpl.class);
+    private static final Logger LOGGER = LogManager.getLogger(UserService.class);
     private static final UserDaoImpl userDao = UserDaoImpl.INSTANCE;
 
     @Override
@@ -41,7 +41,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Optional<User> findByLogin(String login) throws DAOException {
+    public Optional<User> findByLogin(String login) {
         return userDao.findUserByLogin(login);
     }
 

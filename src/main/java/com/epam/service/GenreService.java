@@ -1,5 +1,9 @@
 package com.epam.service;
 
+import com.epam.entity.enums.Genre;
+
+import java.util.List;
+
 public interface GenreService {
-    void addGenre(String genre);
+    List<Genre> findAll();
 }

@@ -7,7 +7,7 @@
         <fmt:setLocale value="${sessionScope.locale}"/>
     </c:when>
     <c:otherwise>
-        <fmt:setLocale value="ru_RU"/>
+        <fmt:setLocale value="en_US"/>
     </c:otherwise>
 </c:choose>
 <fmt:setBundle basename="locale"/>
@@ -15,64 +15,29 @@
 <html lang="${sessionScope.locale}">
 <head>
     <meta charset="UTF-8">
-    <title>MovieRating</title>
-    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/about.css">
-    <link rel="stylesheet" type="text/css" href="../css/button.css">
-    <script type="text/javascript" src="${pageContext.request.contextPath}/js/home_page.js" async></script>
+    <title>Film Ratings</title>
+    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/main.css">
 </head>
 
-<header>
-    <div class="search-wrapper">
-        <form>
-            <input type="text" name="focus" required class="search-box" placeholder="Enter search film"/>
-        </form>
-    </div>
+<body>
+<c:import url="header.jsp"/>
+<div class="side-menu">
+    <div class="category-wrap">
+        <h3><fmt:message key="menu.films"/></h3>
+        <ul>
+<%--            <c:forEach var="genre" items="${genres}">--%>
+<%--                <li><a href="">${genre.name}</a></li>--%>
+<%--            </c:forEach>--%>
 
-    <ul class="menu">
-        <nav>
-            <li><a href="login.jsp"><fmt:message key="menu.films"/></a></li>
-            <c:choose>
-                <c:when test="${not empty user}">
-                    <li><a href="#"><fmt:message key="header.user"/></a></li>
-                    <li><a href="${pageContext.request.contextPath}/controller?command=logout"><fmt:message
-                            key="header.logout"/></a></li>
-                </c:when>
-                <c:otherwise>
-                    <li><a href="login.jsp"><fmt:message key="header.login"/></a></li>
-                </c:otherwise>
-            </c:choose>
-        </nav>
-        <div class="indicator"></div>
-    </ul>
-</header>
-<div class="info">
-    <div class="col">
-        <div class="category-wrap" style="left: 119.4px;">
-            <h3><fmt:message key="menu.films"/></h3>
-            <ul>
-                <li><a href="">Новинки</a></li>
-            </ul>
-        </div>
+        </ul>
     </div>
 </div>
-
-
-<div class="info">
-    <div class="col">
-        <p><img src="../img/wolfwalkers-posters.jpg"></p>
-    </div>
-    <div class="col-menu">
-        <div class="col"><p><img src="../img/wolfwalkers-posters.jpg"></p></div>
-        <div class="col"><p><img src="../img/wolfwalkers-posters.jpg"></p></div>
-        <div class="col"><p><img src="../img/wolfwalkers-posters.jpg"></p></div>
-        <div class="col"><p><img src="../img/wolfwalkers-posters.jpg"></p></div>
-        <div class="col"><p><img src="../img/wolfwalkers-posters.jpg"></p></div>
-    </div>
-
+<div class="main">
+    <c:forEach var="film" items="${films}">
+        <img src="${pageContext.request.contextPath}${film.poster}" alt="${film.name}">
+    </c:forEach>
 </div>
-
-<footer></footer>
-
+<c:import url="footer.jsp"/>
+<div class="info"></div>
 </body>
 </html>
-

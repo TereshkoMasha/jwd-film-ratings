@@ -5,8 +5,7 @@ import com.epam.exception.UnknownEntityException;
 import java.util.Locale;
 
 public enum Genre {
-    ACTION(1),
-    ADULT(2),
+    CARTOON(1),
     ADVENTURE(3),
     ANIMATION(4),
     BIOGRAPHY(5),
