@@ -86,7 +86,7 @@ public class MovieCharacterDaoImpl extends AbstractDaoImpl<MovieCrewMember> impl
         try (Connection connection = connectionPool.getConnection()) {
             try (PreparedStatement preparedStatement = connection.prepareStatement(getUpdateSql())) {
                 preparedStatement.setString(1, entity.getName());
-                preparedStatement.setInt(2, entity.getID());
+                preparedStatement.setInt(2, entity.getId());
                 if (preparedStatement.executeUpdate() != 0) {
                     updated = true;
                 }

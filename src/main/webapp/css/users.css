@@ -1,0 +1,56 @@
+@import url(https://fonts.googleapis.com/css?family=Roboto:400,500,300,700);
+
+h1 {
+    font-size: 30px;
+    color: black;
+    text-transform: uppercase;
+    font-weight: 300;
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+table {
+    width: 100%;
+    table-layout: fixed;
+}
+
+.tbl-header {
+    background-color: #de6b48;
+}
+
+.tbl-content {
+    height: 100%;
+    overflow-x: auto;
+    margin-top: 0px;
+    border: 1px solid #de6b48;
+}
+
+th {
+    padding: 20px 15px;
+    text-align: left;
+    font-weight: 500;
+    font-size: 12px;
+    color: white;
+    text-transform: uppercase;
+}
+
+td {
+    padding: 15px;
+    text-align: left;
+    vertical-align: middle;
+    font-weight: 300;
+    font-size: 12px;
+    color: black;
+    border-bottom: solid 1px #de6b48;
+}
+
+
+/* demo styles */
+
+section{
+    margin: 40px;
+    margin-left: 152px;
+    width: 1230px;
+}
+/* for custom scrollbar for webkit browser*/
+

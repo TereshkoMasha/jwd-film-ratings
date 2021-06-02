@@ -26,8 +26,8 @@ public class UserDaoImpl extends AbstractDaoImpl<User> implements UserDao {
         super(connectionPool);
     }
 
-    private static final String SQL_CREATE = "INSERT INTO user (name, password, login, role_id, status_id rating)" +
-            "VALUES (?, ?, ?, ?, ?)";
+    private static final String SQL_CREATE = "INSERT INTO user ( password, login, name,role_id, status_id, rating, email)" +
+            "VALUES (?, ?, ?, ?, ?, ?, ?)";
     private static final String SQL_UPDATE_PASSWORD = "UPDATE user SET password = ? WHERE id = ? ";
     private static final String SQL_UPDATE_LOGIN = "UPDATE user SET login = ? WHERE password = ? ";
     private static final String SQL_UPDATE_STATUS = "UPDATE user SET status = ? WHERE id = ? ";
@@ -100,6 +100,7 @@ public class UserDaoImpl extends AbstractDaoImpl<User> implements UserDao {
     protected Optional<User> parseResultSet(ResultSet resultSet) throws SQLException {
         User user = User.builder()
                 .setName(resultSet.getString("name"))
+                .setEmail(resultSet.getString("email"))
                 .setLogin(resultSet.getString("login"))
                 .setPassword(resultSet.getString("password"))
                 .setRole(UserRole.resolveRoleById(resultSet.getInt("role_id")))
@@ -110,21 +111,22 @@ public class UserDaoImpl extends AbstractDaoImpl<User> implements UserDao {
     }
 
     private void preparedAllUserStatements(PreparedStatement preparedStatement, User user) throws SQLException {
-        preparedStatement.setString(1, user.getName());
-        preparedStatement.setString(2, user.getPassword());
-        preparedStatement.setString(3, user.getLogin());
+        preparedStatement.setString(1, user.getPassword());
+        preparedStatement.setString(2, user.getLogin());
+        preparedStatement.setString(3, user.getName());
         preparedStatement.setInt(4, user.getRole().getId());
         preparedStatement.setInt(5, user.getStatus().getId());
         preparedStatement.setDouble(6, user.getRating());
+        preparedStatement.setString(7, user.getEmail());
     }
 
     @Override
     public boolean update(User entity) throws DAOException {
-        var updated = false;
+        boolean updated = false;
         try (Connection connection = connectionPool.getConnection()) {
             try (PreparedStatement preparedStatement = connection.prepareStatement(getUpdateSql())) {
                 preparedStatement.setString(1, entity.getPassword());
-                preparedStatement.setInt(2, entity.getID());
+                preparedStatement.setInt(2, entity.getId());
                 if (preparedStatement.executeUpdate() != 0) {
                     updated = true;
                 }
@@ -157,7 +159,7 @@ public class UserDaoImpl extends AbstractDaoImpl<User> implements UserDao {
 
     @Override
     public Integer getUserRoleId(String login) throws DAOException {
-        var roleId = 0;
+        int roleId = 0;
         try (Connection connection = connectionPool.getConnection()) {
             try (PreparedStatement statement = connection.prepareStatement(getFindByLoginSql())) {
                 statement.setString(1, login);

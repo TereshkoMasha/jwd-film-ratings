@@ -62,12 +62,22 @@ public class FilmServiceImpl implements FilmService {
     }
 
     @Override
-    public List<Film> findAllByCountry(Country country) throws DAOException {
+    public List<Film> findAllByCountry(Country country) {
         try {
             return filmDao.findAllByCountry(country);
         } catch (DAOException e) {
             LOGGER.error(e);
         }
         return Collections.emptyList();
+    }
+
+    @Override
+    public Optional<Film> findById(Integer id) {
+        try {
+            return filmDao.getById(id);
+        } catch (DAOException e) {
+            LOGGER.error(e);
+        }
+        return Optional.empty();
     }
 }

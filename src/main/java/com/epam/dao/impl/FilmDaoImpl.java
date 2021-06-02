@@ -26,7 +26,7 @@ public class FilmDaoImpl extends AbstractDaoImpl<Film> implements FilmDao {
     private static final String SQL_DELETE = "DELETE FROM movie WHERE id = ? ";
 
     private static final String SQL_FIND_ALL = "SELECT * FROM movie ";
-    private static final String SQL_FIND_BY_ID = "SELECT * FROM movie WHERE id = ?";
+    private static final String SQL_FIND_BY_ID = "SELECT * FROM movie join country c on c.id = movie.country_id WHERE movie.id = ?";
     private static final String SQL_FIND_BY_NAME = "SELECT * FROM movie  WHERE movie.name = ?";
     private static final String SQL_FIND_BY_COUNTRY = "SELECT * FROM movie  WHERE country_id = ?";
     private static final String SQL_FIND_BY_PUBLICATION_YEAR = "SELECT * FROM movie WHERE publication_year = ?";
@@ -45,6 +45,8 @@ public class FilmDaoImpl extends AbstractDaoImpl<Film> implements FilmDao {
 
     @Override
     protected Optional<Film> parseResultSet(ResultSet resultSet) throws SQLException, DAOException {
+//        Country country = Country.builder().setName(resultSet.getString("c.name")).build();
+//        country.setId(resultSet.getInt("country_id"));
 
         Film film = Film.builder()
                 .setName(resultSet.getString("name"))
@@ -52,6 +54,7 @@ public class FilmDaoImpl extends AbstractDaoImpl<Film> implements FilmDao {
                 .setPoser(resultSet.getString("poster_path"))
                 .setReleaseYear(resultSet.getInt("publication_year"))
                 .setDuration(resultSet.getTime("duration"))
+//                .setReleaseCountry(Country.builder().setName(resultSet.getString("c.name")).build())
                 .setTagline(resultSet.getString("tagline"))
                 .setGenre(Genre.resolveRoleById(resultSet.getInt("genre_id"))).build();
         film.setId(resultSet.getInt("id"));
@@ -59,7 +62,7 @@ public class FilmDaoImpl extends AbstractDaoImpl<Film> implements FilmDao {
     }
 
     private void preparedAllMovieStatements(PreparedStatement preparedStatement, Film film) throws SQLException {
-        preparedStatement.setInt(1, film.getID());
+        preparedStatement.setInt(1, film.getId());
         preparedStatement.setString(2, film.getName());
         preparedStatement.setInt(3, film.getReleaseYear());
         preparedStatement.setTime(4, film.getDuration());
@@ -111,11 +114,11 @@ public class FilmDaoImpl extends AbstractDaoImpl<Film> implements FilmDao {
 
     @Override
     public boolean update(Film entity) {
-        var updated = false;
+        boolean updated = false;
         try (Connection connection = connectionPool.getConnection()) {
             try (PreparedStatement preparedStatement = connection.prepareStatement(getUpdateSql())) {
                 preparedStatement.setString(1, entity.getName());
-                preparedStatement.setInt(2, entity.getID());
+                preparedStatement.setInt(2, entity.getId());
                 if (preparedStatement.executeUpdate() != 0) {
                     updated = true;
                 }
@@ -188,7 +191,7 @@ public class FilmDaoImpl extends AbstractDaoImpl<Film> implements FilmDao {
         List<Film> films = new ArrayList<>();
         try (Connection connection = connectionPool.getConnection()) {
             try (PreparedStatement statement = connection.prepareStatement(getFindByCountrySql())) {
-                statement.setInt(1, country.getID());
+                statement.setInt(1, country.getId());
                 ResultSet resultSet = statement.executeQuery();
                 while (resultSet.next()) {
                     Optional<Film> optionalUser = parseResultSet(resultSet);

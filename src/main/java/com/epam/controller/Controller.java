@@ -1,9 +1,6 @@
 package com.epam.controller;
 
-import com.epam.command.CommandExecute;
-import com.epam.command.CommandRequest;
-import com.epam.command.RequestData;
-import com.epam.command.RouteType;
+import com.epam.command.*;
 import com.epam.command.factory.CommandFactory;
 import com.epam.db.ConnectionPool;
 import org.apache.logging.log4j.LogManager;
@@ -24,16 +21,16 @@ public class Controller extends HttpServlet {
     private static final Logger LOGGER = LogManager.getLogger(Controller.class);
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         processRequest(request, response);
     }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         processRequest(request, response);
     }
 
-    private void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException {
+    private void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
             RequestData requestData = new RequestData(request);
             CommandFactory commandFactory = new CommandFactory();
@@ -45,13 +42,13 @@ public class Controller extends HttpServlet {
                 if (commandExecute.getRouteType().equals(RouteType.REDIRECT)) {
                     response.sendRedirect(request.getContextPath() + commandExecute.getPagePath());
                 } else if (commandExecute.getRouteType().equals(RouteType.FORWARD)) {
-                    RequestDispatcher requestDispatcher = request.getRequestDispatcher(request.getContextPath() + commandExecute.getPagePath());
+                    RequestDispatcher requestDispatcher = request.getRequestDispatcher(commandExecute.getPagePath());
                     requestDispatcher.forward(request, response);
                 }
             }
         } catch (IOException e) {
             LOGGER.error(new ServletException(e.getMessage()));
-            //response.sendError();
+            response.sendRedirect(request.getContextPath() + Destination.ERROR);
         }
     }
 

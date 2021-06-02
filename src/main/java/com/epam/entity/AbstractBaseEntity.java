@@ -2,10 +2,10 @@ package com.epam.entity;
 
 public abstract class AbstractBaseEntity implements BaseEntity {
 
-    private int id;
+    private Integer id;
 
     @Override
-    public Integer getID() {
+    public Integer getId() {
         return this.id;
     }
 

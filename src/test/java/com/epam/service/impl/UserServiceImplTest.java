@@ -2,6 +2,7 @@ package com.epam.service.impl;
 
 import com.epam.entity.User;
 import com.epam.exception.DAOException;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
@@ -15,8 +16,9 @@ class UserServiceImplTest {
     @Test
     void changePassword() {
         User user = Mockito.mock(User.class);
-        String password = "43573954";
-        Mockito.when(user.getID()).thenReturn(6);
+        String password = DigestUtils
+                .md5Hex("43573954").toUpperCase();
+        Mockito.when(user.getId()).thenReturn(6);
         Mockito.when(user.getPassword()).thenReturn(password);
         assertTrue(userService.changePassword(user, password));
     }
@@ -45,7 +47,13 @@ class UserServiceImplTest {
     @Test
     void getById() {
         User user = Mockito.mock(User.class);
-        Mockito.when(user.getID()).thenReturn(1);
-        assertEquals(userService.getById(1).get().getID(), user.getID());
+        Mockito.when(user.getId()).thenReturn(1);
+        assertEquals(userService.getById(1).get().getId(), user.getId());
+    }
+
+    @Test
+    void registerUser() {
+        userService.registerUser("max112", "4357395400", "Max", "max22@gmail.com");
+        assertTrue(userService.findUser("max112", "4357395400"));
     }
 }

@@ -6,6 +6,7 @@ import com.epam.entity.enums.UserRole;
 import com.epam.entity.enums.UserStatus;
 import com.epam.exception.DAOException;
 import com.epam.service.UserService;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -17,21 +18,28 @@ public class UserServiceImpl implements UserService {
     private static final UserDaoImpl userDao = UserDaoImpl.INSTANCE;
 
     @Override
-    public boolean registerUser(String login, String password, String name) {
-        User user = User.builder()
-                .setName(name)
-                .setLogin(login)
-                .setPassword(password)
-                .setRole(UserRole.USER)
-                .setStatus(UserStatus.LOW)
-                .setRating(5.0).build();
-        create(user);
-        return true;
+    public Optional<User> registerUser(String login, String password, String name, String email) {
+        String md5Hex = DigestUtils
+                .md5Hex(password).toUpperCase();
+        if (!findUser(login, password)) {
+            User user = User.builder()
+                    .setName(name)
+                    .setLogin(login)
+                    .setPassword(md5Hex)
+                    .setRole(UserRole.USER)
+                    .setStatus(UserStatus.LOW)
+                    .setEmail(email)
+                    .setRating(5.0).build();
+            create(user);
+            return Optional.of(user);
+        }
+        return Optional.empty();
     }
 
     @Override
     public boolean changePassword(User user, String newPassword) {
-        User.builder().of(user).setPassword(newPassword);
+        User.builder().of(user).setPassword(DigestUtils
+                .md5Hex(newPassword).toUpperCase());
         try {
             return userDao.update(user);
         } catch (DAOException e) {
@@ -59,7 +67,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean findUser(String login, String password) {
         try {
-            return userDao.findUserByLoginAndPassword(login, password);
+            return userDao.findUserByLoginAndPassword(login, DigestUtils
+                    .md5Hex(password).toUpperCase());
         } catch (DAOException e) {
             e.printStackTrace();
         }

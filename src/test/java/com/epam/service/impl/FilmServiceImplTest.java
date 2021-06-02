@@ -22,7 +22,7 @@ class FilmServiceImplTest {
     }
 
     @Test
-    void findByNamePositive() throws DAOException {
+    void findByNamePositive()  {
         assertEquals(filmService.findByName("Легенда о волках").get().getName(), "Легенда о волках");
     }
 
@@ -34,10 +34,18 @@ class FilmServiceImplTest {
     }
 
     @Test
-    void findAllByPublicationYear() throws DAOException {
+    void findAllByPublicationYear() {
         Film filmMock = Mockito.mock(Film.class);
         Mockito.when(filmMock.getReleaseYear()).thenReturn(2020);
         assertEquals(filmService.findAllByPublicationYear(2020).get(0).getReleaseYear(), filmMock.getReleaseYear());
     }
 
+    @Test
+    void findById() {
+        Film filmMock = Mockito.mock(Film.class);
+        Mockito.when(filmMock.getName()).thenReturn("Легенда о волках");
+        Mockito.when(filmMock.getGenre()).thenReturn(Genre.CARTOON);
+        assertEquals(filmService.findById(1).get().getName(), filmMock.getName());
+        assertEquals(filmService.findById(1).get().getGenre(), filmMock.getGenre());
+    }
 }

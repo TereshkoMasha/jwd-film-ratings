@@ -13,19 +13,22 @@ public class User extends AbstractBaseEntity {
 
     private String name;
 
+    private String email;
+
     private UserRole role;
 
     private UserStatus status;
 
     private Double rating;
 
-    public User() {
+    User() {
 
     }
 
     private User(Builder builder) {
         this.login = Objects.requireNonNull(builder.login, "login");
         this.password = Objects.requireNonNull(builder.password, "password");
+        this.email = Objects.requireNonNull(builder.email, "email");
         this.name = Objects.requireNonNull(builder.name, "name");
         this.role = Objects.requireNonNull(builder.role, "role");
         this.status = Objects.requireNonNull(builder.status, "status");
@@ -39,6 +42,10 @@ public class User extends AbstractBaseEntity {
 
     public String getLogin() {
         return login;
+    }
+
+    public String getEmail() {
+        return email;
     }
 
 
@@ -72,6 +79,7 @@ public class User extends AbstractBaseEntity {
         private UserRole role;
         private UserStatus status;
         private Double rating;
+        private String email;
 
         private Builder() {
         }
@@ -106,13 +114,20 @@ public class User extends AbstractBaseEntity {
             return this;
         }
 
+        public Builder setEmail(String email) {
+            this.email = email;
+            return this;
+        }
+
+
         public Builder of(User user) {
             this.login = user.login;
             this.password = user.password;
             this.name = user.name;
             this.role = user.role;
             this.status = user.status;
-            this.rating = rating;
+            this.rating = user.rating;
+            this.email = user.email;
             return this;
         }
 
@@ -140,6 +155,7 @@ public class User extends AbstractBaseEntity {
                 "login='" + login + '\'' +
                 ", password='" + password + '\'' +
                 ", name='" + name + '\'' +
+                ", email='" + email + '\'' +
                 ", role=" + role +
                 ", status=" + status +
                 ", rating=" + rating +

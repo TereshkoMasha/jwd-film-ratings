@@ -2,7 +2,7 @@ package com.epam.entity;
 
 public interface BaseEntity {
 
-    Integer getID();
+    Integer getId();
 
     void setId(Integer id);
 

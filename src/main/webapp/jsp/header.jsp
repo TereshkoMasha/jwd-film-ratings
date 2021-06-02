@@ -24,48 +24,33 @@
 <body>
 <div>
     <header class="header" id="logo-menu">
-
-
         <div class="logo">
-            <a href="">Film Ratings</a>
+            <a href="${pageContext.request.contextPath}/controller?command=main">Film Ratings</a>
         </div>
         <div class="search-wrapper">
-            <form>
-                <input type="text" name="focus" required class="search-box" placeholder="Enter search film"/>
+            <form method="post" action="${pageContext.request.contextPath}/controller?command=film-search">
+                <input type="text" name="film" required class="search-box" placeholder="Enter search film"/>
             </form>
         </div>
         <nav class="menu">
             <a href="${pageContext.request.contextPath}/controller?command=main"><fmt:message key="header.main"/></a>
             <c:choose>
                 <c:when test="${not empty user}">
+                    <c:if test="${role eq 1}">
+                        <a href="${pageContext.request.contextPath}/controller?command=show_users">
+                            <fmt:message key="admin.main"/> </a>
+                    </c:if>
                     <a href="#"><fmt:message key="header.user"/></a>
-                    <a href="${pageContext.request.contextPath}/controller?command=logout"><fmt:message
-                            key="header.logout"/></a>
+                    <a href="${pageContext.request.contextPath}/controller?command=logout">
+                        <fmt:message key="header.logout"/></a>
                 </c:when>
                 <c:otherwise>
-                    <a href="#login"><fmt:message key="header.login"/></a>
+                    <a href="login.jsp"><fmt:message key="header.login"/></a>
                 </c:otherwise>
             </c:choose>
             <div class="indicator"></div>
         </nav>
     </header>
-
-    <div id="login">
-        <div class="login-triangle"></div>
-        <h2 class="login-header"><fmt:message key="header.login"/></h2>
-        <form method="post" action="${pageContext.request.contextPath}/controller" class="login-container">
-            <input type="hidden" name="command" value="login">
-            <p><label>
-                <input type="text" name="login" placeholder="Username">
-            </label></p>
-            <p><label>
-                <input type="password" name="password" placeholder="Password">
-            </label></p>
-            <p><input type="submit" value="Log in"></p>
-        </form>
-    </div>
-
-
 </div>
 </body>
 </html>

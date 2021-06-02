@@ -2,7 +2,6 @@ package com.epam.command.impl.common;
 
 import com.epam.command.*;
 import com.epam.entity.User;
-import com.epam.entity.enums.UserRole;
 import com.epam.exception.DAOException;
 import com.epam.service.UserService;
 import com.epam.service.impl.UserServiceImpl;
@@ -19,20 +18,21 @@ public class LoginCommand implements CommandRequest {
     public CommandExecute executeCommand(RequestData requestData) {
         CommandExecute commandExecute = null;
         String login = requestData.getRequestParameter(AttributeName.LOGIN).trim();
-        String password = requestData.getRequestParameter(AttributeName.PASSWORD);
+        String password = requestData.getRequestParameter(AttributeName.PASSWORD).trim();
         try {
             if (userService.findUser(login, password)) {
                 Optional<User> optionalUser = userService.findByLogin(login);
                 if (optionalUser.isPresent()) {
-                    UserRole role = optionalUser.get().getRole();
                     User user = optionalUser.get();
                     requestData.addSessionAttribute(AttributeName.USER, user);
-                    switch (role) {
+                    requestData.addSessionAttribute(AttributeName.ROLE, user.getRole().getId());
+                    switch (user.getRole()) {
                         case USER: {
                             commandExecute = new CommandExecute(RouteType.REDIRECT, Destination.MAIN_PAGE.getPath());
                             break;
                         }
                         case ADMIN: {
+                            commandExecute = new CommandExecute(RouteType.REDIRECT, Destination.MAIN_PAGE.getPath());
                             break;
                         }
                     }

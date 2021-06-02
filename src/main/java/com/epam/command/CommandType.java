@@ -1,13 +1,16 @@
 package com.epam.command;
 
-import com.epam.command.impl.common.LoginCommand;
-import com.epam.command.impl.common.LogoutCommand;
-import com.epam.command.impl.common.MainCommand;
+import com.epam.command.impl.admin.ShowUsersCommand;
+import com.epam.command.impl.common.*;
 
 public enum CommandType {
     MAIN(new MainCommand()),
     LOGIN(new LoginCommand()),
-    LOGOUT(new LogoutCommand());
+    LOGOUT(new LogoutCommand()),
+    REGISTRATION(new RegistrCommand()),
+    SHOW_USERS(new ShowUsersCommand()),
+    MOVIE_INFO(new ViewFilmInfoCommand()),
+    FILM_SEARCH(new FindMovieCommand());
 
     CommandRequest command;
 

@@ -48,10 +48,14 @@ public class RequestData {
     public Object getSessionAttribute(String attribute) {
         return sessionAttributes.get(attribute);
     }
-    
+
 
     public void addSessionAttribute(String attribute, Object attributeValue) {
-        sessionAttributes.putIfAbsent(attribute, attributeValue);
+        if (sessionAttributes.containsKey(attribute)) {
+            sessionAttributes.replace(attribute, attributeValue);
+        } else {
+            sessionAttributes.putIfAbsent(attribute, attributeValue);
+        }
     }
 
     public void insertSessionAttributes(HttpServletRequest request) {

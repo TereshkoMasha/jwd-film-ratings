@@ -8,6 +8,7 @@ import com.epam.service.GenreService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.Collections;
 import java.util.List;
 
 public class GenreServiceImpl implements GenreService {
@@ -19,6 +20,7 @@ public class GenreServiceImpl implements GenreService {
         try {
             genres = genreDao.findAll();
             if (!genres.isEmpty()) {
+                Collections.sort(genres);
                 return genres;
             }
         } catch (DAOException e) {

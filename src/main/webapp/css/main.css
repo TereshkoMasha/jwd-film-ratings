@@ -2,6 +2,17 @@ body {
     background: whitesmoke;
 }
 
+
+.main {
+    width: 65%;
+    min-height: 600px;
+    height: 100%;
+    background: white;
+    margin-left: 25%;
+    padding-top: 60px;
+    box-sizing: border-box;
+}
+
 .side-menu {
     width: 15%;
     margin-left: 10%;
@@ -10,30 +21,12 @@ body {
     float: left;
 }
 
-.main {
+
+
+.image_box {
+    position: absolute;
     width: 65%;
-    min-height: 600px;
     background: white;
-    margin-left: 25%;
-    padding-top: 60px;
-}
-
-.main img {
-    width: 150px;
-    height: 210px;
-    margin-left: 70px;
-    margin-top: 30px;
-    border-radius: 7px;
-    transition: 30ms;
-}
-
-.main img:hover{
-    width: 150px;
-    height: 210px;
-    margin-left: 70px;
-    margin-top: 30px;
-    border-radius: 7px;
-    transform: scale(1.08);
 }
 
 .category-wrap {
@@ -46,6 +39,7 @@ body {
     width: 200px;
     box-shadow: 2px 2px 8px rgba(0, 0, 0, .1);
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    z-index: 5;
 }
 
 .category-wrap h3 {
@@ -101,11 +95,74 @@ body {
     color: white;
 }
 
-.main a {
-    transition: 1s;
+
+.movie {
+    transition: 300ms;
 }
 
-.main a:hover {
-    transform: scale(1.1);
+.intro {
+    text-align:center;
 }
 
+
+.movie a {
+    text-decoration:none;
+    color:inherit;
+}
+
+.movie a:hover {
+    color:#ee6c4d;
+}
+
+.container {
+    display: flex;
+    flex-wrap: wrap;
+    max-width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    justify-content: center;
+}
+
+.movie {
+    background: #ffffff;
+    box-shadow: 0px 6px 18px rgba(0,0,0,.1);
+    width: 100%;
+    max-width: 160px;
+    margin: 2em;
+    border-radius: 10px;
+    display:inline-block;
+}
+
+.movie-header {
+    padding:0;
+    margin: 0;
+    height: 235px;
+    width: 100%;
+    display: block;
+    border-top-left-radius: 10px;
+    border-top-right-radius:10px;
+}
+
+
+.movie:hover {
+    transform:scale(1.03);
+    box-shadow: 0px 10px 25px rgba(0,0,0,.08);
+}
+
+.movie-content {
+    padding: 5px 5px 10px ;
+    text-align: center;
+    margin: 0;
+}
+
+.movie-content-header, .movie-info {
+    display: table;
+    width: 100%;
+}
+
+.movie-title {
+    font-size: 13px;
+    font-family: Arial,sans-serif;
+    margin: 0;
+    display: table-cell;
+}

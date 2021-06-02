@@ -4,12 +4,13 @@ import com.epam.entity.User;
 import com.epam.entity.enums.UserStatus;
 import com.epam.exception.DAOException;
 
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.Optional;
 
 public interface UserService {
 
-    boolean registerUser(String login, String password, String name);
+    Optional<User> registerUser(String login, String password, String name, String email) throws NoSuchAlgorithmException;
 
     boolean changePassword(User user, String newPassword);
 
