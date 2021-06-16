@@ -4,7 +4,7 @@ import com.epam.entity.enums.Appraisal;
 
 import java.util.Objects;
 
-public class Review {
+public class Review extends AbstractBaseEntity {
     private final int userID;
     private final int movieID;
     private final String text;
@@ -13,14 +13,13 @@ public class Review {
     private Review(Builder builder) {
         this.userID = Objects.requireNonNull(builder.userID, "userID");
         this.movieID = Objects.requireNonNull(builder.movieID, "movieID");
-        this.text = builder.text;
-        this.rating = builder.rating;
+        this.text = Objects.requireNonNull(builder.text);
+        this.rating = Objects.requireNonNull(builder.rating);
     }
 
     public static Builder builder() {
         return new Builder();
     }
-
 
     public int getUserID() {
         return userID;
@@ -37,6 +36,7 @@ public class Review {
     public Appraisal getRating() {
         return rating;
     }
+
 
     public static class Builder {
         private Integer userID;

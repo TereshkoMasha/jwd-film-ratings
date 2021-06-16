@@ -28,8 +28,8 @@
             <a href="${pageContext.request.contextPath}/controller?command=main">Film Ratings</a>
         </div>
         <div class="search-wrapper">
-            <form method="post" action="${pageContext.request.contextPath}/controller?command=film-search">
-                <input type="text" name="film" required class="search-box" placeholder="Enter search film"/>
+            <form method="post" action="${pageContext.request.contextPath}/controller?command=movie-search">
+                <input type="text" name="movie" required class="search-box" placeholder="Enter search movie"/>
             </form>
         </div>
         <nav class="menu">
@@ -40,12 +40,12 @@
                         <a href="${pageContext.request.contextPath}/controller?command=show_users">
                             <fmt:message key="admin.main"/> </a>
                     </c:if>
-                    <a href="#"><fmt:message key="header.user"/></a>
+                    <%--                    <a href="#"><fmt:message key="header.user"/></a>--%>
                     <a href="${pageContext.request.contextPath}/controller?command=logout">
                         <fmt:message key="header.logout"/></a>
                 </c:when>
                 <c:otherwise>
-                    <a href="login.jsp"><fmt:message key="header.login"/></a>
+                    <a href="${pageContext.request.contextPath}/jsp/login.jsp"><fmt:message key="header.login"/></a>
                 </c:otherwise>
             </c:choose>
             <div class="indicator"></div>

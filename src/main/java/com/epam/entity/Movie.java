@@ -7,7 +7,7 @@ import java.sql.Time;
 import java.util.List;
 import java.util.Objects;
 
-public class Film extends AbstractBaseEntity {
+public class Movie extends AbstractBaseEntity {
     private final String name;
     private final String tagline;
     private final String description;
@@ -18,7 +18,7 @@ public class Film extends AbstractBaseEntity {
     private final Country releaseCountry;
     private final List<MovieCrewMember> movieCrew;
 
-    private Film(Builder builder) {
+    private Movie(Builder builder) {
         this.name = builder.name;
         this.poster = builder.poster;
         this.tagline = builder.tagline;
@@ -130,21 +130,21 @@ public class Film extends AbstractBaseEntity {
             return this;
         }
 
-        public Builder of(Film film) {
-            this.name = film.name;
-            this.poster = film.poster;
-            this.tagline = film.tagline;
-            this.description = film.description;
-            this.duration = film.duration;
-            this.genre = film.genre;
-            this.releaseYear = film.releaseYear;
-            this.releaseCountry = film.releaseCountry;
-            this.movieCrew = film.movieCrew;
+        public Builder of(Movie movie) {
+            this.name = movie.name;
+            this.poster = movie.poster;
+            this.tagline = movie.tagline;
+            this.description = movie.description;
+            this.duration = movie.duration;
+            this.genre = movie.genre;
+            this.releaseYear = movie.releaseYear;
+            this.releaseCountry = movie.releaseCountry;
+            this.movieCrew = movie.movieCrew;
             return this;
         }
 
-        public Film build() {
-            return new Film(this);
+        public Movie build() {
+            return new Movie(this);
         }
     }
 
@@ -152,8 +152,8 @@ public class Film extends AbstractBaseEntity {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Film film = (Film) o;
-        return releaseYear == film.releaseYear && Objects.equals(name, film.name) && Objects.equals(tagline, film.tagline) && Objects.equals(description, film.description) && Objects.equals(duration, film.duration) && genre == film.genre && Objects.equals(poster, film.poster) && Objects.equals(releaseCountry, film.releaseCountry) && Objects.equals(movieCrew, film.movieCrew);
+        Movie movie = (Movie) o;
+        return releaseYear == movie.releaseYear && Objects.equals(name, movie.name) && Objects.equals(tagline, movie.tagline) && Objects.equals(description, movie.description) && Objects.equals(duration, movie.duration) && genre == movie.genre && Objects.equals(poster, movie.poster) && Objects.equals(releaseCountry, movie.releaseCountry) && Objects.equals(movieCrew, movie.movieCrew);
     }
 
     @Override

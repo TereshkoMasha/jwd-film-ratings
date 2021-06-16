@@ -43,7 +43,13 @@ public class UserDaoImpl extends AbstractDaoImpl<User> implements UserDao {
 
     @Override
     protected void prepareStatement(PreparedStatement preparedStatement, User entity) throws SQLException {
-        preparedAllUserStatements(preparedStatement, entity);
+        preparedStatement.setString(1, entity.getPassword());
+        preparedStatement.setString(2, entity.getLogin());
+        preparedStatement.setString(3, entity.getName());
+        preparedStatement.setInt(4, entity.getRole().getId());
+        preparedStatement.setInt(5, entity.getStatus().getId());
+        preparedStatement.setDouble(6, entity.getRating());
+        preparedStatement.setString(7, entity.getEmail());
     }
 
     protected String getSqlFindByLoginPassword() {
@@ -108,16 +114,6 @@ public class UserDaoImpl extends AbstractDaoImpl<User> implements UserDao {
                 .setRating(resultSet.getDouble("rating")).build();
         user.setId(resultSet.getInt("id"));
         return Optional.of(user);
-    }
-
-    private void preparedAllUserStatements(PreparedStatement preparedStatement, User user) throws SQLException {
-        preparedStatement.setString(1, user.getPassword());
-        preparedStatement.setString(2, user.getLogin());
-        preparedStatement.setString(3, user.getName());
-        preparedStatement.setInt(4, user.getRole().getId());
-        preparedStatement.setInt(5, user.getStatus().getId());
-        preparedStatement.setDouble(6, user.getRating());
-        preparedStatement.setString(7, user.getEmail());
     }
 
     @Override

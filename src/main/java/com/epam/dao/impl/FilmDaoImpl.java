@@ -3,7 +3,7 @@ package com.epam.dao.impl;
 import com.epam.dao.FilmDao;
 import com.epam.db.ConnectionPool;
 import com.epam.entity.Country;
-import com.epam.entity.Film;
+import com.epam.entity.Movie;
 import com.epam.entity.enums.Genre;
 import com.epam.exception.DAOException;
 import org.apache.logging.log4j.LogManager;
@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class FilmDaoImpl extends AbstractDaoImpl<Film> implements FilmDao {
+public class FilmDaoImpl extends AbstractDaoImpl<Movie> implements FilmDao {
     private static final Logger LOGGER = LogManager.getLogger(FilmDaoImpl.class);
     public static final FilmDaoImpl INSTANCE = new FilmDaoImpl(ConnectionPool.getInstance());
 
@@ -39,16 +39,16 @@ public class FilmDaoImpl extends AbstractDaoImpl<Film> implements FilmDao {
     }
 
     @Override
-    protected void prepareStatement(PreparedStatement preparedStatement, Film entity) throws SQLException {
+    protected void prepareStatement(PreparedStatement preparedStatement, Movie entity) throws SQLException {
         preparedAllMovieStatements(preparedStatement, entity);
     }
 
     @Override
-    protected Optional<Film> parseResultSet(ResultSet resultSet) throws SQLException, DAOException {
+    protected Optional<Movie> parseResultSet(ResultSet resultSet) throws SQLException, DAOException {
 //        Country country = Country.builder().setName(resultSet.getString("c.name")).build();
 //        country.setId(resultSet.getInt("country_id"));
 
-        Film film = Film.builder()
+        Movie movie = Movie.builder()
                 .setName(resultSet.getString("name"))
                 .setDescription(resultSet.getString("description"))
                 .setPoser(resultSet.getString("poster_path"))
@@ -56,18 +56,18 @@ public class FilmDaoImpl extends AbstractDaoImpl<Film> implements FilmDao {
                 .setDuration(resultSet.getTime("duration"))
 //                .setReleaseCountry(Country.builder().setName(resultSet.getString("c.name")).build())
                 .setTagline(resultSet.getString("tagline"))
-                .setGenre(Genre.resolveRoleById(resultSet.getInt("genre_id"))).build();
-        film.setId(resultSet.getInt("id"));
-        return Optional.of(film);
+                .setGenre(Genre.resolveGenreById(resultSet.getInt("genre_id"))).build();
+        movie.setId(resultSet.getInt("id"));
+        return Optional.of(movie);
     }
 
-    private void preparedAllMovieStatements(PreparedStatement preparedStatement, Film film) throws SQLException {
-        preparedStatement.setInt(1, film.getId());
-        preparedStatement.setString(2, film.getName());
-        preparedStatement.setInt(3, film.getReleaseYear());
-        preparedStatement.setTime(4, film.getDuration());
-        preparedStatement.setString(5, film.getTagline());
-        preparedStatement.setInt(6, film.getGenre().getId());
+    private void preparedAllMovieStatements(PreparedStatement preparedStatement, Movie movie) throws SQLException {
+        preparedStatement.setInt(1, movie.getId());
+        preparedStatement.setString(2, movie.getName());
+        preparedStatement.setInt(3, movie.getReleaseYear());
+        preparedStatement.setTime(4, movie.getDuration());
+        preparedStatement.setString(5, movie.getTagline());
+        preparedStatement.setInt(6, movie.getGenre().getId());
     }
 
 
@@ -113,7 +113,7 @@ public class FilmDaoImpl extends AbstractDaoImpl<Film> implements FilmDao {
     }
 
     @Override
-    public boolean update(Film entity) {
+    public boolean update(Movie entity) {
         boolean updated = false;
         try (Connection connection = connectionPool.getConnection()) {
             try (PreparedStatement preparedStatement = connection.prepareStatement(getUpdateSql())) {
@@ -131,8 +131,8 @@ public class FilmDaoImpl extends AbstractDaoImpl<Film> implements FilmDao {
     }
 
     @Override
-    public Optional<Film> findByName(String name) throws DAOException {
-        Optional<Film> entityOptional = Optional.empty();
+    public Optional<Movie> findByName(String name) throws DAOException {
+        Optional<Movie> entityOptional = Optional.empty();
         try (Connection connection = connectionPool.getConnection()) {
             try (PreparedStatement statement = connection.prepareStatement(getFindByNameSql())) {
                 statement.setString(1, name);
@@ -149,59 +149,59 @@ public class FilmDaoImpl extends AbstractDaoImpl<Film> implements FilmDao {
     }
 
     @Override
-    public List<Film> findAllByGenre(Genre genre) throws DAOException {
-        List<Film> films = new ArrayList<>();
+    public List<Movie> findAllByGenre(Genre genre) throws DAOException {
+        List<Movie> movies = new ArrayList<>();
         try (Connection connection = connectionPool.getConnection()) {
             try (PreparedStatement statement = connection.prepareStatement(getFindByGenreSql())) {
                 statement.setInt(1, genre.getId());
                 ResultSet resultSet = statement.executeQuery();
                 while (resultSet.next()) {
-                    Optional<Film> optionalUser = parseResultSet(resultSet);
-                    optionalUser.ifPresent(films::add);
+                    Optional<Movie> optionalUser = parseResultSet(resultSet);
+                    optionalUser.ifPresent(movies::add);
                 }
             }
         } catch (SQLException | InterruptedException e) {
             LOGGER.error(new DAOException(e.getMessage()));
             Thread.currentThread().interrupt();
         }
-        return films;
+        return movies;
     }
 
     @Override
-    public List<Film> findAllByPublicationYear(Integer year) throws DAOException {
-        List<Film> films = new ArrayList<>();
+    public List<Movie> findAllByPublicationYear(Integer year) throws DAOException {
+        List<Movie> movies = new ArrayList<>();
         try (Connection connection = connectionPool.getConnection()) {
             try (PreparedStatement statement = connection.prepareStatement(getFindByPublicationYearSql())) {
                 statement.setInt(1, year);
                 ResultSet resultSet = statement.executeQuery();
                 while (resultSet.next()) {
-                    Optional<Film> optionalUser = parseResultSet(resultSet);
-                    optionalUser.ifPresent(films::add);
+                    Optional<Movie> optionalUser = parseResultSet(resultSet);
+                    optionalUser.ifPresent(movies::add);
                 }
             }
         } catch (SQLException | InterruptedException e) {
             LOGGER.error(new DAOException(e.getMessage()));
             Thread.currentThread().interrupt();
         }
-        return films;
+        return movies;
     }
 
     @Override
-    public List<Film> findAllByCountry(Country country) throws DAOException {
-        List<Film> films = new ArrayList<>();
+    public List<Movie> findAllByCountry(Country country) throws DAOException {
+        List<Movie> movies = new ArrayList<>();
         try (Connection connection = connectionPool.getConnection()) {
             try (PreparedStatement statement = connection.prepareStatement(getFindByCountrySql())) {
                 statement.setInt(1, country.getId());
                 ResultSet resultSet = statement.executeQuery();
                 while (resultSet.next()) {
-                    Optional<Film> optionalUser = parseResultSet(resultSet);
-                    optionalUser.ifPresent(films::add);
+                    Optional<Movie> optionalUser = parseResultSet(resultSet);
+                    optionalUser.ifPresent(movies::add);
                 }
             }
         } catch (SQLException | InterruptedException e) {
             LOGGER.error(new DAOException(e.getMessage()));
             Thread.currentThread().interrupt();
         }
-        return films;
+        return movies;
     }
 }

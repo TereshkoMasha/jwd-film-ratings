@@ -2,10 +2,10 @@ package com.epam.service.impl;
 
 import com.epam.dao.impl.FilmDaoImpl;
 import com.epam.entity.Country;
-import com.epam.entity.Film;
+import com.epam.entity.Movie;
 import com.epam.entity.enums.Genre;
 import com.epam.exception.DAOException;
-import com.epam.service.FilmService;
+import com.epam.service.MovieService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -13,26 +13,36 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-public class FilmServiceImpl implements FilmService {
-    private static final Logger LOGGER = LogManager.getLogger(FilmServiceImpl.class);
+public class MovieServiceImpl implements MovieService {
+    private static final Logger LOGGER = LogManager.getLogger(MovieServiceImpl.class);
     private static final FilmDaoImpl filmDao = FilmDaoImpl.INSTANCE;
 
     @Override
-    public List<Film> findAll() {
-        List<Film> filmList = null;
+    public List<Movie> findAll() {
+        List<Movie> movieList = null;
         try {
-            filmList = filmDao.findAll();
-            if (!filmList.isEmpty()) {
-                return filmList;
+            movieList = filmDao.findAll();
+            if (!movieList.isEmpty()) {
+                return movieList;
             }
         } catch (DAOException e) {
             LOGGER.error(e);
         }
-        return filmList;
+        return movieList;
     }
 
     @Override
-    public Optional<Film> findByName(String name) {
+    public boolean update(Movie entity) {
+        return false;
+    }
+
+    @Override
+    public boolean deleteById(Integer id) {
+        return false;
+    }
+
+    @Override
+    public Optional<Movie> findByName(String name) {
         try {
             return filmDao.findByName(name);
         } catch (DAOException e) {
@@ -42,7 +52,7 @@ public class FilmServiceImpl implements FilmService {
     }
 
     @Override
-    public List<Film> findAllByGenre(Genre genre) {
+    public List<Movie> findAllByGenre(Genre genre) {
         try {
             return filmDao.findAllByGenre(genre);
         } catch (DAOException e) {
@@ -52,7 +62,7 @@ public class FilmServiceImpl implements FilmService {
     }
 
     @Override
-    public List<Film> findAllByPublicationYear(Integer year) {
+    public List<Movie> findAllByPublicationYear(Integer year) {
         try {
             return filmDao.findAllByPublicationYear(year);
         } catch (DAOException e) {
@@ -62,7 +72,7 @@ public class FilmServiceImpl implements FilmService {
     }
 
     @Override
-    public List<Film> findAllByCountry(Country country) {
+    public List<Movie> findAllByCountry(Country country) {
         try {
             return filmDao.findAllByCountry(country);
         } catch (DAOException e) {
@@ -72,7 +82,7 @@ public class FilmServiceImpl implements FilmService {
     }
 
     @Override
-    public Optional<Film> findById(Integer id) {
+    public Optional<Movie> getById(Integer id) {
         try {
             return filmDao.getById(id);
         } catch (DAOException e) {

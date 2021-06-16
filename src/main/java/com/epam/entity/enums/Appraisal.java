@@ -1,9 +1,14 @@
 package com.epam.entity.enums;
 
+import com.epam.exception.UnknownEntityException;
+
 public enum Appraisal {
-    HIGH(3),
-    MEDIUM(2),
-    LOW(1);
+    AWESOME(5),
+    GOOD(4),
+    MEH(3),
+    KINDA_BAD(2),
+    BAD(2),
+    AWFUL(1);
 
     private final int stars;
 
@@ -11,7 +16,17 @@ public enum Appraisal {
         this.stars = stars;
     }
 
-    public int getStars() {
+    public Integer getId() {
         return stars;
     }
+
+    public static Appraisal resolveGenreById(Integer id) {
+        Appraisal[] values = values();
+        for (Appraisal appraisal :
+                values) {
+            if (appraisal.getId().equals(id)) return appraisal;
+        }
+        throw new UnknownEntityException("Such id doesn't exist!");
+    }
+
 }

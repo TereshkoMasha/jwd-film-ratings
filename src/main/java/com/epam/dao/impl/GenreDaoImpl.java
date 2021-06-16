@@ -30,7 +30,7 @@ public class GenreDaoImpl implements GenreDao {
     }
 
     protected Optional<Genre> parseResultSet(ResultSet resultSet) throws SQLException {
-        return Optional.of(Genre.resolveRoleById(resultSet.getInt("id")));
+        return Optional.of(Genre.resolveGenreById(resultSet.getInt("id")));
     }
 
     @Override

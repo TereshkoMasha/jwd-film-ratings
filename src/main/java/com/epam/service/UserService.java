@@ -5,10 +5,9 @@ import com.epam.entity.enums.UserStatus;
 import com.epam.exception.DAOException;
 
 import java.security.NoSuchAlgorithmException;
-import java.util.List;
 import java.util.Optional;
 
-public interface UserService {
+public interface UserService extends BaseService<User> {
 
     Optional<User> registerUser(String login, String password, String name, String email) throws NoSuchAlgorithmException;
 
@@ -22,11 +21,4 @@ public interface UserService {
 
     boolean findUser(String login, String password);
 
-    boolean update(User user);
-
-    boolean deleteById(Integer id);
-
-    Optional<User> getById(Integer id);
-
-    List<User> findAll();
 }

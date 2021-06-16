@@ -25,17 +25,17 @@ class UserServiceImplTest {
 
     @Test
     void testFindByLoginPositive() throws DAOException {
-        assertEquals(userService.findByLogin("masha").get().getName(), "masha");
+        assertEquals(userService.findByLogin("user").get().getName(), "user");
     }
 
     @Test
     void getUserRoleId() {
-        assertEquals(2, userService.getUserRoleId("masha"));
+        assertEquals(2, userService.getUserRoleId("user"));
     }
 
     @Test
     void findUser() {
-        assertTrue(userService.findUser("masha", "123"));
+        assertTrue(userService.findUser("user", "user"));
     }
 
     @Test

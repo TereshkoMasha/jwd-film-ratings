@@ -35,12 +35,11 @@ public enum Genre {
 
     private final Integer id;
 
-
     Genre(Integer id) {
         this.id = id;
     }
 
-    public static Genre resolveRoleById(Integer id) {
+    public static Genre resolveGenreById(Integer id) {
         Genre[] values = values();
         for (Genre genre :
                 values) {
@@ -49,13 +48,21 @@ public enum Genre {
         throw new UnknownEntityException("Such id doesn't exist!");
     }
 
-    @Override
-    public String toString() {
-        return name().toLowerCase(Locale.ROOT);
+    public static Genre resolveGenreByName(String name) {
+        Genre[] values = values();
+        for (Genre genre :
+                values) {
+            if (genre.toString().equals(name)) return genre;
+        }
+        throw new UnknownEntityException("Such id doesn't exist!");
     }
 
     public Integer getId() {
         return id;
     }
 
+    @Override
+    public String toString() {
+        return name();
+    }
 }

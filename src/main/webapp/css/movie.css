@@ -1,25 +1,26 @@
+@import url(//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css);
+body {
+    background: whitesmoke;
+}
 
 .movie-container {
     width: 80%;
-    height: 100%;
+    min-height: 500px;
     background: white;
     margin-left: 10%;
-    padding: 100px 10px 10px;
-}
-
-.movie-card {
+    box-sizing: border-box;
+    padding: 60px 30px 10px;
     font: 14px/22px "", Arial, sans-serif;
     color: #A9A8A3;
-    padding: 10px 0;
 }
 
-.container-movie {
-    margin: 0 auto;
+
+.movie-card {
+    margin: 30px auto 0;
     width: 1100px;
-    height: 600px;
+    height: 550px;
     background: #F0F0ED;
     border-radius: 5px;
-    position: relative;
     position: relative;
     z-index: 2;
 }
@@ -45,7 +46,6 @@
     left: 0;
     background: #2e3235;
     z-index: -1;
-
     transform: skewY(-6.5deg);
     transform-origin: 0 0;
 
@@ -62,7 +62,7 @@
     margin: 0;
 }
 
-.container-movie img {
+.movie-card img {
     width: 230px;
     height: 330px;
     margin-left: 25px;
@@ -71,7 +71,6 @@
 }
 
 .details {
-
     padding: 190px 0 0 280px;
 }
 
@@ -101,6 +100,7 @@
     position: relative;
 
 }
+
 
 th {
     padding: 20px 15px;
@@ -137,12 +137,8 @@ h2 {
 textarea {
     margin-top: 10px;
     margin-left: 50px;
-    width: 500px;
+    width: 600px;
     height: 100px;
-    -moz-border-bottom-colors: none;
-    -moz-border-left-colors: none;
-    -moz-border-right-colors: none;
-    -moz-border-top-colors: none;
     background: none repeat scroll 0 0 rgba(0, 0, 0, 0.07);
     border-image: none;
     border-radius: 6px 6px 6px 6px;
@@ -155,6 +151,7 @@ textarea {
     line-height: 1.4em;
     padding: 5px 8px;
     transition: background-color 0.2s ease 0s;
+    resize: none;
 }
 
 
@@ -177,4 +174,107 @@ textarea:focus {
     line-height: 26px;
     color: #B1B0AC;
     margin-top: -130px;
+}
+/****** Style Star Rating Widget *****/
+
+.rating {
+    border: none;
+    float: left;
+}
+
+.rating > input {
+    display: none;
+}
+
+.rating > label:before {
+    margin: 5px;
+    font-size: 1.25em;
+    font-family: FontAwesome;
+    display: inline-block;
+    content: "\f005";
+}
+
+.rating > .half:before {
+    content: "\f089";
+    position: absolute;
+}
+
+.rating > label {
+    color: #ddd;
+    float: right;
+}
+
+/***** CSS Magic to Highlight Stars on Hover *****/
+
+.rating > input:checked ~ label, /* show gold star when clicked */
+.rating:not(:checked) > label:hover, /* hover current star */
+.rating:not(:checked) > label:hover ~ label {
+    color: #FFD700;
+}
+
+/* hover previous stars in list */
+
+.rating > input:checked + label:hover, /* hover current star when changing rating */
+.rating > input:checked ~ label:hover,
+.rating > label:hover ~ input:checked ~ label, /* lighten current selection */
+.rating > input:checked ~ label:hover ~ label {
+    color: #FFED85;
+}
+
+.comment-container {
+    width: 80%;
+    height: 100%;
+    background: white;
+    margin-left: 10%;
+    box-sizing: border-box;
+    font: 14px/22px "", Arial, sans-serif;
+    color: #A9A8A3;
+}
+
+.comment-block {
+    min-width: 500px;
+    padding: 16px;
+    background-color: #F0F0ED;
+    display: inline-block;
+    vertical-align: top;
+    border-radius: 3px;
+    margin-left: 50px;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.08);
+    margin-top: 20px;
+}
+
+.comment-text {
+    margin-bottom: 20px;
+    color: #000;
+}
+
+.bottom-comment {
+    color: #A9A8A3;
+    font-size: 12px;
+    float: left;
+}
+
+.about-column {
+    max-width: 1000px;
+    float: left;
+    position: relative;
+    z-index: auto;
+}
+
+.about-column h2 {
+    margin-top: 20px;
+    color: #2e3235;
+}
+
+.about-column p {
+    margin-left: 60px;
+    font-size: 14px;
+    padding-bottom: 15px;
+}
+
+
+
+fieldset, label {
+    margin: 0;
+    padding: 0;
 }

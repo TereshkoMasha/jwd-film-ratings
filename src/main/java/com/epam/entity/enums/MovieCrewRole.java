@@ -5,8 +5,8 @@ import com.epam.exception.UnknownEntityException;
 import java.util.Locale;
 
 public enum MovieCrewRole {
-    ACTOR(1),
-    FILMMAKER(2),
+    FILMMAKER(1),
+    ACTOR(2),
     SCREENWRITER(3),
     STAGE_DIRECTOR(4);
 

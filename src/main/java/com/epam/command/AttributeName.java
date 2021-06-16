@@ -10,6 +10,8 @@ public interface AttributeName {
     String FIRST_NAME = "firstName";
     String LAST_NAME = "lastName";
     String ID = "id";
-    String FILM = "film";
-
+    String MOVIE = "movie";
+    String GENRE = "genre";
+    String ERROR = "error";
+    String LOGIN_ERROR = "login_error";
 }

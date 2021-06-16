@@ -8,7 +8,7 @@ import com.epam.service.impl.UserServiceImpl;
 import java.security.NoSuchAlgorithmException;
 import java.util.Optional;
 
-public class RegistrCommand implements CommandRequest {
+public class RegistrationCommand implements CommandRequest {
     UserService userService = new UserServiceImpl();
 
     @Override

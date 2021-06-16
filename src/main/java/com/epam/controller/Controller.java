@@ -1,6 +1,9 @@
 package com.epam.controller;
 
-import com.epam.command.*;
+import com.epam.command.CommandExecute;
+import com.epam.command.CommandRequest;
+import com.epam.command.RequestData;
+import com.epam.command.RouteType;
 import com.epam.command.factory.CommandFactory;
 import com.epam.db.ConnectionPool;
 import org.apache.logging.log4j.LogManager;
@@ -48,7 +51,6 @@ public class Controller extends HttpServlet {
             }
         } catch (IOException e) {
             LOGGER.error(new ServletException(e.getMessage()));
-            response.sendRedirect(request.getContextPath() + Destination.ERROR);
         }
     }
 

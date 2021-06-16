@@ -7,10 +7,11 @@ public enum CommandType {
     MAIN(new MainCommand()),
     LOGIN(new LoginCommand()),
     LOGOUT(new LogoutCommand()),
-    REGISTRATION(new RegistrCommand()),
+    REGISTRATION(new RegistrationCommand()),
     SHOW_USERS(new ShowUsersCommand()),
-    MOVIE_INFO(new ViewFilmInfoCommand()),
-    FILM_SEARCH(new FindMovieCommand());
+    MOVIE_INFO(new ViewMovieInfoCommand()),
+    MOVIE_SEARCH(new FindMovieCommand()),
+    SORT_MOVIE_BY_GENRE(new SortMovieByGenre());
 
     CommandRequest command;
 

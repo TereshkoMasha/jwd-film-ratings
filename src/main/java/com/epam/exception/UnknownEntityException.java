@@ -22,7 +22,7 @@ public class UnknownEntityException extends RuntimeException {
     @Override
     public String getMessage() {
         if (args == null) {
-            return String.format("Can't create %s%n", entityName);
+            return entityName;
         }
         return String.format("Can't create %s with values: %s%n",
                 entityName, Arrays.toString(args));

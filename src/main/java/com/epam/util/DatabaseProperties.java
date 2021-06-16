@@ -13,6 +13,7 @@ public final class DatabaseProperties {
     private String password;
     private Integer initPoolSize;
     private Integer maxPoolSize;
+    private String characterEncoding;
 
     DatabaseProperties(Properties properties) {
         initConfiguration(properties);
@@ -25,6 +26,7 @@ public final class DatabaseProperties {
         password = properties.getProperty("password");
         initPoolSize = Integer.parseInt(properties.getProperty("initpoolsize"));
         maxPoolSize = Integer.parseInt(properties.getProperty("maxpoolsize"));
+        characterEncoding= properties.getProperty("characterEncoding");
     }
 
     public String getUrl() {
@@ -47,6 +49,9 @@ public final class DatabaseProperties {
         return maxPoolSize;
     }
 
+    public String getCharacterEncoding() {
+        return characterEncoding;
+    }
 
 }
 

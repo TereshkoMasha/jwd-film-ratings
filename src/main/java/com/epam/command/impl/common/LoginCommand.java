@@ -32,13 +32,15 @@ public class LoginCommand implements CommandRequest {
                             break;
                         }
                         case ADMIN: {
-                            commandExecute = new CommandExecute(RouteType.REDIRECT, Destination.MAIN_PAGE.getPath());
+                            requestData.addSessionAttribute("users_list", userService.findAll());
+                            commandExecute = new CommandExecute(RouteType.REDIRECT, Destination.USERS.getPath());
                             break;
                         }
                     }
                 }
             } else {
-                commandExecute = new CommandExecute(RouteType.REDIRECT, Destination.LOGIN.getPath());
+                requestData.addSessionAttribute("login-error", AttributeName.LOGIN_ERROR);
+                commandExecute = new CommandExecute(RouteType.FORWARD, Destination.LOGIN.getPath());
             }
         } catch (DAOException e) {
             LOGGER.error("Error while login", e);
