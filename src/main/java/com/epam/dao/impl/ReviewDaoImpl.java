@@ -23,6 +23,7 @@ public class ReviewDaoImpl extends AbstractDaoImpl<Review> implements ReviewDao 
     private static final String SQL_CREATE = "INSERT INTO movie_review ( movie_id, user_id, rating, text)" + "VALUES (?, ?, ?, ?)";
     private static final String SQL_FIND_ALL = "SELECT * FROM movie_review";
     private static final String SQL_FIND_ALL_BY_MOVIE_ID = "SELECT * FROM movie_review WHERE movie_id = ?";
+    private static final String SQL_FIND_BY_MOVIE_ID_USER_ID = "SELECT * FROM movie_review WHERE movie_id = ? AND user_id = ?";
     private static final String SQL_DELETE = "DELETE FROM movie_review WHERE movie_id = ? AND user_id = ? ";
     private static final String SQL_UPDATE = "UPDATE movie_review SET text = ? WHERE movie_id = ? user_id = ?";
     private static final String SQL_FIND_BY_ID = "SELECT * FROM movie_review WHERE user_id = ? ";
@@ -79,6 +80,10 @@ public class ReviewDaoImpl extends AbstractDaoImpl<Review> implements ReviewDao 
         return SQL_FIND_ALL_BY_MOVIE_ID;
     }
 
+    protected String getFindByMovieIdUserIdSql() {
+        return SQL_FIND_BY_MOVIE_ID_USER_ID;
+    }
+
     @Override
     public boolean update(Review entity) {
         boolean updated = false;
@@ -100,11 +105,11 @@ public class ReviewDaoImpl extends AbstractDaoImpl<Review> implements ReviewDao 
 
 
     @Override
-    public List<Review> findAllByMovieId(Integer movie_id) throws DAOException {
+    public List<Review> findAllByMovieId(Integer movieId) throws DAOException {
         List<Review> reviewList = new ArrayList<>();
         try (Connection connection = connectionPool.getConnection()) {
             try (PreparedStatement statement = connection.prepareStatement(getFindAllByMovieIdSql())) {
-                statement.setInt(1, movie_id);
+                statement.setInt(1, movieId);
                 ResultSet resultSet = statement.executeQuery();
                 while (resultSet.next()) {
                     Optional<Review> optionalReview = parseResultSet(resultSet);
@@ -116,5 +121,48 @@ public class ReviewDaoImpl extends AbstractDaoImpl<Review> implements ReviewDao 
             Thread.currentThread().interrupt();
         }
         return reviewList;
+    }
+
+    @Override
+    public Optional<Review> findByMovieIdUserId(Integer movieId, Integer userId) throws DAOException {
+        Optional<Review> optionalReview = Optional.empty();
+        try (Connection connection = connectionPool.getConnection()) {
+            try (PreparedStatement statement = connection.prepareStatement(getFindByMovieIdUserIdSql())) {
+                statement.setInt(1, movieId);
+                statement.setInt(2, userId);
+                ResultSet resultSet = statement.executeQuery();
+
+                while (resultSet.next()) {
+                    optionalReview = parseResultSet(resultSet);
+                }
+            }
+        } catch (SQLException | InterruptedException e) {
+            LOGGER.error(new DAOException(e.getMessage()));
+            Thread.currentThread().interrupt();
+        }
+        return optionalReview;
+    }
+
+    @Override
+    public Double getAverageRating(Integer movieId) throws DAOException {
+        List<Appraisal> rating = new ArrayList<>();
+        Double averageAppraisal = 0.0;
+        try (Connection connection = connectionPool.getConnection()) {
+            try (PreparedStatement statement = connection.prepareStatement(getFindAllByMovieIdSql())) {
+                statement.setInt(1, movieId);
+                ResultSet resultSet = statement.executeQuery();
+                while (resultSet.next()) {
+                    Optional<Review> optionalReview = parseResultSet(resultSet);
+                    optionalReview.ifPresent(review -> rating.add(review.getRating()));
+                }
+            }
+            for (Appraisal appraisal : rating) {
+                averageAppraisal += appraisal.getId();
+            }
+        } catch (SQLException | InterruptedException e) {
+            LOGGER.error(new DAOException(e.getMessage()));
+            Thread.currentThread().interrupt();
+        }
+        return averageAppraisal / rating.size();
     }
 }

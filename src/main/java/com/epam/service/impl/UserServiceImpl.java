@@ -29,7 +29,7 @@ public class UserServiceImpl implements UserService {
                     .setRole(UserRole.USER)
                     .setStatus(UserStatus.LOW)
                     .setEmail(email)
-                    .setRating(5.0).build();
+                    .setRating(1.0).build();
             create(user);
             return Optional.of(user);
         }
@@ -126,9 +126,19 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean updateStatus(UserStatus status, int userId) {
+    public boolean banUser(UserStatus status, int userId) {
         try {
             return userDao.updateUserStatus(status, userId);
+        } catch (DAOException e) {
+            LOGGER.error(e);
+        }
+        return false;
+    }
+
+    @Override
+    public boolean updateRating(Boolean action, int userId) {
+        try {
+            return userDao.updateUserRating(action, userId);
         } catch (DAOException e) {
             LOGGER.error(e);
         }

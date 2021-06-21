@@ -13,4 +13,6 @@ public interface BaseService<T extends BaseEntity> {
     boolean update(T entity);
 
     boolean deleteById(Integer id);
+
+
 }

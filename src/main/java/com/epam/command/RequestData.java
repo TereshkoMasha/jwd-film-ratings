@@ -58,6 +58,10 @@ public class RequestData {
         }
     }
 
+    public void deleteSessionAttribute(String attribute) {
+        sessionAttributes.remove(attribute);
+    }
+
     public void insertSessionAttributes(HttpServletRequest request) {
         HttpSession session = request.getSession();
         if (isInvalidated) {

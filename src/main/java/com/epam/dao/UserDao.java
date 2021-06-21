@@ -17,6 +17,8 @@ public interface UserDao {
 
     boolean updateUserStatus(UserStatus userStatus, Integer id) throws DAOException;
 
+    boolean updateUserRating(Boolean action, Integer id) throws DAOException;
+
     Integer getUserRoleId(String login) throws DAOException;
 
 }

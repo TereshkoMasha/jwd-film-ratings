@@ -8,7 +8,8 @@ public enum UserStatus {
     BANNED(0),
     LOW(1),
     MEDIUM(2),
-    HIGH(3);
+    HIGH(3),
+    GOD(4);
 
     private final Integer id;
 

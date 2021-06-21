@@ -1,8 +1,10 @@
 package com.epam.service.impl;
 
 import com.epam.entity.User;
+import com.epam.entity.enums.UserStatus;
 import com.epam.exception.DAOException;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
@@ -48,12 +50,26 @@ class UserServiceImplTest {
     void getById() {
         User user = Mockito.mock(User.class);
         Mockito.when(user.getId()).thenReturn(1);
-        assertEquals(userService.getById(1).get().getId(), user.getId());
+        Assertions.assertEquals(userService.getById(1).get().getId(), user.getId());
     }
 
     @Test
     void registerUser() {
         userService.registerUser("max112", "4357395400", "Max", "max22@gmail.com");
         assertTrue(userService.findUser("max112", "4357395400"));
+    }
+
+    @Test
+    void updateUserStatus() {
+        User user = Mockito.mock(User.class);
+        Mockito.when(user.getStatus()).thenReturn(UserStatus.BANNED);
+        if (userService.getById(2).get().getStatus() != UserStatus.BANNED) {
+            userService.banUser(UserStatus.BANNED, 2);
+        }
+        Assertions.assertEquals(userService.getById(2).get().getStatus(), user.getStatus());
+    }
+    @Test
+    void updateUserRating() {
+       assertTrue( userService.updateRating(true,2));
     }
 }

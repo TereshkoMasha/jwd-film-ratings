@@ -13,9 +13,11 @@ public interface UserService extends BaseService<User> {
 
     boolean changePassword(User user, String newPassword);
 
-    Optional<User> findByLogin(String login) throws DAOException;
+    Optional<User> findByLogin(String login) ;
 
-    boolean updateStatus(UserStatus status, int userId);
+    boolean banUser(UserStatus status, int userId);
+
+    boolean updateRating(Boolean action, int userId);
 
     int getUserRoleId(String login);
 

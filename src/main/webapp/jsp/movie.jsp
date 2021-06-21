@@ -23,6 +23,14 @@
 <body>
 <c:import url="header.jsp"/>
 <div class="movie-container">
+    <c:if test="${sessionScope.review == null}">
+        <form id="jsform" method="post"
+              action=" ${pageContext.request.contextPath}/controller?command=movie-info&id=${movie.id}" hidden>
+        </form>
+        <script type="text/javascript">
+            document.getElementById('jsform').submit();
+        </script>
+    </c:if>
     <div class="movie-card">
         <a href="#"><img src="${pageContext.request.contextPath}${movie.poster}" alt="${movie.name}"
                          class="cover"></a>
@@ -30,6 +38,9 @@
             <div class="details">
                 <div class="title1">
                     <c:out value="${movie.name} (${movie.releaseYear})"/>
+                    <c:if test="${not empty rating}">
+                      <c:out value="${rating}"/>
+                    </c:if>
                 </div>
                 <div class="title2">
                     <c:out value="${movie.tagline}"/>
@@ -105,11 +116,13 @@
         <c:choose>
             <c:when test="${not empty review}">
                 <c:forEach var="review" items="${review}" varStatus="status">
-                    <div class="comment-block">
-                        <p class="comment-text" style="margin-left: 0px"><c:out value="${review.text}"/></p>
-                        <div class="bottom-comment">${users[status.index].name} - ${review.rating.id}</div>
-                    </div>
-                    <br>
+                    <c:if test="${not empty review.text}">
+                        <div class="comment-block">
+                            <p class="comment-text" style="margin-left: 0px"><c:out value="${review.text}"/></p>
+                            <div class="bottom-comment">${users[status.index].name} - ${review.rating.id}</div>
+                        </div>
+                        <br>
+                    </c:if>
                 </c:forEach>
             </c:when>
             <c:otherwise>
@@ -118,28 +131,30 @@
         </c:choose>
         <c:choose>
             <c:when test="${not empty user}">
-                <form>
+                <form method="post"
+                      action="${pageContext.request.contextPath}/controller?command=leave-comment&id=${movie.id}">
                     <h2><fmt:message key="movie.leave.comment"/></h2>
-                    <textarea placeholder="Type here" rows="20" name="comment[text]" id="comment_text" cols="40"
+                    <textarea placeholder="Type here" rows="20" name="comment_text" id="comment_text" cols="40"
                               class="ui-autocomplete-input" autocomplete="off" role="textbox"
                               aria-autocomplete="list"
-                              aria-haspopup="true" required></textarea>
+                              aria-haspopup="true"></textarea>
                     <br>
-                    <fieldset class="rating" style="margin-left: 45px">
-                        <input type="radio" id="star5" name="rating" value="5"/><label class="full" for="star5"
+                    <fieldset class="rating" style="margin-left: 45px" aria-required="true">
+                        <input type="radio" id="star5" required name="rating" value="5"/><label class="full" for="star5"
                                                                                        title="Awesome - 5 stars"></label>
-                        <input type="radio" id="star4" name="rating" value="4"/><label class="full" for="star4"
+                        <input type="radio" id="star4" required name="rating" value="4"/><label class="full" for="star4"
                                                                                        title="Pretty good - 4 stars"></label>
 
-                        <input type="radio" id="star3" name="rating" value="3"/><label class="full" for="star3"
+                        <input type="radio" id="star3" required name="rating" value="3"/><label class="full" for="star3"
                                                                                        title="Meh - 3 stars"></label>
 
-                        <input type="radio" id="star2" name="rating" value="2"/><label class="full" for="star2"
+                        <input type="radio" id="star2" required name="rating" value="2"/><label class="full" for="star2"
                                                                                        title="Kinda bad - 2 stars"></label>
 
-                        <input type="radio" id="star1" name="rating" value="1"/><label class="full" for="star1"
+                        <input type="radio" id="star1" required name="rating" value="1"/><label class="full" for="star1"
                                                                                        title="Sucks big time - 1 star"></label>
                     </fieldset>
+                    <button type="submit">Отправить</button>
                 </form>
             </c:when>
             <c:otherwise>

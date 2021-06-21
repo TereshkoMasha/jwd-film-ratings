@@ -30,7 +30,7 @@ public class UserDaoImpl extends AbstractDaoImpl<User> implements UserDao {
             "VALUES (?, ?, ?, ?, ?, ?, ?)";
     private static final String SQL_UPDATE_PASSWORD = "UPDATE user SET password = ? WHERE id = ? ";
     private static final String SQL_UPDATE_LOGIN = "UPDATE user SET login = ? WHERE password = ? ";
-    private static final String SQL_UPDATE_STATUS = "UPDATE user SET status = ? WHERE id = ? ";
+    private static final String SQL_UPDATE_RATING = "UPDATE user SET rating = ? WHERE id = ? ";
 
     private static final String SQL_DELETE = "DELETE FROM user WHERE id = ? ";
 
@@ -94,8 +94,8 @@ public class UserDaoImpl extends AbstractDaoImpl<User> implements UserDao {
         return SQL_UPDATE_LOGIN;
     }
 
-    protected static String getUpdateStatusSql() {
-        return SQL_UPDATE_STATUS;
+    protected static String getUpdateRatingSql() {
+        return SQL_UPDATE_RATING;
     }
 
     protected static String getFindByLoginSql() {
@@ -210,10 +210,33 @@ public class UserDaoImpl extends AbstractDaoImpl<User> implements UserDao {
     @Override
     public boolean updateUserStatus(UserStatus userStatus, Integer id) throws DAOException {
         try (Connection connection = connectionPool.getConnection()) {
-            try (PreparedStatement preparedStatement = connection.prepareStatement(getUpdateStatusSql())) {
+            try (PreparedStatement preparedStatement = connection.prepareStatement(getUpdateRatingSql())) {
                 Optional<User> user = getById(id);
                 if (user.isPresent()) {
                     preparedStatement.setInt(1, userStatus.getId());
+                    preparedStatement.setInt(2, id);
+                    if (preparedStatement.executeUpdate() != 0) {
+                        return true;
+                    }
+                }
+            }
+        } catch (SQLException | InterruptedException e) {
+            LOGGER.error("Failed to update entity", new DAOException(e.getMessage()));
+            Thread.currentThread().interrupt();
+        }
+        return false;
+    }
+
+    @Override
+    public boolean updateUserRating(Boolean action, Integer id) throws DAOException {
+        try (Connection connection = connectionPool.getConnection()) {
+            try (PreparedStatement preparedStatement = connection.prepareStatement(getUpdateRatingSql())) {
+                Optional<User> user = getById(id);
+                if (user.isPresent()) {
+                    if (action) preparedStatement.setDouble(1, user.get().getRating() + 0.5);
+                    else {
+                        preparedStatement.setDouble(1, user.get().getRating() - 0.5);
+                    }
                     preparedStatement.setInt(2, id);
                     if (preparedStatement.executeUpdate() != 0) {
                         return true;

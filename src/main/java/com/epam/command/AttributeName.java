@@ -14,4 +14,7 @@ public interface AttributeName {
     String GENRE = "genre";
     String ERROR = "error";
     String LOGIN_ERROR = "login_error";
+    String BAN = "ban";
+    String COMMENT = "comment_text";
+    String RATING = "rating";
 }

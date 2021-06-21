@@ -2,6 +2,7 @@ package com.epam.service.impl;
 
 import com.epam.dao.impl.ReviewDaoImpl;
 import com.epam.entity.Review;
+import com.epam.entity.enums.Appraisal;
 import com.epam.exception.DAOException;
 import com.epam.service.ReviewService;
 import org.apache.logging.log4j.LogManager;
@@ -63,5 +64,36 @@ public class ReviewServiceImpl implements ReviewService {
             LOGGER.error(e);
         }
         return reviewList;
+    }
+
+    @Override
+    public boolean create(String text, Appraisal appraisal, Integer movieId, Integer userId) {
+        try {
+            reviewDao.create(Review.builder().setMovieID(movieId).setUserID(userId).setRating(appraisal).setText(text).build());
+            return true;
+        } catch (DAOException e) {
+            LOGGER.error(e);
+        }
+        return false;
+    }
+
+    @Override
+    public Optional<Review> findByMovieIdUserId(Integer movieId, Integer userId) {
+        try {
+            return reviewDao.findByMovieIdUserId(movieId, userId);
+        } catch (DAOException e) {
+            LOGGER.error(e);
+        }
+        return Optional.empty();
+    }
+
+    @Override
+    public Double getAverageRating(Integer movieId) {
+        try {
+            return reviewDao.getAverageRating(movieId);
+        } catch (DAOException e) {
+            LOGGER.error(e);
+        }
+        return 0.0;
     }
 }
