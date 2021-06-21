@@ -48,7 +48,17 @@
                     <td>${user.login}</td>
                     <td>${user.name}</td>
                     <td>${user.email}</td>
-                    <td>${user.rating}</td>
+                    <td>
+
+                            <select  id="selectvalue">
+                                <option value="${user.rating}" selected>${user.rating}</option>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">5</option>
+                            </select>
+
+                    </td>
                     <td>${user.status}</td>
                     <td>${user.role}</td>
                     <c:choose>

@@ -6,7 +6,6 @@ public enum Appraisal {
     AWESOME(5),
     GOOD(4),
     MEH(3),
-    KINDA_BAD(2),
     BAD(2),
     AWFUL(1);
 
