@@ -1,9 +1,6 @@
 package com.epam.controller;
 
-import com.epam.command.CommandExecute;
-import com.epam.command.CommandRequest;
-import com.epam.command.RequestData;
-import com.epam.command.RouteType;
+import com.epam.command.*;
 import com.epam.command.factory.CommandFactory;
 import com.epam.db.ConnectionPool;
 import org.apache.logging.log4j.LogManager;
@@ -41,12 +38,17 @@ public class Controller extends HttpServlet {
 
             if (command.isPresent()) {
                 CommandExecute commandExecute = command.get().executeCommand(requestData);
-                requestData.insertSessionAttributes(request);
-                if (commandExecute.getRouteType().equals(RouteType.REDIRECT)) {
-                    response.sendRedirect(request.getContextPath() + commandExecute.getPagePath());
-                } else if (commandExecute.getRouteType().equals(RouteType.FORWARD)) {
-                    RequestDispatcher requestDispatcher = request.getRequestDispatcher(commandExecute.getPagePath());
-                    requestDispatcher.forward(request, response);
+                if (commandExecute != null) {
+                    requestData.insertSessionAttributes(request);
+                    if (commandExecute.getRouteType().equals(RouteType.REDIRECT)) {
+                        response.sendRedirect(request.getContextPath() + commandExecute.getPagePath());
+                    } else {
+                        RequestDispatcher requestDispatcher = request.getRequestDispatcher(commandExecute.getPagePath());
+                        requestDispatcher.forward(request, response);
+                    }
+                } else {
+                    request.getSession().setAttribute("nullPage", "Page not found");
+                    response.sendRedirect(request.getContextPath() + Destination.ERROR.getPath());
                 }
             }
         } catch (IOException e) {

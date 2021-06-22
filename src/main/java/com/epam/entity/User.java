@@ -13,8 +13,6 @@ public class User extends AbstractBaseEntity {
 
     private String name;
 
-    private String email;
-
     private UserRole role;
 
     private UserStatus status;
@@ -28,7 +26,6 @@ public class User extends AbstractBaseEntity {
     private User(Builder builder) {
         this.login = Objects.requireNonNull(builder.login, "login");
         this.password = Objects.requireNonNull(builder.password, "password");
-        this.email = Objects.requireNonNull(builder.email, "email");
         this.name = Objects.requireNonNull(builder.name, "name");
         this.role = Objects.requireNonNull(builder.role, "role");
         this.status = Objects.requireNonNull(builder.status, "status");
@@ -42,10 +39,6 @@ public class User extends AbstractBaseEntity {
 
     public String getLogin() {
         return login;
-    }
-
-    public String getEmail() {
-        return email;
     }
 
 
@@ -114,11 +107,6 @@ public class User extends AbstractBaseEntity {
             return this;
         }
 
-        public Builder setEmail(String email) {
-            this.email = email;
-            return this;
-        }
-
 
         public Builder of(User user) {
             this.login = user.login;
@@ -127,7 +115,6 @@ public class User extends AbstractBaseEntity {
             this.role = user.role;
             this.status = user.status;
             this.rating = user.rating;
-            this.email = user.email;
             return this;
         }
 
@@ -155,7 +142,6 @@ public class User extends AbstractBaseEntity {
                 "login='" + login + '\'' +
                 ", password='" + password + '\'' +
                 ", name='" + name + '\'' +
-                ", email='" + email + '\'' +
                 ", role=" + role +
                 ", status=" + status +
                 ", rating=" + rating +

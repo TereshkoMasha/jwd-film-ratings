@@ -23,7 +23,7 @@ header {
     font-size: 20px;
     color: #F6F7EB;
     letter-spacing: 5px;
-    padding-left: 70px;
+    padding-left: 5px;
 }
 
 header nav {
@@ -33,6 +33,12 @@ header nav {
     text-align: right;
 }
 
+.logo img {
+    width: 20px;
+    height: 20px;
+    position: relative;
+    margin-left: 10px;
+}
 header nav a {
     text-decoration: none;
     font-family: 'Poppins', sans-serif;
@@ -88,4 +94,5 @@ header nav a:hover {
     padding-left: 300px;
     width: 300px;
 }
+
 

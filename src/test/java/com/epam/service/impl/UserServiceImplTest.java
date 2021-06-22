@@ -55,7 +55,7 @@ class UserServiceImplTest {
 
     @Test
     void registerUser() {
-        userService.registerUser("max112", "4357395400", "Max", "max22@gmail.com");
+        userService.registerUser("max112", "4357395400", "Max");
         assertTrue(userService.findUser("max112", "4357395400"));
     }
 
@@ -68,8 +68,9 @@ class UserServiceImplTest {
         }
         Assertions.assertEquals(userService.getById(2).get().getStatus(), user.getStatus());
     }
+
     @Test
     void updateUserRating() {
-       assertTrue( userService.updateRating(true,2));
+        assertTrue(userService.updateRatingAfterEvaluating(2, true));
     }
 }

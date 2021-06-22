@@ -12,6 +12,9 @@ public class FindMovieCommand implements CommandRequest {
 
     @Override
     public CommandExecute executeCommand(RequestData requestData) {
+        if (!requestData.getSessionAttributes().containsKey("page")) {
+            requestData.addSessionAttribute("page", 1);
+        }
         String filmName = requestData.getRequestParameter(AttributeName.MOVIE);
         Optional<Movie> optionalFilm = movieService.findByName(filmName);
         if (optionalFilm.isPresent()) {

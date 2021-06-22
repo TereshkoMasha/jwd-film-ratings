@@ -26,8 +26,8 @@ public class UserDaoImpl extends AbstractDaoImpl<User> implements UserDao {
         super(connectionPool);
     }
 
-    private static final String SQL_CREATE = "INSERT INTO user ( password, login, name,role_id, status_id, rating, email)" +
-            "VALUES (?, ?, ?, ?, ?, ?, ?)";
+    private static final String SQL_CREATE = "INSERT INTO user ( password, login, name,role_id, status_id, rating)" +
+            "VALUES (?, ?, ?, ?, ?, ?)";
     private static final String SQL_UPDATE_PASSWORD = "UPDATE user SET password = ? WHERE id = ? ";
     private static final String SQL_UPDATE_LOGIN = "UPDATE user SET login = ? WHERE password = ? ";
     private static final String SQL_UPDATE_RATING = "UPDATE user SET rating = ? WHERE id = ? ";
@@ -49,7 +49,6 @@ public class UserDaoImpl extends AbstractDaoImpl<User> implements UserDao {
         preparedStatement.setInt(4, entity.getRole().getId());
         preparedStatement.setInt(5, entity.getStatus().getId());
         preparedStatement.setDouble(6, entity.getRating());
-        preparedStatement.setString(7, entity.getEmail());
     }
 
     protected String getSqlFindByLoginPassword() {
@@ -106,7 +105,6 @@ public class UserDaoImpl extends AbstractDaoImpl<User> implements UserDao {
     protected Optional<User> parseResultSet(ResultSet resultSet) throws SQLException {
         User user = User.builder()
                 .setName(resultSet.getString("name"))
-                .setEmail(resultSet.getString("email"))
                 .setLogin(resultSet.getString("login"))
                 .setPassword(resultSet.getString("password"))
                 .setRole(UserRole.resolveRoleById(resultSet.getInt("role_id")))
@@ -228,7 +226,7 @@ public class UserDaoImpl extends AbstractDaoImpl<User> implements UserDao {
     }
 
     @Override
-    public boolean updateUserRating(Boolean action, Integer id) throws DAOException {
+    public boolean updateUserRatingAfterEvaluating(Boolean action, Integer id) throws DAOException {
         try (Connection connection = connectionPool.getConnection()) {
             try (PreparedStatement preparedStatement = connection.prepareStatement(getUpdateRatingSql())) {
                 Optional<User> user = getById(id);
@@ -248,5 +246,21 @@ public class UserDaoImpl extends AbstractDaoImpl<User> implements UserDao {
             Thread.currentThread().interrupt();
         }
         return false;
+    }
+
+    @Override
+    public void updateUserRating(Integer id, Double rating) throws DAOException {
+        try (Connection connection = connectionPool.getConnection()) {
+            try (PreparedStatement preparedStatement = connection.prepareStatement(getUpdateRatingSql())) {
+                Optional<User> user = getById(id);
+                if (user.isPresent()) {
+                    preparedStatement.setDouble(1, rating);
+                    preparedStatement.setInt(2, id);
+                }
+            }
+        } catch (SQLException | InterruptedException e) {
+            LOGGER.error("Failed to update entity", new DAOException(e.getMessage()));
+            Thread.currentThread().interrupt();
+        }
     }
 }

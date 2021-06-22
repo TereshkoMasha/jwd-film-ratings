@@ -55,7 +55,7 @@ public class Movie extends AbstractBaseEntity {
         return releaseYear;
     }
 
-    public Country getReleaseCountry() {
+    public Country getCountry() {
         return releaseCountry;
     }
 

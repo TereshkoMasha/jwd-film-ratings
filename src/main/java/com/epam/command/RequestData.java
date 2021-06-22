@@ -76,4 +76,12 @@ public class RequestData {
     public void setInvalidated(boolean invalidated) {
         isInvalidated = invalidated;
     }
+
+    public Map<String, Object> getSessionAttributes() {
+        return sessionAttributes;
+    }
+
+    public Map<String, String[]> getRequestParametersValues() {
+        return requestParametersValues;
+    }
 }

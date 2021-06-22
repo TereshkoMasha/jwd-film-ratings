@@ -1,6 +1,16 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+
+
+<html lang="${sessionScope.locale}">
+<head>
+    <meta charset="utf-8">
+    <title>Users</title>
+    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/main.css">
+    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/users.css">
+</head>
+
 <c:choose>
     <c:when test="${not empty sessionScope.locale}">
         <fmt:setLocale value="${sessionScope.locale}"/>
@@ -9,14 +19,8 @@
         <fmt:setLocale value="en_US"/>
     </c:otherwise>
 </c:choose>
-<fmt:setBundle basename="locale"/>
+<fmt:setBundle basename="Locale"/>
 
-<html lang="${sessionScope.locale}">
-<head>
-    <title>Users</title>
-    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/main.css">
-    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/users.css">
-</head>
 <body>
 <c:import url="../header.jsp"/>
 <br>
@@ -28,7 +32,6 @@
                 <th>№</th>
                 <th>Username</th>
                 <th>Name</th>
-                <th>Email</th>
                 <th>Rating</th>
                 <th>Status</th>
                 <th>Role</th>
@@ -47,17 +50,34 @@
                     <td>${count}</td>
                     <td>${user.login}</td>
                     <td>${user.name}</td>
-                    <td>${user.email}</td>
                     <td>
-
-                            <select  id="selectvalue">
-                                <option value="${user.rating}" selected>${user.rating}</option>
-                                <option value="1">1</option>
-                                <option value="2">2</option>
-                                <option value="3">3</option>
-                                <option value="4">5</option>
+                        <form method="post" id="hehe"
+                              action="${pageContext.request.contextPath}/controller?command=change-rating&id=${user.id}">
+                            <select id="selectvalue" form="hehe">
+                                <c:forEach var="starCounter" begin="1" end="10">
+                                    <c:set var="starHalfStepCounter" value="${starCounter - 0.5}"/>
+                                    <c:choose>
+                                        <c:when test="${user.rating eq starHalfStepCounter}">
+                                            <option value="${starHalfStepCounter}"
+                                                    selected>${starHalfStepCounter}</option>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <option onclick="this.form.submit()"
+                                                    value="${starHalfStepCounter}">${starHalfStepCounter}</option>
+                                        </c:otherwise>
+                                    </c:choose>
+                                    <c:choose>
+                                        <c:when test="${user.rating eq starCounter}">
+                                            <option value="${starCounter}" selected>${starCounter}</option>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <option onclick="this.form.submit()"
+                                                    value="${starCounter}">${starCounter}</option>
+                                        </c:otherwise>
+                                    </c:choose>
+                                </c:forEach>
                             </select>
-
+                        </form>
                     </td>
                     <td>${user.status}</td>
                     <td>${user.role}</td>

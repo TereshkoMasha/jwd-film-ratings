@@ -33,9 +33,15 @@ public class ViewMovieInfoCommand implements CommandRequest {
         film.ifPresent(value -> {
             requestData.addSessionAttribute(AttributeName.MOVIE, value);
             List<MovieCrewMember> filmActors = movieCrewService.findAllActorsByMovieId(value.getId());
+            if (!requestData.getSessionAttributes().containsKey("page")) {
+                requestData.addSessionAttribute("page", 1);
+            } else if (requestData.getRequestParametersValues().containsKey("page")) {
+                String page = requestData.getRequestParameter("page");
+                requestData.addSessionAttribute("page", Integer.parseInt(page));
+            }
             if (!filmActors.isEmpty()) {
                 requestData.addSessionAttribute("actors", filmActors);
-            }else {
+            } else {
                 requestData.deleteSessionAttribute("actors");
             }
             MovieCrewMember director = movieCrewService.findDirectorByMovieId(value.getId());
@@ -60,6 +66,7 @@ public class ViewMovieInfoCommand implements CommandRequest {
             }
             requestData.addSessionAttribute("review", reviewList);
             requestData.addSessionAttribute("users", users);
+
         });
         return new CommandExecute(RouteType.FORWARD, Destination.MOVIE_PAGE.getPath());
     }

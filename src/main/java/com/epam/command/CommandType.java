@@ -1,6 +1,7 @@
 package com.epam.command;
 
 import com.epam.command.impl.admin.BanUserCommand;
+import com.epam.command.impl.admin.ChangeUserRatingCommand;
 import com.epam.command.impl.admin.ShowUsersCommand;
 import com.epam.command.impl.common.*;
 
@@ -14,7 +15,9 @@ public enum CommandType {
     MOVIE_SEARCH(new FindMovieCommand()),
     SORT_MOVIE_BY_GENRE(new SortMovieByGenre()),
     BAN_USER(new BanUserCommand()),
-    LEAVE_COMMENT(new LeaveCommentCommand());
+    LEAVE_COMMENT(new LeaveCommentCommand()),
+    CHANGE_RATING(new ChangeUserRatingCommand()),
+    CHANGE_LANGUAGE(new ChangeLanguage());
 
     CommandRequest command;
 

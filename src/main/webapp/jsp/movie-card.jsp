@@ -5,16 +5,17 @@
 
 <c:choose>
     <c:when test="${not empty sessionScope.locale}">
-        <fmt:setLocale value="${sessionScope.locale}"/>
+        <fmt:setLocale value="${sessionScope.locale}" scope="session"/>
     </c:when>
     <c:otherwise>
-        <fmt:setLocale value="en_US"/>
+        <fmt:setLocale value="en_US" scope="session"/>
     </c:otherwise>
 </c:choose>
-<fmt:setBundle basename="locale"/>
+<fmt:setBundle basename="Locale" scope="session"/>
 
 <html lang="${sessionScope.locale}">
 <head>
+    <meta charset="utf-8">
     <title>Title</title>
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/movie-card.css">
 </head>

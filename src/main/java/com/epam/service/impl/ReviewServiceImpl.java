@@ -90,7 +90,10 @@ public class ReviewServiceImpl implements ReviewService {
     @Override
     public Double getAverageRating(Integer movieId) {
         try {
-            return reviewDao.getAverageRating(movieId);
+            Double averageRating = reviewDao.getAverageRating(movieId);
+            if (!averageRating.isNaN()) {
+                return averageRating;
+            }
         } catch (DAOException e) {
             LOGGER.error(e);
         }

@@ -18,7 +18,7 @@ public class UserServiceImpl implements UserService {
     private static final UserDaoImpl userDao = UserDaoImpl.INSTANCE;
 
     @Override
-    public Optional<User> registerUser(String login, String password, String name, String email) {
+    public Optional<User> registerUser(String login, String password, String name) {
         String md5Hex = DigestUtils
                 .md5Hex(password).toUpperCase();
         if (!findUser(login, password)) {
@@ -28,7 +28,6 @@ public class UserServiceImpl implements UserService {
                     .setPassword(md5Hex)
                     .setRole(UserRole.USER)
                     .setStatus(UserStatus.LOW)
-                    .setEmail(email)
                     .setRating(1.0).build();
             create(user);
             return Optional.of(user);
@@ -126,7 +125,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean banUser(UserStatus status, int userId) {
+    public boolean banUser(UserStatus status, Integer userId) {
         try {
             return userDao.updateUserStatus(status, userId);
         } catch (DAOException e) {
@@ -135,13 +134,23 @@ public class UserServiceImpl implements UserService {
         return false;
     }
 
+
     @Override
-    public boolean updateRating(Boolean action, int userId) {
+    public boolean updateRatingAfterEvaluating(Integer userId, Boolean action) {
         try {
-            return userDao.updateUserRating(action, userId);
+            return userDao.updateUserRatingAfterEvaluating(action, userId);
         } catch (DAOException e) {
             LOGGER.error(e);
         }
         return false;
+    }
+
+    @Override
+    public void updateUserRating(Integer id, Double rating) {
+        try {
+            userDao.updateUserRating(id, rating);
+        } catch (DAOException e) {
+            LOGGER.error(e);
+        }
     }
 }

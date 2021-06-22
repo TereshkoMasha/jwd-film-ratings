@@ -9,10 +9,11 @@
         <fmt:setLocale value="ru_RU"/>
     </c:otherwise>
 </c:choose>
-<fmt:setBundle basename="locale"/>
+<fmt:setBundle basename="Locale"/>
 
 <html lang="${sessionScope.locale}">
 <head>
+    <meta charset="utf-8">
     <title></title>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/footer.css">
 </head>

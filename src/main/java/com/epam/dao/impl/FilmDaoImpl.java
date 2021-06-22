@@ -21,16 +21,16 @@ public class FilmDaoImpl extends AbstractDaoImpl<Movie> implements FilmDao {
     private static final Logger LOGGER = LogManager.getLogger(FilmDaoImpl.class);
     public static final FilmDaoImpl INSTANCE = new FilmDaoImpl(ConnectionPool.getInstance());
 
-    private static final String SQL_CREATE = "INSERT INTO movie (name, publication_year, duration, tagline, genre_id, poster_path)"
-            + "VALUES (?, ?, ?, ?, ?)";
+    private static final String SQL_CREATE = "INSERT INTO movie (name, publication_year, duration, country_id, tagline, genre_id, poster_path)"
+            + "VALUES (?, ?, ?, ?, ?, ?)";
     private static final String SQL_DELETE = "DELETE FROM movie WHERE id = ? ";
 
-    private static final String SQL_FIND_ALL = "SELECT * FROM movie ";
+    private static final String SQL_FIND_ALL = "SELECT * FROM movie join country c on c.id = movie.country_id ";
     private static final String SQL_FIND_BY_ID = "SELECT * FROM movie join country c on c.id = movie.country_id WHERE movie.id = ?";
-    private static final String SQL_FIND_BY_NAME = "SELECT * FROM movie  WHERE movie.name = ?";
-    private static final String SQL_FIND_BY_COUNTRY = "SELECT * FROM movie  WHERE country_id = ?";
-    private static final String SQL_FIND_BY_PUBLICATION_YEAR = "SELECT * FROM movie WHERE publication_year = ?";
-    private static final String SQL_FIND_BY_GENRE = "SELECT * FROM movie  WHERE genre_id = ?";
+    private static final String SQL_FIND_BY_NAME = "SELECT * FROM movie join country c on c.id = movie.country_id  WHERE movie.name = ?";
+    private static final String SQL_FIND_BY_COUNTRY = "SELECT * FROM movie join country c on c.id = movie.country_id  WHERE country_id = ?";
+    private static final String SQL_FIND_BY_PUBLICATION_YEAR = "SELECT * FROM movie join country c on c.id = movie.country_id WHERE publication_year = ?";
+    private static final String SQL_FIND_BY_GENRE = "SELECT * FROM movie join country c on c.id = movie.country_id  WHERE genre_id = ?";
     private static final String SQL_UPDATE_NAME = "UPDATE movie SET name = ? WHERE id = ?";
 
 
@@ -45,16 +45,15 @@ public class FilmDaoImpl extends AbstractDaoImpl<Movie> implements FilmDao {
 
     @Override
     protected Optional<Movie> parseResultSet(ResultSet resultSet) throws SQLException, DAOException {
-//        Country country = Country.builder().setName(resultSet.getString("c.name")).build();
-//        country.setId(resultSet.getInt("country_id"));
-
+        Country country = Country.builder().setName(resultSet.getString("c.name")).build();
+        country.setId(resultSet.getInt("country_id"));
         Movie movie = Movie.builder()
                 .setName(resultSet.getString("name"))
                 .setDescription(resultSet.getString("description"))
                 .setPoser(resultSet.getString("poster_path"))
                 .setReleaseYear(resultSet.getInt("publication_year"))
                 .setDuration(resultSet.getTime("duration"))
-//                .setReleaseCountry(Country.builder().setName(resultSet.getString("c.name")).build())
+                .setReleaseCountry(country)
                 .setTagline(resultSet.getString("tagline"))
                 .setGenre(Genre.resolveGenreById(resultSet.getInt("genre_id"))).build();
         movie.setId(resultSet.getInt("id"));
@@ -66,8 +65,9 @@ public class FilmDaoImpl extends AbstractDaoImpl<Movie> implements FilmDao {
         preparedStatement.setString(2, movie.getName());
         preparedStatement.setInt(3, movie.getReleaseYear());
         preparedStatement.setTime(4, movie.getDuration());
-        preparedStatement.setString(5, movie.getTagline());
-        preparedStatement.setInt(6, movie.getGenre().getId());
+        preparedStatement.setInt(5, movie.getCountry().getId());
+        preparedStatement.setString(6, movie.getTagline());
+        preparedStatement.setInt(7, movie.getGenre().getId());
     }
 
 

@@ -1,25 +1,27 @@
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
-<c:choose>
-    <c:when test="${not empty sessionScope.locale}">
-        <fmt:setLocale value="${sessionScope.locale}"/>
-    </c:when>
-    <c:otherwise>
-        <fmt:setLocale value="en_US"/>
-    </c:otherwise>
-</c:choose>
-<fmt:setBundle basename="locale"/>
-
-<html lang="${sessionScope.locale}">
+<html>
 <head>
+    <meta charset="utf-8">
     <title><c:out value="${movie.name}"/></title>
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/main.css">
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/movie.css">
     <script src="${pageContext.request.contextPath}/js/rating.js" async></script>
 </head>
+
+<c:choose>
+    <c:when test="${not empty sessionScope.locale}">
+        <fmt:setLocale value="${sessionScope.locale}" scope="session"/>
+    </c:when>
+    <c:otherwise>
+        <fmt:setLocale value="en_US" scope="session"/>
+    </c:otherwise>
+</c:choose>
+<fmt:setBundle basename="Locale"/>
+
 <body>
 <c:import url="header.jsp"/>
 <div class="movie-container">
@@ -39,7 +41,7 @@
                 <div class="title1">
                     <c:out value="${movie.name} (${movie.releaseYear})"/>
                     <c:if test="${not empty rating}">
-                      <c:out value="${rating}"/>
+                        <c:out value="${rating}"/>
                     </c:if>
                 </div>
                 <div class="title2">
@@ -79,8 +81,15 @@
                         <td>
                             <c:choose>
                                 <c:when test="${not empty actors}">
-                                    <c:forEach var="actor" items="${actors}">
-                                        <c:out value="${actor.name},"/>
+                                    <c:forEach var="actor" items="${actors}" varStatus="loop">
+                                        <c:choose>
+                                            <c:when test="${loop.count eq actors.size()}">
+                                                <c:out value="${actor.name}"/>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <c:out value="${actor.name},"/>
+                                            </c:otherwise>
+                                        </c:choose>
                                     </c:forEach>
                                 </c:when>
                                 <c:otherwise>-</c:otherwise>
@@ -99,8 +108,12 @@
                         </c:choose>
                     </tr>
                     <tr>
-                        <td>Время</td>
+                        <td><fmt:message key="movie.duration"/></td>
                         <td><c:out value="${movie.duration}"/></td>
+                    </tr>
+                    <tr>
+                        <td><fmt:message key="movie.country"/></td>
+                        <td><c:out value="${movie.country.name}"/></td>
                     </tr>
                     </tbody>
                 </table>
@@ -115,7 +128,15 @@
         <h2><fmt:message key="movie.comment"/></h2>
         <c:choose>
             <c:when test="${not empty review}">
-                <c:forEach var="review" items="${review}" varStatus="status">
+                <c:choose>
+                    <c:when test="${page eq 1}">
+                        <c:set var="count" value="${0}"></c:set>
+                    </c:when>
+                    <c:otherwise>
+                        <c:set var="count" value="${page*3 - 3}"></c:set>
+                    </c:otherwise>
+                </c:choose>
+                <c:forEach var="review" items="${review}" begin="${count}" end="${count + 2}" varStatus="status">
                     <c:if test="${not empty review.text}">
                         <div class="comment-block">
                             <p class="comment-text" style="margin-left: 0px"><c:out value="${review.text}"/></p>
@@ -124,6 +145,17 @@
                         <br>
                     </c:if>
                 </c:forEach>
+                <c:if test="${review.size() > 1}">
+                    <div class="pagination p2">
+                        <ul>
+                            <c:forEach begin="1" end="${movies.size()/3}" varStatus="loop">
+                                <a href="${pageContext.request.contextPath}/controller?command=movie-info&page=${loop.count}&id=${movie.id}">
+                                    <li>${loop.count}</li>
+                                </a>
+                            </c:forEach>
+                        </ul>
+                    </div>
+                </c:if>
             </c:when>
             <c:otherwise>
                 <p class="comment-text"><fmt:message key="movie.first.comment"/></p>
@@ -141,18 +173,18 @@
                     <br>
                     <fieldset class="rating" style="margin-left: 45px" aria-required="true">
                         <input type="radio" id="star5" required name="rating" value="5"/><label class="full" for="star5"
-                                                                                       title="Awesome - 5 stars"></label>
+                                                                                                title="Awesome - 5 stars"></label>
                         <input type="radio" id="star4" required name="rating" value="4"/><label class="full" for="star4"
-                                                                                       title="Pretty good - 4 stars"></label>
+                                                                                                title="Pretty good - 4 stars"></label>
 
                         <input type="radio" id="star3" required name="rating" value="3"/><label class="full" for="star3"
-                                                                                       title="Meh - 3 stars"></label>
+                                                                                                title="Meh - 3 stars"></label>
 
                         <input type="radio" id="star2" required name="rating" value="2"/><label class="full" for="star2"
-                                                                                       title="Kinda bad - 2 stars"></label>
+                                                                                                title="Kinda bad - 2 stars"></label>
 
                         <input type="radio" id="star1" required name="rating" value="1"/><label class="full" for="star1"
-                                                                                       title="Sucks big time - 1 star"></label>
+                                                                                                title="Sucks big time - 1 star"></label>
                     </fieldset>
                     <button type="submit">Отправить</button>
                 </form>

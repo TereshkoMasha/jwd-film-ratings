@@ -1,19 +1,21 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+
 <c:choose>
     <c:when test="${not empty sessionScope.locale}">
-        <fmt:setLocale value="${sessionScope.locale}"/>
+        <fmt:setLocale value="${sessionScope.locale}" scope="session"/>
     </c:when>
     <c:otherwise>
-        <fmt:setLocale value="en_US"/>
+        <fmt:setLocale value="en_US" scope="session"/>
     </c:otherwise>
 </c:choose>
-<fmt:setBundle basename="locale"/>
+<fmt:setBundle basename="Locale"/>
 
+<!DOCTYPE html>
 <html lang="${sessionScope.locale}">
 <head>
+    <meta charset="utf-8">
     <title>Film Ratings</title>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/login.css">
 </head>
@@ -34,7 +36,7 @@
                 </div>
                 <div class="group">
                     <label for="pass" class="label"><fmt:message key="main.password"/></label>
-                    <input id="pass" name="password" required  type="password" class="input"
+                    <input id="pass" name="password" required type="password" class="input"
                            data-type="password">
                 </div>
                 <br><br>
@@ -47,24 +49,21 @@
                 <input type="hidden" name="command" value="registration">
                 <div class="group">
                     <label for="user" class="label"><fmt:message key="register.login"/></label>
-                    <input id="user" type="text" class="input" name="login" required>
+                    <input id=type="text" class="input" name="login" required
+                           pattern="^(?=.*[A-Za-z0-9]$)[A-Za-z][A-Za-z\d.-]{0,19}$">
                 </div>
                 <div class="group">
                     <label for="user" class="label"><fmt:message key="register.firstName"/></label>
-                    <input id="user" type="text" class="input" name="firstName" required>
+                    <input type="text" class="input" name="firstName" required>
                 </div>
                 <div class="group">
                     <label for="user" class="label"><fmt:message key="register.lastName"/></label>
-                    <input id="user" type="text" class="input" name="lastName" required>
+                    <input type="text" class="input" name="lastName" required>
                 </div>
                 <div class="group">
                     <label for="pass" class="label"><fmt:message key="main.password"/></label>
-                    <input id="pass" type="password" class="input" data-type="password" name="password" required
-                           pattern="[0-9a-zA-Z]{4,8}">
-                </div>
-                <div class="group">
-                    <label for="pass" class="label"><fmt:message key="register.email"/></label>
-                    <input id="pass" type="text" class="input" name="email" required>
+                    <input type="password" class="input" data-type="password" name="password" required
+                           pattern="^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$">
                 </div>
                 <br>
                 <div class="group">

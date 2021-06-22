@@ -30,7 +30,7 @@ public class LeaveCommentCommand implements CommandRequest {
             User user = (User) requestData.getSessionAttribute(AttributeName.USER);
 
             if (avrRating <= Double.parseDouble(rating) + 0.5 && avrRating >= Double.parseDouble(rating) - 0.5) {
-                if ((user.getStatus() != UserStatus.HIGH || user.getStatus() != UserStatus.BANNED) && userService.updateRating(true, user.getId()))
+                if ((user.getStatus() != UserStatus.HIGH || user.getStatus() != UserStatus.BANNED) && userService.updateRatingAfterEvaluating(user.getId(), true))
                     requestData.addSessionAttribute("user", user);
             }
             List<User> users = (List<User>) requestData.getSessionAttribute("users");

@@ -40,6 +40,6 @@ class ReviewServiceImplTest {
 
     @Test
     void getAverageRating() {
-        assertEquals(reviewService.getAverageRating(3), 3);
+        assertEquals(reviewService.getAverageRating(8), 0.0);
     }
 }

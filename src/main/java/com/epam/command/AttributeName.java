@@ -6,7 +6,6 @@ public interface AttributeName {
     String PASSWORD = "password";
     String USER = "user";
     String ROLE = "role";
-    String EMAIL = "email";
     String FIRST_NAME = "firstName";
     String LAST_NAME = "lastName";
     String ID = "id";
@@ -17,4 +16,5 @@ public interface AttributeName {
     String BAN = "ban";
     String COMMENT = "comment_text";
     String RATING = "rating";
+    String LOCALE = "locale";
 }
