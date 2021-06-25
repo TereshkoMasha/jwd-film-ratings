@@ -11,17 +11,19 @@ public interface UserDao {
 
     List<User> findAllByRoleID(Integer id) throws DAOException;
 
-    boolean findUserByLoginAndPassword(String login, String password) throws DAOException;
+    boolean checkLogin(String login) throws DAOException;
 
-    Optional<User> findUserByLogin(String login) throws DAOException;
+    Optional<User> findByLogin(String login) throws DAOException;
 
-    boolean updateUserStatus(UserStatus userStatus, Integer id) throws DAOException;
+    boolean findByLoginPassword(String login, String password) throws DAOException;
 
-    boolean updateUserRatingAfterEvaluating(Boolean action, Integer id) throws DAOException;
+    boolean updateStatus(UserStatus userStatus, Integer id) throws DAOException;
 
-    void updateUserRating(Integer id, Double rating) throws DAOException;
+    boolean updateRatingAfterEvaluating(Boolean action, Integer id) throws DAOException;
 
-    Integer getUserRoleId(String login) throws DAOException;
+    boolean updateRating(Integer id, Double rating) throws DAOException;
+
+    Integer getRoleId(String login) throws DAOException;
 
 }
 

@@ -85,7 +85,7 @@ public class ReviewDaoImpl extends AbstractDaoImpl<Review> implements ReviewDao 
     }
 
     @Override
-    public boolean update(Review entity) {
+    public boolean update(Review entity) throws DAOException {
         boolean updated = false;
         try (Connection connection = connectionPool.getConnection()) {
             try (PreparedStatement preparedStatement = connection.prepareStatement(getUpdateSql())) {

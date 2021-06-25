@@ -2,6 +2,7 @@ package com.epam.service.impl;
 
 import com.epam.entity.Review;
 import com.epam.entity.enums.Appraisal;
+import com.epam.exception.ServiceException;
 import com.epam.service.ReviewService;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -13,7 +14,7 @@ class ReviewServiceImplTest {
     private final ReviewService reviewService = new ReviewServiceImpl();
 
     @Test
-    void findAllByMovieId() {
+    void findAllByMovieId() throws ServiceException {
         Integer id = 4;
         Review reviewMock = Mockito.mock(Review.class);
         Mockito.when(reviewMock.getMovieID()).thenReturn(id);
@@ -21,7 +22,7 @@ class ReviewServiceImplTest {
     }
 
     @Test
-    void getByMovieIdUserId() {
+    void getByMovieIdUserId() throws ServiceException {
         Integer movie_id = 4;
         Integer user_id = 2;
         Review reviewMock = Mockito.mock(Review.class);
@@ -33,13 +34,13 @@ class ReviewServiceImplTest {
     }
 
     @Test
-    void create() {
+    void create() throws ServiceException {
         reviewService.create("Good movie", Appraisal.GOOD, 1, 2);
         assertTrue(reviewService.findByMovieIdUserId(1, 2).isPresent());
     }
 
     @Test
-    void getAverageRating() {
+    void getAverageRating() throws ServiceException {
         assertEquals(reviewService.getAverageRating(8), 0.0);
     }
 }

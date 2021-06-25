@@ -3,11 +3,11 @@ package com.epam.service.impl;
 import com.epam.dao.impl.MovieCrewMemberDaoImpl;
 import com.epam.entity.MovieCrewMember;
 import com.epam.exception.DAOException;
+import com.epam.exception.ServiceException;
 import com.epam.service.MovieCrewService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,8 +16,8 @@ public class MovieCrewServiceImpl implements MovieCrewService {
     MovieCrewMemberDaoImpl movieCrewMemberDao = MovieCrewMemberDaoImpl.INSTANCE;
 
     @Override
-    public List<MovieCrewMember> findAll() {
-        List<MovieCrewMember> movieCrewMemberList = null;
+    public List<MovieCrewMember> findAll() throws ServiceException {
+        List<MovieCrewMember> movieCrewMemberList;
         try {
             movieCrewMemberList = movieCrewMemberDao.findAll();
             if (!movieCrewMemberList.isEmpty()) {
@@ -25,12 +25,13 @@ public class MovieCrewServiceImpl implements MovieCrewService {
             }
         } catch (DAOException e) {
             LOGGER.error(e);
+            throw new ServiceException();
         }
         return movieCrewMemberList;
     }
 
     @Override
-    public Optional<MovieCrewMember> getById(Integer id) {
+    public Optional<MovieCrewMember> getById(Integer id) throws ServiceException {
         try {
             Optional<MovieCrewMember> movieCrewMember = movieCrewMemberDao.getById(id);
             if (movieCrewMember.isPresent()) {
@@ -38,40 +39,44 @@ public class MovieCrewServiceImpl implements MovieCrewService {
             }
         } catch (DAOException e) {
             LOGGER.error(e);
+            throw new ServiceException();
         }
         return Optional.empty();
     }
 
+
     @Override
-    public boolean update(MovieCrewMember entity) {
+    public boolean deleteById(Integer id) throws ServiceException {
         return false;
     }
 
     @Override
-    public boolean deleteById(Integer id) {
+    public boolean update(MovieCrewMember movieCrewMember) throws ServiceException {
         return false;
     }
 
     @Override
-    public List<MovieCrewMember> findAllActorsByMovieId(Integer id) {
+    public List<MovieCrewMember> findAllActorsByMovieId(Integer id) throws ServiceException {
+        List<MovieCrewMember> movieCrewMemberList;
         try {
-            List<MovieCrewMember> movieCrewMemberList = movieCrewMemberDao.findAllActorsByMovieId(id);
+            movieCrewMemberList = movieCrewMemberDao.findAllActorsByMovieId(id);
             if (!movieCrewMemberList.isEmpty()) {
                 return movieCrewMemberList;
             }
         } catch (DAOException e) {
             LOGGER.error(e);
+            throw new ServiceException();
         }
-        return Collections.emptyList();
+        return movieCrewMemberList;
     }
 
     @Override
-    public MovieCrewMember findDirectorByMovieId(Integer id) {
+    public MovieCrewMember findDirectorByMovieId(Integer id) throws ServiceException {
         try {
             return movieCrewMemberDao.findDirectorByMovieId(id);
         } catch (DAOException e) {
             LOGGER.error(e);
+            throw new ServiceException();
         }
-        return MovieCrewMember.builder().build();
     }
 }

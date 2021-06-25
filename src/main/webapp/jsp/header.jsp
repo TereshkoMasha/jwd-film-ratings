@@ -25,17 +25,17 @@
 <div>
     <header class="header" id="logo-menu">
         <div class="logo">
-            <a href="${pageContext.request.contextPath}/controller?command=change-language&locale=${1}"><img
+            <a href="${pageContext.request.contextPath}/controller?command=change-language&locale=${'by_BY'}"><img
                     src="${pageContext.request.contextPath}/img/by.png" alt="bel"></a>
-            <a href="${pageContext.request.contextPath}/controller?command=change-language&locale=${2}"><img
+            <a href="${pageContext.request.contextPath}/controller?command=change-language&locale=${'en_US'}"><img
                     src="${pageContext.request.contextPath}/img/eng.png" alt="eng"></a>
-            <a href="${pageContext.request.contextPath}/controller?command=change-language&locale=${3}"><img
+            <a href="${pageContext.request.contextPath}/controller?command=change-language&locale=${'ru_RU'}"><img
                     src="${pageContext.request.contextPath}/img/rus.png" alt="rus"></a>
             <a href="${pageContext.request.contextPath}/controller?command=main&page=1" style="margin-left: 40px">Film
                 Ratings</a>
         </div>
         <div class="search-wrapper">
-            <form method="post" action="${pageContext.request.contextPath}/controller?command=movie-search&page=${1}">
+            <form method="post" accept-charset="utf-8" action="${pageContext.request.contextPath}/controller?command=movie-search&page=${1}">
                 <input type="text" name="movie" required class="search-box" placeholder="Enter search movie"/>
             </form>
         </div>

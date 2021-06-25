@@ -15,13 +15,15 @@ public class CommandFactory {
     private static final Logger LOGGER = LogManager.getLogger(CommandFactory.class);
 
     public Optional<CommandRequest> defineCommand(RequestData requestData) {
-        Optional<CommandRequest> optionalCommand = Optional.empty();
-        String command = requestData.getRequestParameter(AttributeName.COMMAND);
-        CommandType commandType = CommandType.valueOf(upper(command));
+        Optional<CommandRequest> optionalCommand;
         try {
+            String command = requestData.getRequestParameter(AttributeName.COMMAND);
+            CommandType commandType = CommandType.valueOf(upper(command));
             optionalCommand = Optional.of(commandType.getCommand());
+
         } catch (IllegalArgumentException e) {
             LOGGER.error("Exception while command define", e);
+            return Optional.of(CommandType.MAIN.getCommand());
         }
         return optionalCommand;
     }

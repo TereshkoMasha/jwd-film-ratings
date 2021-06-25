@@ -20,7 +20,6 @@ public class User extends AbstractBaseEntity {
     private Double rating;
 
     User() {
-
     }
 
     private User(Builder builder) {

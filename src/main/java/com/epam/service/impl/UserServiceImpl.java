@@ -5,6 +5,7 @@ import com.epam.entity.User;
 import com.epam.entity.enums.UserRole;
 import com.epam.entity.enums.UserStatus;
 import com.epam.exception.DAOException;
+import com.epam.exception.ServiceException;
 import com.epam.service.UserService;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.logging.log4j.LogManager;
@@ -18,92 +19,115 @@ public class UserServiceImpl implements UserService {
     private static final UserDaoImpl userDao = UserDaoImpl.INSTANCE;
 
     @Override
-    public Optional<User> registerUser(String login, String password, String name) {
-        String md5Hex = DigestUtils
-                .md5Hex(password).toUpperCase();
-        if (!findUser(login, password)) {
-            User user = User.builder()
-                    .setName(name)
-                    .setLogin(login)
-                    .setPassword(md5Hex)
-                    .setRole(UserRole.USER)
-                    .setStatus(UserStatus.LOW)
-                    .setRating(1.0).build();
-            create(user);
-            return Optional.of(user);
+    public int registerUser(String login, String password, String name) {
+        try {
+            String md5Hex = DigestUtils
+                    .md5Hex(password).toUpperCase();
+            if (!checkLogin(login)) {
+                User user = User.builder()
+                        .setName(name)
+                        .setLogin(login)
+                        .setPassword(md5Hex)
+                        .setRole(UserRole.USER)
+                        .setStatus(UserStatus.LOW)
+                        .setRating(1.0).build();
+                create(user);
+                return findByLogin(login).get().getId();
+            }
+        } catch (ServiceException e) {
+            LOGGER.error(e);
         }
-        return Optional.empty();
+        return 0;
     }
 
     @Override
-    public boolean changePassword(User user, String newPassword) {
-        User.builder().of(user).setPassword(DigestUtils
-                .md5Hex(newPassword).toUpperCase());
+    public boolean changePassword(Integer id, String newPassword) throws ServiceException {
+        Optional<User> optionalUser = getById(id);
         try {
-            return userDao.update(user);
+            if (optionalUser.isPresent()) {
+                User user = User.builder().of(optionalUser.get()).setPassword(DigestUtils
+                        .md5Hex(newPassword).toUpperCase()).build();
+                return userDao.update(user);
+            }
+            return false;
         } catch (DAOException e) {
             LOGGER.error(e);
+            throw new ServiceException();
         }
-        return false;
     }
 
     @Override
     public Optional<User> findByLogin(String login) {
-        return userDao.findUserByLogin(login);
+        return userDao.findByLogin(login);
     }
 
     @Override
-    public int getUserRoleId(String login) {
-        int id = -1;
+    public int getRoleId(String login) throws ServiceException {
+        int id;
         try {
-            id = userDao.getUserRoleId(login);
+            id = userDao.getRoleId(login);
         } catch (DAOException e) {
             LOGGER.error(e);
+            throw new ServiceException();
         }
         return id;
     }
 
-    @Override
-    public boolean findUser(String login, String password) {
+    public boolean checkLogin(String login) throws ServiceException {
         try {
-            return userDao.findUserByLoginAndPassword(login, DigestUtils
-                    .md5Hex(password).toUpperCase());
+            return userDao.checkLogin(login);
         } catch (DAOException e) {
-            e.printStackTrace();
+            LOGGER.error(e);
+            throw new ServiceException();
         }
-        return false;
     }
 
     @Override
-    public boolean update(User user) {
+    public boolean findByLoginPassword(String login, String password) throws ServiceException {
+        try {
+            return userDao.findByLoginPassword(login, DigestUtils.md5Hex(password).toUpperCase());
+        } catch (DAOException e) {
+            LOGGER.error(e);
+            throw new ServiceException();
+        }
+    }
+
+    @Override
+    public boolean update(User user) throws ServiceException {
         try {
             return userDao.update(user);
         } catch (DAOException e) {
             LOGGER.error(e);
+            throw new ServiceException();
         }
-        return false;
     }
 
     @Override
-    public boolean deleteById(Integer id) {
-        return userDao.deleteById(id);
+    public boolean deleteById(Integer id) throws ServiceException {
+        try {
+            return userDao.deleteById(id);
+        } catch (DAOException e) {
+            LOGGER.error("Service Execution Exception", e);
+            throw new ServiceException();
+        }
     }
 
     @Override
-    public Optional<User> getById(Integer id) {
+    public Optional<User> getById(Integer id) throws ServiceException {
         try {
             Optional<User> optionalUser = userDao.getById(id);
             if (optionalUser.isPresent()) {
                 return optionalUser;
             }
         } catch (DAOException e) {
-            LOGGER.error(e);
+            LOGGER.error("Service Execution Exception", e);
+            throw new ServiceException();
         }
         return Optional.empty();
     }
 
     @Override
-    public List<User> findAll() {
+    public List<User> findAll() throws ServiceException {
         List<User> userList = null;
         try {
             userList = userDao.findAll();
@@ -111,46 +135,50 @@ public class UserServiceImpl implements UserService {
                 return userList;
             }
         } catch (DAOException e) {
-            LOGGER.error(e);
+            LOGGER.error("Service Execution Exception", e);
+            throw new ServiceException();
         }
         return userList;
+    }
+
+
+    @Override
+    public boolean updateStatus(UserStatus status, Integer userId) throws ServiceException {
+        try {
+            return userDao.updateStatus(status, userId);
+        } catch (DAOException e) {
+            LOGGER.error("Exception during data update", e);
+            throw new ServiceException();
+        }
+    }
+
+
+    @Override
+    public boolean updateRatingAfterEvaluating(Integer userId, Boolean action) throws ServiceException {
+        try {
+            return userDao.updateRatingAfterEvaluating(action, userId);
+        } catch (DAOException e) {
+            LOGGER.error("Exception during data update", e);
+            throw new ServiceException();
+        }
+    }
+
+    @Override
+    public boolean updateRating(Integer id, Double rating) throws ServiceException {
+        try {
+            return userDao.updateRating(id, rating);
+        } catch (DAOException e) {
+            LOGGER.error("Exception during data update", e);
+            throw new ServiceException();
+        }
     }
 
     private void create(User user) {
         try {
             userDao.create(user);
         } catch (DAOException e) {
-            LOGGER.error(e);
+            LOGGER.error(new ServiceException(e));
         }
     }
 
-    @Override
-    public boolean banUser(UserStatus status, Integer userId) {
-        try {
-            return userDao.updateUserStatus(status, userId);
-        } catch (DAOException e) {
-            LOGGER.error(e);
-        }
-        return false;
-    }
-
-
-    @Override
-    public boolean updateRatingAfterEvaluating(Integer userId, Boolean action) {
-        try {
-            return userDao.updateUserRatingAfterEvaluating(action, userId);
-        } catch (DAOException e) {
-            LOGGER.error(e);
-        }
-        return false;
-    }
-
-    @Override
-    public void updateUserRating(Integer id, Double rating) {
-        try {
-            userDao.updateUserRating(id, rating);
-        } catch (DAOException e) {
-            LOGGER.error(e);
-        }
-    }
 }

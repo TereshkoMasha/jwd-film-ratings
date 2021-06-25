@@ -13,11 +13,6 @@ public class UnknownEntityException extends RuntimeException {
         this.args = null;
     }
 
-    public UnknownEntityException(String entityName, Object[] args) {
-        super();
-        this.entityName = entityName;
-        this.args = args;
-    }
 
     @Override
     public String getMessage() {

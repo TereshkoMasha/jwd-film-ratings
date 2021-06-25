@@ -38,8 +38,8 @@ public class UserDaoImpl extends AbstractDaoImpl<User> implements UserDao {
     private static final String SQL_FIND_ALL_BY_ROLE_ID = "SELECT * FROM user WHERE role_id = ?";
     private static final String SQL_FIND_BY_ID = "SELECT * FROM user WHERE id = ? ";
     private static final String SQL_FIND_ALL_BY_RATING = "SELECT * FROM user WHERE rating > ?";
-    private static final String SQL_FIND_BY_LOGIN_PASSWORD = "SELECT * FROM user WHERE login= ? AND password= ?";
     private static final String SQL_FIND_BY_LOGIN = "SELECT * FROM user WHERE login= ?";
+    private static final String SQL_FIND_BY_LOGIN_PASSWORD = "SELECT * FROM user WHERE login= ? AND password = ?";
 
     @Override
     protected void prepareStatement(PreparedStatement preparedStatement, User entity) throws SQLException {
@@ -49,10 +49,6 @@ public class UserDaoImpl extends AbstractDaoImpl<User> implements UserDao {
         preparedStatement.setInt(4, entity.getRole().getId());
         preparedStatement.setInt(5, entity.getStatus().getId());
         preparedStatement.setDouble(6, entity.getRating());
-    }
-
-    protected String getSqlFindByLoginPassword() {
-        return SQL_FIND_BY_LOGIN_PASSWORD;
     }
 
     @Override
@@ -99,6 +95,10 @@ public class UserDaoImpl extends AbstractDaoImpl<User> implements UserDao {
 
     protected static String getFindByLoginSql() {
         return SQL_FIND_BY_LOGIN;
+    }
+
+    protected static String getFindByLoginPasswordSql() {
+        return SQL_FIND_BY_LOGIN_PASSWORD;
     }
 
     @Override
@@ -151,8 +151,9 @@ public class UserDaoImpl extends AbstractDaoImpl<User> implements UserDao {
         return userList;
     }
 
+
     @Override
-    public Integer getUserRoleId(String login) throws DAOException {
+    public Integer getRoleId(String login) throws DAOException {
         int roleId = 0;
         try (Connection connection = connectionPool.getConnection()) {
             try (PreparedStatement statement = connection.prepareStatement(getFindByLoginSql())) {
@@ -170,7 +171,7 @@ public class UserDaoImpl extends AbstractDaoImpl<User> implements UserDao {
     }
 
     @Override
-    public Optional<User> findUserByLogin(String login) {
+    public Optional<User> findByLogin(String login) {
         Optional<User> entityOptional = Optional.empty();
         try (Connection connection = connectionPool.getConnection()) {
             try (PreparedStatement preparedStatement = connection.prepareStatement(getFindByLoginSql())) {
@@ -188,16 +189,14 @@ public class UserDaoImpl extends AbstractDaoImpl<User> implements UserDao {
     }
 
     @Override
-    public boolean findUserByLoginAndPassword(String login, String password) throws DAOException {
+    public boolean checkLogin(String login) throws DAOException {
         boolean state = false;
         try (Connection connection = connectionPool.getConnection()) {
-            try (PreparedStatement statement = connection.prepareStatement(getSqlFindByLoginPassword())) {
+            try (PreparedStatement statement = connection.prepareStatement(getFindByLoginSql())) {
                 statement.setString(1, login);
-                statement.setString(2, password);
                 ResultSet resultSet = statement.executeQuery();
                 state = resultSet.next();
             }
-
         } catch (SQLException | InterruptedException e) {
             LOGGER.error(new DAOException(e.getMessage()));
             Thread.currentThread().interrupt();
@@ -206,7 +205,23 @@ public class UserDaoImpl extends AbstractDaoImpl<User> implements UserDao {
     }
 
     @Override
-    public boolean updateUserStatus(UserStatus userStatus, Integer id) throws DAOException {
+    public boolean findByLoginPassword(String login, String password) throws DAOException {
+        boolean state = false;
+        try (Connection connection = connectionPool.getConnection()) {
+            try (PreparedStatement statement = connection.prepareStatement(getFindByLoginPasswordSql())) {
+                statement.setString(1, login);
+                ResultSet resultSet = statement.executeQuery();
+                state = resultSet.next();
+            }
+        } catch (SQLException | InterruptedException e) {
+            LOGGER.error(new DAOException(e.getMessage()));
+            Thread.currentThread().interrupt();
+        }
+        return state;
+    }
+
+    @Override
+    public boolean updateStatus(UserStatus userStatus, Integer id) throws DAOException {
         try (Connection connection = connectionPool.getConnection()) {
             try (PreparedStatement preparedStatement = connection.prepareStatement(getUpdateRatingSql())) {
                 Optional<User> user = getById(id);
@@ -226,7 +241,7 @@ public class UserDaoImpl extends AbstractDaoImpl<User> implements UserDao {
     }
 
     @Override
-    public boolean updateUserRatingAfterEvaluating(Boolean action, Integer id) throws DAOException {
+    public boolean updateRatingAfterEvaluating(Boolean action, Integer id) throws DAOException {
         try (Connection connection = connectionPool.getConnection()) {
             try (PreparedStatement preparedStatement = connection.prepareStatement(getUpdateRatingSql())) {
                 Optional<User> user = getById(id);
@@ -249,18 +264,22 @@ public class UserDaoImpl extends AbstractDaoImpl<User> implements UserDao {
     }
 
     @Override
-    public void updateUserRating(Integer id, Double rating) throws DAOException {
+    public boolean updateRating(Integer id, Double rating) throws DAOException {
         try (Connection connection = connectionPool.getConnection()) {
             try (PreparedStatement preparedStatement = connection.prepareStatement(getUpdateRatingSql())) {
                 Optional<User> user = getById(id);
                 if (user.isPresent()) {
                     preparedStatement.setDouble(1, rating);
                     preparedStatement.setInt(2, id);
+                    if (preparedStatement.executeUpdate() != 0) {
+                        return true;
+                    }
                 }
             }
         } catch (SQLException | InterruptedException e) {
             LOGGER.error("Failed to update entity", new DAOException(e.getMessage()));
             Thread.currentThread().interrupt();
         }
+        return false;
     }
 }

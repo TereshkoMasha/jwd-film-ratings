@@ -51,19 +51,19 @@
                     <td>${user.login}</td>
                     <td>${user.name}</td>
                     <td>
-                        <form method="post" id="hehe"
+                        <form method="post"
                               action="${pageContext.request.contextPath}/controller?command=change-rating&id=${user.id}">
-                            <select id="selectvalue" form="hehe">
+                            <input type="text" list="numbers" name="rating" placeholder="${user.rating}"/>
+                            <datalist id="numbers">
                                 <c:forEach var="starCounter" begin="1" end="10">
                                     <c:set var="starHalfStepCounter" value="${starCounter - 0.5}"/>
                                     <c:choose>
                                         <c:when test="${user.rating eq starHalfStepCounter}">
-                                            <option value="${starHalfStepCounter}"
-                                                    selected>${starHalfStepCounter}</option>
+                                            <option value="${starHalfStepCounter}" selected>${starHalfStepCounter}
+                                            </option>
                                         </c:when>
                                         <c:otherwise>
-                                            <option onclick="this.form.submit()"
-                                                    value="${starHalfStepCounter}">${starHalfStepCounter}</option>
+                                            <option value="${starHalfStepCounter}">${starHalfStepCounter}</option>
                                         </c:otherwise>
                                     </c:choose>
                                     <c:choose>
@@ -71,12 +71,11 @@
                                             <option value="${starCounter}" selected>${starCounter}</option>
                                         </c:when>
                                         <c:otherwise>
-                                            <option onclick="this.form.submit()"
-                                                    value="${starCounter}">${starCounter}</option>
+                                            <option value="${starCounter}">${starCounter}</option>
                                         </c:otherwise>
                                     </c:choose>
                                 </c:forEach>
-                            </select>
+                            </datalist>
                         </form>
                     </td>
                     <td>${user.status}</td>
@@ -90,7 +89,7 @@
                                 </td>
                             </form>
                         </c:when>
-                        <c:when test="${user.status.id eq 4}">
+                        <c:when test="${user.role.id eq 1}">
                             <td>-</td>
                         </c:when>
                         <c:otherwise>

@@ -163,36 +163,49 @@
         </c:choose>
         <c:choose>
             <c:when test="${not empty user}">
-                <form method="post"
-                      action="${pageContext.request.contextPath}/controller?command=leave-comment&id=${movie.id}">
-                    <h2><fmt:message key="movie.leave.comment"/></h2>
-                    <textarea placeholder="Type here" rows="20" name="comment_text" id="comment_text" cols="40"
-                              class="ui-autocomplete-input" autocomplete="off" role="textbox"
-                              aria-autocomplete="list"
-                              aria-haspopup="true"></textarea>
-                    <br>
-                    <fieldset class="rating" style="margin-left: 45px" aria-required="true">
-                        <input type="radio" id="star5" required name="rating" value="5"/><label class="full" for="star5"
-                                                                                                title="Awesome - 5 stars"></label>
-                        <input type="radio" id="star4" required name="rating" value="4"/><label class="full" for="star4"
-                                                                                                title="Pretty good - 4 stars"></label>
+                <c:choose>
+                    <c:when test="${user.status.id != 0}">
+                        <form method="post"
+                              action="${pageContext.request.contextPath}/controller?command=leave-comment&id=${movie.id}">
+                            <h2><fmt:message key="movie.leave.comment"/></h2>
+                            <textarea placeholder="Type here" rows="20" name="comment_text" id="comment_text" cols="40"
+                                      class="ui-autocomplete-input" autocomplete="off" role="textbox"
+                                      aria-autocomplete="list"
+                                      aria-haspopup="true"></textarea>
+                            <br>
+                            <fieldset class="rating" style="margin-left: 45px" aria-required="true">
+                                <input type="radio" id="star5" required name="rating" value="5"/><label class="full"
+                                                                                                        for="star5"
+                                                                                                        title="Awesome - 5 stars"></label>
+                                <input type="radio" id="star4" required name="rating" value="4"/><label class="full"
+                                                                                                        for="star4"
+                                                                                                        title="Pretty good - 4 stars"></label>
 
-                        <input type="radio" id="star3" required name="rating" value="3"/><label class="full" for="star3"
-                                                                                                title="Meh - 3 stars"></label>
+                                <input type="radio" id="star3" required name="rating" value="3"/><label class="full"
+                                                                                                        for="star3"
+                                                                                                        title="Meh - 3 stars"></label>
 
-                        <input type="radio" id="star2" required name="rating" value="2"/><label class="full" for="star2"
-                                                                                                title="Kinda bad - 2 stars"></label>
+                                <input type="radio" id="star2" required name="rating" value="2"/><label class="full"
+                                                                                                        for="star2"
+                                                                                                        title="Kinda bad - 2 stars"></label>
 
-                        <input type="radio" id="star1" required name="rating" value="1"/><label class="full" for="star1"
-                                                                                                title="Sucks big time - 1 star"></label>
-                    </fieldset>
-                    <button type="submit">Отправить</button>
-                </form>
+                                <input type="radio" id="star1" required name="rating" value="1"/><label class="full"
+                                                                                                        for="star1"
+                                                                                                        title="Bad - 1 star"></label>
+                            </fieldset>
+                            <button type="submit" style="margin-left: 400px; margin-top: 5px; margin-bottom: 90px">
+                                <fmt:message key="movie.review"/></button>
+                        </form>
+                    </c:when>
+                    <c:otherwise>
+                        <p style="margin-bottom: 30px"><fmt:message key="user.ban"/></p>
+                    </c:otherwise>
+                </c:choose>
             </c:when>
             <c:otherwise>
                 <br>
                 <br>
-                <p>Зарегистрируйтесь, чтобы оставить комментарий</p>
+                <p style="margin-bottom: 30px"><fmt:message key="movie.first.comment.reg"/></p>
             </c:otherwise>
         </c:choose>
     </div>

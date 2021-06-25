@@ -73,7 +73,7 @@ public abstract class AbstractDaoImpl<T extends BaseEntity> implements Dao<T> {
     }
 
     @Override
-    public boolean deleteById(Integer id) {
+    public boolean deleteById(Integer id) throws DAOException {
         try (Connection connection = connectionPool.getConnection()) {
             try (PreparedStatement preparedStatement = connection.prepareStatement(getDeleteSql())) {
                 preparedStatement.setInt(1, id);

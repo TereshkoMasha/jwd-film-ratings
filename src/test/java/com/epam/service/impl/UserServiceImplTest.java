@@ -3,12 +3,12 @@ package com.epam.service.impl;
 import com.epam.entity.User;
 import com.epam.entity.enums.UserStatus;
 import com.epam.exception.DAOException;
+import com.epam.exception.ServiceException;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
@@ -16,61 +16,67 @@ class UserServiceImplTest {
     private final UserServiceImpl userService = new UserServiceImpl();
 
     @Test
-    void changePassword() {
+    void changePassword() throws ServiceException {
         User user = Mockito.mock(User.class);
         String password = DigestUtils
                 .md5Hex("43573954").toUpperCase();
         Mockito.when(user.getId()).thenReturn(6);
         Mockito.when(user.getPassword()).thenReturn(password);
-        assertTrue(userService.changePassword(user, password));
+        assertTrue(userService.changePassword(user.getId(), password));
     }
 
     @Test
     void testFindByLoginPositive() throws DAOException {
-        assertEquals(userService.findByLogin("user").get().getName(), "user");
+        Assertions.assertEquals(userService.findByLogin("user").get().getName(), "user");
     }
 
     @Test
-    void getUserRoleId() {
-        assertEquals(2, userService.getUserRoleId("user"));
+    void getUserRoleId() throws ServiceException {
+        Assertions.assertEquals(2, userService.getRoleId("user"));
     }
 
     @Test
-    void findUser() {
-        assertTrue(userService.findUser("user", "user"));
+    void findUser() throws ServiceException {
+        assertTrue(userService.checkLogin("user"));
     }
 
     @Test
-    void deleteById() {
+    void deleteById() throws ServiceException {
         int id = 7;
         assertTrue(userService.deleteById(id));
     }
 
     @Test
-    void getById() {
+    void getById() throws ServiceException {
         User user = Mockito.mock(User.class);
         Mockito.when(user.getId()).thenReturn(1);
         Assertions.assertEquals(userService.getById(1).get().getId(), user.getId());
     }
 
     @Test
-    void registerUser() {
+    void registerUser() throws ServiceException {
         userService.registerUser("max112", "4357395400", "Max");
-        assertTrue(userService.findUser("max112", "4357395400"));
+        assertTrue(userService.checkLogin("max112"));
     }
 
     @Test
-    void updateUserStatus() {
+    void updateUserStatus() throws ServiceException {
         User user = Mockito.mock(User.class);
         Mockito.when(user.getStatus()).thenReturn(UserStatus.BANNED);
         if (userService.getById(2).get().getStatus() != UserStatus.BANNED) {
-            userService.banUser(UserStatus.BANNED, 2);
+            userService.updateStatus(UserStatus.BANNED, 2);
         }
         Assertions.assertEquals(userService.getById(2).get().getStatus(), user.getStatus());
     }
 
     @Test
-    void updateUserRating() {
+    void updateUserRating() throws ServiceException {
         assertTrue(userService.updateRatingAfterEvaluating(2, true));
+    }
+
+    @Test
+    void adminUpdateUserRating() throws ServiceException {
+        userService.updateRating(2, 5.0);
+        Assertions.assertEquals(5, (double) userService.getById(2).get().getRating());
     }
 }
