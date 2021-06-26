@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Optional;
 
 public abstract class AbstractDaoImpl<T extends BaseEntity> implements Dao<T> {
+    private static final String SQL_SELECT_LAST_ID = "SELECT LAST_INSERT_ID();";
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -39,19 +40,32 @@ public abstract class AbstractDaoImpl<T extends BaseEntity> implements Dao<T> {
 
     protected abstract String getFindByIdSql();
 
+    protected  String getLastInsertIdSql(){
+        return SQL_SELECT_LAST_ID;
+    }
+
     public abstract boolean update(final T entity) throws DAOException;
 
     @Override
-    public void create(final T entity) throws DAOException {
+    public int create(final T entity) throws DAOException {
         try (Connection connection = connectionPool.getConnection();) {
             try (PreparedStatement preparedStatement = connection.prepareStatement(getCreateSql())) {
                 prepareStatement(preparedStatement, entity);
                 preparedStatement.execute();
+                int id = -1;
+                try (PreparedStatement statement = connection.prepareStatement(getLastInsertIdSql())) {
+                    ResultSet resultSet = statement.executeQuery();
+                    while (resultSet.next()) {
+                        id = resultSet.getInt("last_insert_id()");
+                    }
+                    return id;
+                }
             }
         } catch (SQLException | InterruptedException e) {
             LOGGER.error("Failed to create entity", new DAOException(e));
             Thread.currentThread().interrupt();
         }
+        return -1;
     }
 
     @Override

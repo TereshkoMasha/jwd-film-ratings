@@ -172,9 +172,9 @@ body {
 
 .image_box .pagination ul {
     margin: 0;
-    padding: 0;
     list-style-type: none;
     text-align: center;
+    padding-bottom: 60px;
 }
 
 .image_box .pagination a {

@@ -37,7 +37,6 @@ public class UserDaoImpl extends AbstractDaoImpl<User> implements UserDao {
     private static final String SQL_FIND_ALL = "SELECT * FROM user";
     private static final String SQL_FIND_ALL_BY_ROLE_ID = "SELECT * FROM user WHERE role_id = ?";
     private static final String SQL_FIND_BY_ID = "SELECT * FROM user WHERE id = ? ";
-    private static final String SQL_FIND_ALL_BY_RATING = "SELECT * FROM user WHERE rating > ?";
     private static final String SQL_FIND_BY_LOGIN = "SELECT * FROM user WHERE login= ?";
     private static final String SQL_FIND_BY_LOGIN_PASSWORD = "SELECT * FROM user WHERE login= ? AND password = ?";
 
@@ -76,13 +75,8 @@ public class UserDaoImpl extends AbstractDaoImpl<User> implements UserDao {
         return SQL_FIND_BY_ID;
     }
 
-
     protected String getFindALLByRoleId() {
         return SQL_FIND_ALL_BY_ROLE_ID;
-    }
-
-    protected String getFindAllByRatingSql() {
-        return SQL_FIND_ALL_BY_RATING;
     }
 
     protected static String getUpdateLoginSql() {
@@ -96,6 +90,7 @@ public class UserDaoImpl extends AbstractDaoImpl<User> implements UserDao {
     protected static String getFindByLoginSql() {
         return SQL_FIND_BY_LOGIN;
     }
+
 
     protected static String getFindByLoginPasswordSql() {
         return SQL_FIND_BY_LOGIN_PASSWORD;
@@ -170,6 +165,7 @@ public class UserDaoImpl extends AbstractDaoImpl<User> implements UserDao {
         return roleId;
     }
 
+
     @Override
     public Optional<User> findByLogin(String login) {
         Optional<User> entityOptional = Optional.empty();
@@ -210,6 +206,7 @@ public class UserDaoImpl extends AbstractDaoImpl<User> implements UserDao {
         try (Connection connection = connectionPool.getConnection()) {
             try (PreparedStatement statement = connection.prepareStatement(getFindByLoginPasswordSql())) {
                 statement.setString(1, login);
+                statement.setString(2, password);
                 ResultSet resultSet = statement.executeQuery();
                 state = resultSet.next();
             }

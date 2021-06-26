@@ -18,11 +18,11 @@ public class MainCommand implements CommandRequest {
     @Override
     public CommandExecute executeCommand(RequestData requestData) {
 
-        if (!requestData.getSessionAttributes().containsKey("page")) {
-            requestData.addSessionAttribute("page", 1);
-        } else if (requestData.getRequestParametersValues().containsKey("page")) {
-            String page = requestData.getRequestParameter("page");
-            requestData.addSessionAttribute("page", Integer.parseInt(page));
+        if (!requestData.getSessionAttributes().containsKey(AttributeName.PAGE)) {
+            requestData.addSessionAttribute(AttributeName.PAGE, 1);
+        } else if (requestData.getRequestParametersValues().containsKey(AttributeName.PAGE)) {
+            String page = requestData.getRequestParameter(AttributeName.PAGE);
+            requestData.addSessionAttribute(AttributeName.PAGE, Integer.parseInt(page));
             return new CommandExecute(RouteType.FORWARD, Destination.MAIN_PAGE.getPath());
         }
         try {

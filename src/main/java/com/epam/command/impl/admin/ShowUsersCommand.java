@@ -20,7 +20,7 @@ public class ShowUsersCommand implements CommandRequest {
         try {
             UserService userService = new UserServiceImpl();
             List<User> userList = userService.findAll();
-            User user = (User) requestData.getSessionAttribute("user");
+            User user = (User) requestData.getSessionAttribute(AttributeName.USER);
             if (user.getRole() == UserRole.ADMIN) {
                 if (!userList.isEmpty()) {
                     requestData.addSessionAttribute("users_list", userList);

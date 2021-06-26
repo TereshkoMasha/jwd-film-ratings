@@ -8,7 +8,7 @@ import java.util.Optional;
 
 public interface Dao<T extends BaseEntity>  {
 
-    void create(T entity) throws DAOException;
+    int create(T entity) throws DAOException;
 
     boolean deleteById(Integer id) throws DAOException;
 

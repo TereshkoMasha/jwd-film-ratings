@@ -205,9 +205,10 @@
             <c:otherwise>
                 <br>
                 <br>
-                <p style="margin-bottom: 30px"><fmt:message key="movie.first.comment.reg"/></p>
+                <p style="margin-bottom: 120px"><fmt:message key="movie.first.comment.reg"/></p>
             </c:otherwise>
         </c:choose>
+        <jsp:include page="footer.jsp"/>
     </div>
 </div><!-- end movie-container -->
 </body>

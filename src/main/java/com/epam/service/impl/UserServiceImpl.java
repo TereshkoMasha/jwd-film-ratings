@@ -31,8 +31,7 @@ public class UserServiceImpl implements UserService {
                         .setRole(UserRole.USER)
                         .setStatus(UserStatus.LOW)
                         .setRating(1.0).build();
-                create(user);
-                return findByLogin(login).get().getId();
+                return create(user);
             }
         } catch (ServiceException e) {
             LOGGER.error(e);
@@ -173,12 +172,14 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    private void create(User user) {
+    private int create(User user) {
         try {
-            userDao.create(user);
+            return userDao.create(user);
         } catch (DAOException e) {
-            LOGGER.error(new ServiceException(e));
+            LOGGER.error("Exception during data update", e);
+
         }
+        return -1;
     }
 
 }

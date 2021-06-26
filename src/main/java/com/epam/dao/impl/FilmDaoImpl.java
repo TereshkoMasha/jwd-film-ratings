@@ -96,6 +96,11 @@ public class FilmDaoImpl extends AbstractDaoImpl<Movie> implements FilmDao {
         return SQL_FIND_BY_ID;
     }
 
+    @Override
+    protected String getLastInsertIdSql() {
+        return null;
+    }
+
     protected static String getFindByNameSql() {
         return SQL_FIND_BY_NAME;
     }

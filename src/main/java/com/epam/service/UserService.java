@@ -13,7 +13,7 @@ public interface UserService extends BaseService<User> {
      * @param login    unique value
      * @param password a password value
      * @param name     a first name  + surname value
-     * @return (@ code int) user id
+     * @return (@code int) user id
      * @throws ServiceException if {@code DaoException} occurs (database access error)
      */
     int registerUser(String login, String password, String name) throws ServiceException;
@@ -93,5 +93,6 @@ public interface UserService extends BaseService<User> {
      * @throws ServiceException if database access error
      */
     boolean findByLoginPassword(String login, String password) throws ServiceException;
+
 
 }

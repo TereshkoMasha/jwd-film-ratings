@@ -2,6 +2,7 @@ package com.epam.command.impl.common;
 
 import com.epam.command.*;
 import com.epam.entity.User;
+import com.epam.entity.enums.UserRole;
 import com.epam.exception.ServiceException;
 import com.epam.service.UserService;
 import com.epam.service.impl.UserServiceImpl;
@@ -26,16 +27,11 @@ public class LoginCommand implements CommandRequest {
                     User user = optionalUser.get();
                     requestData.addSessionAttribute(AttributeName.USER, user);
                     requestData.addSessionAttribute(AttributeName.ROLE, user.getRole().getId());
-                    switch (user.getRole()) {
-                        case USER: {
-                            commandExecute = new CommandExecute(RouteType.REDIRECT, Destination.MAIN_PAGE.getPath());
-                            break;
-                        }
-                        case ADMIN: {
-                            requestData.addSessionAttribute("users_list", userService.findAll());
-                            commandExecute = new CommandExecute(RouteType.REDIRECT, Destination.USERS.getPath());
-                            break;
-                        }
+                    if (user.getRole() == UserRole.USER) {
+                        commandExecute = new CommandExecute(RouteType.REDIRECT, Destination.MAIN_PAGE.getPath());
+                    } else if (user.getRole() == UserRole.ADMIN) {
+                        requestData.addSessionAttribute("users_list", userService.findAll());
+                        commandExecute = new CommandExecute(RouteType.REDIRECT, Destination.USERS.getPath());
                     }
                 }
             } else {

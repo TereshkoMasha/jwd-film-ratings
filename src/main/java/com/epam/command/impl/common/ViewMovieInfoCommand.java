@@ -39,30 +39,30 @@ public class ViewMovieInfoCommand implements CommandRequest {
                 try {
                     requestData.addSessionAttribute(AttributeName.MOVIE, value);
                     List<MovieCrewMember> filmActors = movieCrewService.findAllActorsByMovieId(value.getId());
-                    if (!requestData.getSessionAttributes().containsKey("page")) {
-                        requestData.addSessionAttribute("page", 1);
-                    } else if (requestData.getRequestParametersValues().containsKey("page")) {
-                        String page = requestData.getRequestParameter("page");
-                        requestData.addSessionAttribute("page", Integer.parseInt(page));
+                    if (!requestData.getSessionAttributes().containsKey(AttributeName.PAGE)) {
+                        requestData.addSessionAttribute(AttributeName.PAGE, 1);
+                    } else if (requestData.getRequestParametersValues().containsKey(AttributeName.PAGE)) {
+                        String page = requestData.getRequestParameter(AttributeName.PAGE);
+                        requestData.addSessionAttribute(AttributeName.PAGE, Integer.parseInt(page));
                     }
                     if (!filmActors.isEmpty()) {
-                        requestData.addSessionAttribute("actors", filmActors);
+                        requestData.addSessionAttribute(AttributeName.ACTOR, filmActors);
                     } else {
-                        requestData.deleteSessionAttribute("actors");
+                        requestData.deleteSessionAttribute(AttributeName.ACTOR);
                     }
                     MovieCrewMember director = movieCrewService.findDirectorByMovieId(value.getId());
                     if (director != null) {
-                        requestData.addSessionAttribute("director", director);
+                        requestData.addSessionAttribute(AttributeName.DIRECTOR, director);
                     } else {
-                        requestData.deleteSessionAttribute("director");
+                        requestData.deleteSessionAttribute(AttributeName.DIRECTOR);
                     }
                     Double averageRating = reviewService.getAverageRating(id);
                     if (averageRating != null && averageRating != 0.0) {
                         BigDecimal bd = new BigDecimal(Double.toString(averageRating));
                         bd = bd.setScale(2, RoundingMode.HALF_UP);
-                        requestData.addSessionAttribute("rating", bd.doubleValue());
+                        requestData.addSessionAttribute(AttributeName.RATING, bd.doubleValue());
                     } else {
-                        requestData.deleteSessionAttribute("rating");
+                        requestData.deleteSessionAttribute(AttributeName.RATING);
                     }
                     List<Review> reviewList = reviewService.findAllByMovieId(film.get().getId());
                     List<User> users = new ArrayList<>();
@@ -70,8 +70,8 @@ public class ViewMovieInfoCommand implements CommandRequest {
                             reviewList) {
                         users.add(userService.getById(review.getUserID()).get());
                     }
-                    requestData.addSessionAttribute("review", reviewList);
-                    requestData.addSessionAttribute("users", users);
+                    requestData.addSessionAttribute(AttributeName.REVIEW, reviewList);
+                    requestData.addSessionAttribute(AttributeName.USERS, users);
                 } catch (ServiceException e) {
                     LOGGER.error("Error while trying to login", e);
                 }

@@ -2,9 +2,10 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!DOCTYPE html>
-<html>
+
+<html lang="${sessionScope.locale}">
 <head>
-    <meta charset="utf-8">
+    <title></title>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/header.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/login.css">
     <script src="${pageContext.request.contextPath}/js/header.js" async></script>
@@ -35,7 +36,8 @@
                 Ratings</a>
         </div>
         <div class="search-wrapper">
-            <form method="post" accept-charset="utf-8" action="${pageContext.request.contextPath}/controller?command=movie-search&page=${1}">
+            <form method="post" accept-charset="utf-8"
+                  action="${pageContext.request.contextPath}/controller?command=movie-search&page=${1}">
                 <input type="text" name="movie" required class="search-box" placeholder="Enter search movie"/>
             </form>
         </div>

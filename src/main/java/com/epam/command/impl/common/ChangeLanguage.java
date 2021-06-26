@@ -5,8 +5,8 @@ import com.epam.command.*;
 public class ChangeLanguage implements CommandRequest {
     @Override
     public CommandExecute executeCommand(RequestData requestData) {
-        String locale = requestData.getRequestParameter("locale");
-        requestData.addSessionAttribute("locale", locale);
+        String locale = requestData.getRequestParameter(AttributeName.LOCALE);
+        requestData.addSessionAttribute(AttributeName.LOCALE, locale);
 
         return new CommandExecute(RouteType.FORWARD, Destination.MAIN_PAGE.getPath());
     }

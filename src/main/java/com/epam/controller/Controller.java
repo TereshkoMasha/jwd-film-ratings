@@ -21,16 +21,16 @@ public class Controller extends HttpServlet {
     private static final Logger LOGGER = LogManager.getLogger(Controller.class);
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) {
         processRequest(request, response);
     }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) {
         processRequest(request, response);
     }
 
-    private void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    private void processRequest(HttpServletRequest request, HttpServletResponse response) {
         try {
             RequestData requestData = new RequestData(request);
             CommandFactory commandFactory = new CommandFactory();
@@ -51,7 +51,7 @@ public class Controller extends HttpServlet {
                     response.sendRedirect(request.getContextPath() + Destination.ERROR.getPath());
                 }
             }
-        } catch (IOException e) {
+        } catch (ServletException | IOException e) {
             LOGGER.error(new ServletException(e.getMessage()));
         }
     }

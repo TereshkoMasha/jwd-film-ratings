@@ -9,6 +9,8 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
@@ -78,5 +80,12 @@ class UserServiceImplTest {
     void adminUpdateUserRating() throws ServiceException {
         userService.updateRating(2, 5.0);
         Assertions.assertEquals(5, (double) userService.getById(2).get().getRating());
+    }
+
+    @Test
+    void getLastInsertId() throws ServiceException {
+        List<User> userList = userService.findAll();
+        User user = userList.get(userList.size() - 1);
+        assertTrue(userService.registerUser("max112", "4357395400", "Max") > user.getId());
     }
 }

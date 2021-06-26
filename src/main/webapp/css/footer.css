@@ -1,0 +1,17 @@
+
+*,
+*:before,
+*:after {
+    box-sizing: inherit;
+}
+
+.footer {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    padding: 40px;
+    background-color: #272a2d;
+    text-align: center;
+    z-index: 5;
+}
