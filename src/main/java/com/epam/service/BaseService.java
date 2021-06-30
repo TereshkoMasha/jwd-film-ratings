@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface BaseService<T extends BaseEntity> {
+
     List<T> findAll() throws ServiceException;
 
     Optional<T> getById(Integer id) throws ServiceException;

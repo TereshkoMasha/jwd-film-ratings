@@ -57,11 +57,6 @@ public class MovieCrewMemberDaoImpl extends AbstractDaoImpl<MovieCrewMember> imp
         return SQL_FIND_BY_MOVIE_CREW_ID;
     }
 
-    @Override
-    protected String getLastInsertIdSql() {
-        return null;
-    }
-
     public static String getFindAllMovieActorsSql() {
         return SQL_FIND_ALL_ACTORS;
     }

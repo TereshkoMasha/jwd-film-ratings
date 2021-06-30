@@ -26,7 +26,7 @@ public class ChangeUserRatingCommand implements CommandRequest {
                 if (user.getRole() == UserRole.USER) {
                     List<User> users = (List<User>) requestData.getSessionAttribute("users_list");
                     Double rating = Double.parseDouble(requestData.getRequestParameter("rating"));
-                    if (rating < 9.5 && rating > 0) {
+                    if (!rating.isNaN() && rating < 9.5 && rating > 0) {
                         for (int i = 0; i < users.size(); i++) {
                             if (users.get(i).getId().equals(id)) {
                                 userService.updateRating(id, rating);
@@ -38,9 +38,9 @@ public class ChangeUserRatingCommand implements CommandRequest {
                     requestData.addSessionAttribute("users_list", users);
                 }
             }
-        } catch (ServiceException e) {
+        } catch (ServiceException | NumberFormatException e) {
             LOGGER.error("Exception while changing user rating", e);
-            return new CommandExecute(RouteType.REDIRECT, Destination.ERROR.getPath());
+            return new CommandExecute(RouteType.REDIRECT, Destination.USERS.getPath());
         }
         return new CommandExecute(RouteType.FORWARD, Destination.USERS.getPath());
     }

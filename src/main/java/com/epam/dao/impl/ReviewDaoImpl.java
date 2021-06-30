@@ -76,11 +76,6 @@ public class ReviewDaoImpl extends AbstractDaoImpl<Review> implements ReviewDao 
         return SQL_FIND_BY_ID;
     }
 
-    @Override
-    protected String getLastInsertIdSql() {
-        return null;
-    }
-
     protected String getFindAllByMovieIdSql() {
         return SQL_FIND_ALL_BY_MOVIE_ID;
     }
@@ -88,6 +83,7 @@ public class ReviewDaoImpl extends AbstractDaoImpl<Review> implements ReviewDao 
     protected String getFindByMovieIdUserIdSql() {
         return SQL_FIND_BY_MOVIE_ID_USER_ID;
     }
+
 
     @Override
     public boolean update(Review entity) throws DAOException {

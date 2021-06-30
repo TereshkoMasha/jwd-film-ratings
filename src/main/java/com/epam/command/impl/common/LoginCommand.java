@@ -17,31 +17,30 @@ public class LoginCommand implements CommandRequest {
 
     @Override
     public CommandExecute executeCommand(RequestData requestData) {
-        CommandExecute commandExecute = null;
-        String login = requestData.getRequestParameter(AttributeName.LOGIN).trim();
-        String password = requestData.getRequestParameter(AttributeName.PASSWORD).trim();
+        CommandExecute commandExecute = new CommandExecute(RouteType.REDIRECT, Destination.MAIN_PAGE.getPath());
         try {
+            String login = requestData.getRequestParameter(AttributeName.LOGIN).trim();
+            String password = requestData.getRequestParameter(AttributeName.PASSWORD).trim();
+
             if (userService.findByLoginPassword(login, password)) {
                 Optional<User> optionalUser = userService.findByLogin(login);
                 if (optionalUser.isPresent()) {
                     User user = optionalUser.get();
                     requestData.addSessionAttribute(AttributeName.USER, user);
                     requestData.addSessionAttribute(AttributeName.ROLE, user.getRole().getId());
-                    if (user.getRole() == UserRole.USER) {
-                        commandExecute = new CommandExecute(RouteType.REDIRECT, Destination.MAIN_PAGE.getPath());
-                    } else if (user.getRole() == UserRole.ADMIN) {
+                    if (user.getRole() == UserRole.ADMIN) {
                         requestData.addSessionAttribute("users_list", userService.findAll());
-                        commandExecute = new CommandExecute(RouteType.REDIRECT, Destination.USERS.getPath());
+                        commandExecute.setPagePath(Destination.USERS.getPath());
                     }
                 }
             } else {
-                requestData.addSessionAttribute("login-error", AttributeName.LOGIN_ERROR);
-                commandExecute = new CommandExecute(RouteType.FORWARD, Destination.LOGIN.getPath());
+                requestData.addSessionAttribute("error", "error.login");
+                commandExecute.setPagePath(Destination.LOGIN.getPath());
             }
+            return commandExecute;
         } catch (ServiceException e) {
             LOGGER.error("Error while trying to login", e);
             return new CommandExecute(RouteType.REDIRECT, Destination.ERROR.getPath());
         }
-        return commandExecute;
     }
 }

@@ -1,6 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
 <c:choose>
     <c:when test="${not empty sessionScope.locale}">
@@ -32,19 +33,29 @@
                 <input type="hidden" name="command" value="login">
                 <div class="group">
                     <label for="user" class="label"><fmt:message key="main.login"/></label>
-                    <input id="user" type="text" name="login" required class="input">
+                    <input id="user" type="text" name="login" required class="input" value="${fn:escapeXml(login)}">
                 </div>
                 <div class="group">
                     <label for="pass" class="label"><fmt:message key="main.password"/></label>
                     <input id="pass" name="password" required type="password" class="input"
-                           data-type="password">
+                           data-type="password" value="${fn:escapeXml(password)}">
                 </div>
+                <c:choose>
+                    <c:when test="${not empty error}">
+                        <p><fmt:message key="${error}"/></p>
+                    </c:when>
+                    <c:otherwise>
+                        <p></p>
+                    </c:otherwise>
+                </c:choose>
                 <br><br>
                 <div class="group">
                     <input type="submit" class="button" value="Sign In">
                 </div>
                 <div class="hr"></div>
             </form>
+
+
             <form method="post" action="${pageContext.request.contextPath}/controller" class="sign-up-htm">
                 <input type="hidden" name="command" value="registration">
                 <div class="group">
@@ -63,12 +74,10 @@
                 <div class="group">
                     <label for="pass" class="label"><fmt:message key="main.password"/></label>
                     <input type="password" class="input" data-type="password" name="password" required
-                           pattern="^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$">
+                           pattern="^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,40}$" minlength="8" maxlength="40">
                 </div>
                 <br>
-                <div class="group">
-                    <input type="submit" class="button" value="Sign Up">
-                </div>
+                <div class="group"><input type="submit" class="button" value="Sign Up"></div>
                 <div class="hr"></div>
             </form>
         </div>

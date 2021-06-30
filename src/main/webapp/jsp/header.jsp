@@ -38,7 +38,8 @@
         <div class="search-wrapper">
             <form method="post" accept-charset="utf-8"
                   action="${pageContext.request.contextPath}/controller?command=movie-search&page=${1}">
-                <input type="text" name="movie" required class="search-box" placeholder="Enter search movie"/>
+                <input type="text" name="movie" required class="search-box"
+                       placeholder="<fmt:message key="movie.placeholder"/>"/>
             </form>
         </div>
         <nav class="menu">
@@ -49,7 +50,6 @@
                         <a href="${pageContext.request.contextPath}/controller?command=show_users">
                             <fmt:message key="admin.main"/> </a>
                     </c:if>
-                    <%--                    <a href="#"><fmt:message key="header.user"/></a>--%>
                     <a href="${pageContext.request.contextPath}/controller?command=logout">
                         <fmt:message key="header.logout"/></a>
                 </c:when>

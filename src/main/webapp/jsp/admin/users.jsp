@@ -30,12 +30,12 @@
             <thead>
             <tr>
                 <th>№</th>
-                <th>Username</th>
-                <th>Name</th>
-                <th>Rating</th>
-                <th>Status</th>
-                <th>Role</th>
-                <th>Banned</th>
+                <th><fmt:message key="main.login"/></th>
+                <th><fmt:message key="user.name"/></th>
+                <th><fmt:message key="user.rating"/></th>
+                <th><fmt:message key="user.status"/></th>
+                <th><fmt:message key="user.role"/></th>
+                <th><fmt:message key="user.ban.active"/></th>
             </tr>
             </thead>
         </table>

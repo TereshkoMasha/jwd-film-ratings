@@ -24,14 +24,13 @@ public class LeaveCommentCommand implements CommandRequest {
     public CommandExecute executeCommand(RequestData requestData) {
         String text = null;
         try {
-            if (requestData.getRequestParameter(AttributeName.COMMENT) != null) {
+            if (requestData.getRequestParametersValues().containsKey(AttributeName.COMMENT)) {
                 text = requestData.getRequestParameter(AttributeName.COMMENT);
             }
-            if (requestData.getRequestParameter(AttributeName.RATING) != null) {
-
+            if (requestData.getRequestParametersValues().containsKey(AttributeName.RATING)) {
                 String rating = requestData.getRequestParameter(AttributeName.RATING);
                 Double avrRating = (Double) requestData.getSessionAttribute(AttributeName.RATING);
-                Integer movie_id = Integer.parseInt(requestData.getRequestParameter(AttributeName.ID));
+                Integer movieId = Integer.parseInt(requestData.getRequestParameter(AttributeName.ID));
                 User user = (User) requestData.getSessionAttribute(AttributeName.USER);
 
                 if (avrRating <= Double.parseDouble(rating) + 0.5 && avrRating >= Double.parseDouble(rating) - 0.5) {
@@ -43,13 +42,13 @@ public class LeaveCommentCommand implements CommandRequest {
                     users.add(user);
                     requestData.addSessionAttribute("users", users);
                     if (text != null) {
-                        reviewService.create(text, Appraisal.resolveGenreById(Integer.parseInt(rating)), movie_id, user.getId());
+                        reviewService.create(text, Appraisal.resolveGenreById(Integer.parseInt(rating)), movieId, user.getId());
                     } else {
-                        reviewService.create("", Appraisal.resolveGenreById(Integer.parseInt(rating)), movie_id, user.getId());
+                        reviewService.create("", Appraisal.resolveGenreById(Integer.parseInt(rating)), movieId, user.getId());
                     }
-                    requestData.addSessionAttribute("rating", reviewService.getAverageRating(movie_id));
+                    requestData.addSessionAttribute("rating", reviewService.getAverageRating(movieId));
                     List<Review> reviewList = (List<Review>) requestData.getSessionAttribute("review");
-                    reviewList.add(reviewService.findByMovieIdUserId(movie_id, user.getId()).get());
+                    reviewList.add(reviewService.findByMovieIdUserId(movieId, user.getId()).get());
                     requestData.addSessionAttribute("review", reviewList);
                 }
             }

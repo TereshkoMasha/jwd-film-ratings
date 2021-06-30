@@ -35,9 +35,11 @@ public class RegistrationCommand implements CommandRequest {
                         requestData.addSessionAttribute(AttributeName.USER, user);
                         commandExecute = new CommandExecute(RouteType.REDIRECT, Destination.MAIN_PAGE.getPath());
                     }
+                } else {
+
                 }
             } else {
-
+                requestData.addSessionAttribute("login-error", " ????");
             }
         } catch (ServiceException e) {
             LOGGER.error("Error while registration process", e);

@@ -12,7 +12,7 @@ public interface AttributeName {
     String ID = "id";
     String MOVIE = "movie";
     String GENRE = "genre";
-    String LOGIN_ERROR = "login_error";
+    String LOGIN_ERROR = "login-error";
     String BAN = "ban";
     String COMMENT = "comment_text";
     String RATING = "rating";
