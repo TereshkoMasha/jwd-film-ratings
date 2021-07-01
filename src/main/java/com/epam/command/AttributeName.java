@@ -12,7 +12,7 @@ public interface AttributeName {
     String ID = "id";
     String MOVIE = "movie";
     String GENRE = "genre";
-    String LOGIN_ERROR = "login-error";
+
     String BAN = "ban";
     String COMMENT = "comment_text";
     String RATING = "rating";
@@ -21,4 +21,9 @@ public interface AttributeName {
     String ACTOR = "actors";
     String REVIEW = "review";
     String PAGE = "page";
+
+    String ERROR_SIGN_IN = "errorSignIn";
+    String ERROR_PASSWORD_MATCH = "errorPasswordMatch";
+    String ERROR_LOGIN_MATCH = "errorLoginMatch";
+    String ERROR_INVALID_INPUT = "errorInvalidInput";
 }

@@ -53,7 +53,7 @@
                     <td>
                         <form method="post"
                               action="${pageContext.request.contextPath}/controller?command=change-rating&id=${user.id}">
-                            <input type="text" list="numbers" name="rating" placeholder="${user.rating}"/>
+                            <input type="text" list="numbers" name="rating" placeholder="${user.rating}"/><br>
                             <datalist id="numbers">
                                 <c:forEach var="starCounter" begin="1" end="10">
                                     <c:set var="starHalfStepCounter" value="${starCounter - 0.5}"/>

@@ -24,10 +24,23 @@
 <c:import url="header.jsp"/>
 <div class="login-wrap">
     <div class="login-html">
-        <input id="tab-1" type="radio" name="tab" class="sign-in" checked><label for="tab-1" class="tab"><fmt:message
-            key="header.login"/></label>
-        <input id="tab-2" type="radio" name="tab" class="sign-up"><label for="tab-2" class="tab"><fmt:message
-            key="header.register"/></label>
+
+        <c:choose>
+            <c:when test="${not empty errorLoginMatch}">
+                <input id="tab-1" type="radio" name="tab" class="sign-in"><label for="tab-1" class="tab"><fmt:message
+                    key="header.login"/></label>
+                <input id="tab-2" type="radio" name="tab" class="sign-up" checked><label for="tab-2"
+                                                                                         class="tab"><fmt:message
+                    key="header.register"/></label>
+            </c:when>
+            <c:otherwise>
+                <input id="tab-1" type="radio" name="tab" class="sign-in" checked><label for="tab-1"
+                                                                                         class="tab"><fmt:message
+                    key="header.login"/></label>
+                <input id="tab-2" type="radio" name="tab" class="sign-up"><label for="tab-2" class="tab"><fmt:message
+                    key="header.register"/></label>
+            </c:otherwise>
+        </c:choose>
         <div class="login-form">
             <form method="post" action="${pageContext.request.contextPath}/controller" class="sign-in-htm">
                 <input type="hidden" name="command" value="login">
@@ -41,8 +54,8 @@
                            data-type="password" value="${fn:escapeXml(password)}">
                 </div>
                 <c:choose>
-                    <c:when test="${not empty error}">
-                        <p><fmt:message key="${error}"/></p>
+                    <c:when test="${not empty errorSignIn}">
+                        <p><fmt:message key="${errorSignIn}"/></p>
                     </c:when>
                     <c:otherwise>
                         <p></p>
@@ -63,6 +76,14 @@
                     <input id=type="text" class="input" name="login" required
                            pattern="^(?=.*[A-Za-z0-9]$)[A-Za-z][A-Za-z\d.-]{0,19}$">
                 </div>
+                <c:choose>
+                    <c:when test="${not empty errorLoginMatch}">
+                        <p><fmt:message key="${errorLoginMatch}"/></p>
+                    </c:when>
+                    <c:otherwise>
+                        <p></p>
+                    </c:otherwise>
+                </c:choose>
                 <div class="group">
                     <label for="user" class="label"><fmt:message key="register.firstName"/></label>
                     <input type="text" class="input" name="firstName" required>
@@ -73,9 +94,19 @@
                 </div>
                 <div class="group">
                     <label for="pass" class="label"><fmt:message key="main.password"/></label>
-                    <input type="password" class="input" data-type="password" name="password" required
-                           pattern="^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,40}$" minlength="8" maxlength="40">
+                    <input type="password"
+                           class="input"
+                           data-type="password"
+                           name="password"
+                           required
+                           pattern="^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$"
+                           minlength="8"
+                           maxlength="40"
+                    >
                 </div>
+                <c:if test="${not empty errorPasswordMatch}">
+                    <p><fmt:message key="${errorPasswordMatch}"/></p>
+                </c:if>
                 <br>
                 <div class="group"><input type="submit" class="button" value="Sign Up"></div>
                 <div class="hr"></div>

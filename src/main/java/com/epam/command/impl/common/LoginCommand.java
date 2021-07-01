@@ -34,8 +34,9 @@ public class LoginCommand implements CommandRequest {
                     }
                 }
             } else {
-                requestData.addSessionAttribute("error", "error.login");
+                requestData.addRequestAttribute(AttributeName.ERROR_SIGN_IN, "error.message.login");
                 commandExecute.setPagePath(Destination.LOGIN.getPath());
+                commandExecute.setRouteType(RouteType.FORWARD);
             }
             return commandExecute;
         } catch (ServiceException e) {

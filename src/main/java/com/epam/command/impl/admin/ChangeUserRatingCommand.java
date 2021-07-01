@@ -34,13 +34,18 @@ public class ChangeUserRatingCommand implements CommandRequest {
                                 break;
                             }
                         }
+                    } else {
+                        requestData.addRequestAttribute(AttributeName.ERROR_INVALID_INPUT, "error.message.invalid.input");
                     }
                     requestData.addSessionAttribute("users_list", users);
                 }
             }
-        } catch (ServiceException | NumberFormatException e) {
+        } catch (ServiceException e) {
             LOGGER.error("Exception while changing user rating", e);
             return new CommandExecute(RouteType.REDIRECT, Destination.USERS.getPath());
+        } catch (NumberFormatException e) {
+            requestData.addRequestAttribute(AttributeName.ERROR_INVALID_INPUT, "error.message.invalid.input");
+            return new CommandExecute(RouteType.FORWARD, Destination.USERS.getPath());
         }
         return new CommandExecute(RouteType.FORWARD, Destination.USERS.getPath());
     }

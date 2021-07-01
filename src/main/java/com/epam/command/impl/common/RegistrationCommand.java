@@ -20,11 +20,16 @@ public class RegistrationCommand implements CommandRequest {
     public CommandExecute executeCommand(RequestData requestData) {
         CommandExecute commandExecute = new CommandExecute(RouteType.REDIRECT, Destination.MAIN_PAGE.getPath());
 
+        if (requestData.getSessionAttributes().containsKey(AttributeName.ERROR_PASSWORD_MATCH)) {
+            requestData.deleteSessionAttribute(AttributeName.ERROR_PASSWORD_MATCH);
+        } else if (requestData.getSessionAttributes().containsKey(AttributeName.ERROR_LOGIN_MATCH)) {
+            requestData.deleteSessionAttribute(AttributeName.ERROR_LOGIN_MATCH);
+        }
+
         String login = requestData.getRequestParameter(AttributeName.LOGIN).trim();
         try {
-            if (userService.checkLogin(login)) {
+            if (!userService.checkLogin(login)) {
                 String password = requestData.getRequestParameter(AttributeName.PASSWORD).trim();
-
                 String firstName = requestData.getRequestParameter(AttributeName.FIRST_NAME).trim();
                 String lastName = requestData.getRequestParameter(AttributeName.LAST_NAME).trim();
 
@@ -33,17 +38,20 @@ public class RegistrationCommand implements CommandRequest {
                     Optional<User> user = userService.getById(id);
                     if (user.isPresent()) {
                         requestData.addSessionAttribute(AttributeName.USER, user);
-                        commandExecute = new CommandExecute(RouteType.REDIRECT, Destination.MAIN_PAGE.getPath());
                     }
                 } else {
-
+                    requestData.addRequestAttribute(AttributeName.ERROR_PASSWORD_MATCH, "error.message.valid.password");
+                    commandExecute.setPagePath(Destination.LOGIN.getPath());
+                    commandExecute.setRouteType(RouteType.FORWARD);
                 }
             } else {
-                requestData.addSessionAttribute("login-error", " ????");
+                requestData.addRequestAttribute(AttributeName.ERROR_LOGIN_MATCH, "error.message.login.match");
+                commandExecute.setPagePath(Destination.LOGIN.getPath());
+                commandExecute.setRouteType(RouteType.FORWARD);
             }
         } catch (ServiceException e) {
             LOGGER.error("Error while registration process", e);
-            commandExecute.setPagePath(Destination.LOGIN.getPath());
+            commandExecute.setPagePath(Destination.ERROR.getPath());
         }
         return commandExecute;
     }

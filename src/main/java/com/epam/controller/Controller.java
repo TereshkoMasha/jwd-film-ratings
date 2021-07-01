@@ -39,7 +39,7 @@ public class Controller extends HttpServlet {
             if (command.isPresent()) {
                 CommandExecute commandExecute = command.get().executeCommand(requestData);
                 if (commandExecute != null) {
-                    requestData.insertSessionAttributes(request);
+                    requestData.insertSessionAndRequestAttributes(request);
                     if (commandExecute.getRouteType().equals(RouteType.REDIRECT)) {
                         response.sendRedirect(request.getContextPath() + commandExecute.getPagePath());
                     } else {
@@ -60,5 +60,11 @@ public class Controller extends HttpServlet {
     public void init() throws ServletException {
         super.init();
         ConnectionPool.getInstance();
+    }
+
+    @Override
+    public void destroy() {
+        super.destroy();
+        ConnectionPool.getInstance().closePool();
     }
 }

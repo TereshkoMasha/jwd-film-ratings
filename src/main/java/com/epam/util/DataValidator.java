@@ -22,9 +22,9 @@ public class DataValidator {
      * Asserts that the match must ends with a letter or digit.
      * Must starts with a letter.
      * [A-Za-z\d.-]{0,19} matches the chars according to the pattern present inside the char class.
-     * And the number of matched chars must be from 0 to 19.
+     * And the number of matched chars must be from 1 to 19.
      */
-    private static final String REGEX_FOR_LOGIN = "^(?=.*[A-Za-z0-9]$)[A-Za-z][A-Za-z\\d.-]{0,19}$";
+    private static final String REGEX_FOR_LOGIN = "^(?=.*[A-Za-z0-9]$)[A-Za-z][A-Za-z\\d.-]{1,20}$";
 
     public boolean validatePasswordLogin(String password, String login) {
         if (checkParameterLength(password) && checkParameterLength(login)) {

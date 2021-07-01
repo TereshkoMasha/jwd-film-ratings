@@ -14,7 +14,7 @@ public interface UserService extends BaseService<User> {
      * @param password a password value
      * @param name     a first name  + surname value
      * @return (@code int) user id
-     * @throws ServiceException if {@code DaoException} occurs (database access error)
+     * @throws ServiceException if {@code DAOException} occurs (database access error)
      */
     int registerUser(String login, String password, String name) throws ServiceException;
 

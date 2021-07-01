@@ -25,6 +25,10 @@ table {
     border: 1px solid #de6b48;
 }
 
+.tbl-content p {
+    size: 10px;
+}
+
 th {
     padding: 20px 15px;
     text-align: left;
@@ -47,19 +51,21 @@ td {
 
 /* demo styles */
 
-section{
+section {
     margin: 40px;
     margin-left: 152px;
     width: 1230px;
 }
+
 /* for custom scrollbar for webkit browser*/
 
 .seldiv {
     background: #415665;
     height: 75px;
-    width:200px;
+    width: 200px;
     border-radius: 15px;
-    padding:20px;
-    font-size:22px;
-    color:#fff;
+    padding: 20px;
+    font-size: 22px;
+    color: #fff;
 }
+

@@ -15,11 +15,13 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class ConnectionPool {
-    private static final Logger LOGGER = LogManager.getLogger(ConnectionPool.class);
+    private static final Logger logger = LogManager.getLogger(ConnectionPool.class);
     private static ConnectionPool instance;
     private static final DatabaseProperties properties = PropertyReaderUtil.getInstance().getDatabaseProperties();
-    private static final ReentrantLock LOCK = new ReentrantLock();
-    private static final AtomicBoolean INSTANCE_INITIALIZE = new AtomicBoolean(false);
+
+    private static final ReentrantLock lock = new ReentrantLock();
+    private static final AtomicBoolean instance_initialize = new AtomicBoolean(false);
+
     private static final BlockingQueue<Connection> availableConnections = new LinkedBlockingQueue<>(properties.getMaxPoolSize());
     private static final Queue<Connection> usedConnections = new LinkedBlockingQueue<>();
 
@@ -28,18 +30,18 @@ public class ConnectionPool {
     }
 
     public static ConnectionPool getInstance() {
-        if (!INSTANCE_INITIALIZE.get()) {
+        if (!instance_initialize.get()) {
             try {
-                LOCK.lock();
+                lock.lock();
                 if (instance == null) {
                     instance = new ConnectionPool();
                     initialize();
-                    INSTANCE_INITIALIZE.set(true);
+                    instance_initialize.set(true);
                 }
             } catch (SQLException e) {
-                LOGGER.error(e.getMessage());
+                logger.error(e.getStackTrace());
             } finally {
-                LOCK.unlock();
+                lock.unlock();
             }
         }
         return instance;
@@ -49,25 +51,28 @@ public class ConnectionPool {
         for (int i = 0; i < properties.getInitPoolSize(); i++) {
             createConnection();
         }
-        LOGGER.info("Connection pool successful initialization");
+        logger.info("Connection pool successful initialization");
     }
 
     private static void createConnection() {
         try (Connection connection = new ConnectionProxy(
                 DriverManager.getConnection(properties.getUrl(), properties.getUser(), properties.getPassword()))) {
-            availableConnections.offer(connection);
+            availableConnections.add(connection);
         } catch (SQLException e) {
-            LOGGER.error("SQL Exception during the connection creating: check database||properties settings", new RuntimeException(e));
+            logger.error("SQL Exception during the connection creating: check database||properties settings", e);
         }
     }
 
     public Connection getConnection() throws InterruptedException {
         Connection connection = null;
         try {
+            if (availableConnections.isEmpty() && usedConnections.size() < properties.getMaxPoolSize()) {
+                createConnection();
+            }
             connection = availableConnections.take();
             usedConnections.offer(connection);
         } catch (InterruptedException e) {
-            LOGGER.error("Unable to get connection from connection pool", e);
+            logger.error("Unable to get connection from connection pool", e);
             Thread.currentThread().interrupt();
         }
         return connection;
@@ -79,4 +84,16 @@ public class ConnectionPool {
             usedConnections.remove(proxy);
         }
     }
+
+    public void closePool() {
+        for (int i = 0; i < availableConnections.size(); i++) {
+            try {
+                availableConnections.take().close();
+            } catch (SQLException | InterruptedException e) {
+                logger.error("Unable to close connection pool", e);
+                Thread.currentThread().interrupt();
+            }
+        }
+    }
+
 }
