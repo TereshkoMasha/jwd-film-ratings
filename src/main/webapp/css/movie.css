@@ -250,7 +250,7 @@ textarea:focus {
     display: inline-block;
     vertical-align: top;
     border-radius: 3px;
-    margin-left: 50px;
+    margin-left: 60px;
     box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.08);
     margin-top: 20px;
 }

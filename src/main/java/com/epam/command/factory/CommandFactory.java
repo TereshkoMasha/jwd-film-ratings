@@ -20,7 +20,7 @@ public class CommandFactory {
             String command = requestData.getRequestParameter(AttributeName.COMMAND);
             CommandType commandType = CommandType.valueOf(upper(command));
             optionalCommand = Optional.of(commandType.getCommand());
-        } catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException | NullPointerException e) {
             LOGGER.error("Exception while command define", e);
             return Optional.of(CommandType.MAIN.getCommand());
         }

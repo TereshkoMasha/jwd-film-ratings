@@ -47,10 +47,11 @@ public class Controller extends HttpServlet {
                         requestDispatcher.forward(request, response);
                     }
                 } else {
-                    request.getSession().setAttribute("nullPage", "Page not found");
+                    request.getSession().setAttribute("error", "Page not found");
                     response.sendRedirect(request.getContextPath() + Destination.ERROR.getPath());
                 }
             }
+
         } catch (ServletException | IOException e) {
             LOGGER.error(new ServletException(e.getMessage()));
         }

@@ -2,10 +2,15 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>Error</title>
-    <h3>сломал получается</h3>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/error.css">
+    <title>404 Page not found</title>
 </head>
 <body>
-
+<div id="main">
+    <div class="fof">
+        <h1>404. Страница не найдена</h1>
+        <h3><a href="${pageContext.request.contextPath}/controller?command=main&page=1">Перейти на главную</a></h3>
+    </div>
+</div>
 </body>
 </html>
