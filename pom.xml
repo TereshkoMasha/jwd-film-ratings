@@ -28,11 +28,18 @@
             <version>8.0.23</version>
         </dependency>
 
-        <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-core</artifactId>
-            <version>2.14.0</version>
-        </dependency>
+
+            <dependency>
+                <groupId>org.apache.logging.log4j</groupId>
+                <artifactId>log4j-api</artifactId>
+                <version>2.14.0</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.logging.log4j</groupId>
+                <artifactId>log4j-core</artifactId>
+                <version>2.14.0</version>
+            </dependency>
 
 
         <dependency>
@@ -74,6 +81,7 @@
             <artifactId>jakarta.servlet.jsp.jstl-api</artifactId>
             <version>1.2.7</version>
         </dependency>
+
         <dependency>
             <groupId>org.glassfish.web</groupId>
             <artifactId>jakarta.servlet.jsp.jstl</artifactId>
@@ -87,6 +95,5 @@
         </dependency>
 
     </dependencies>
-
 
 </project>

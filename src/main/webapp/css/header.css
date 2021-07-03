@@ -1,7 +1,9 @@
 @import url('https://fonts.googleapis.com/css?family=Poppins:700');
+
 * {
     margin: 0;
 }
+
 header {
     height: 60px;
     width: 100%;
@@ -39,6 +41,7 @@ header nav {
     position: relative;
     margin-left: 10px;
 }
+
 header nav a {
     text-decoration: none;
     font-family: 'Poppins', sans-serif;
@@ -73,11 +76,13 @@ header nav a:hover {
 .redfamily {
     color: red;
 }
-.search-box,.search-wrapper {
+
+.search-box, .search-wrapper {
     position: relative;
     padding: 7px;
 
 }
+
 .search-box {
     line-height: 20px;
     width: 80%;
@@ -90,7 +95,7 @@ header nav a:hover {
     float: left;
 }
 
-.search-wrapper form{
+.search-wrapper form {
     padding-left: 300px;
     width: 300px;
 }

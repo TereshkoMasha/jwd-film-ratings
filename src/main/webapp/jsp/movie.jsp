@@ -24,6 +24,12 @@
 
 <body>
 <c:import url="header.jsp"/>
+<div class="vl"></div>
+<div class="appraisal">
+    <c:if test="${not empty rating}">
+        <c:out value="${rating}"/>
+    </c:if>
+</div>
 <div class="movie-container">
     <c:if test="${sessionScope.review == null}">
         <form id="jsform" method="post"
@@ -40,9 +46,7 @@
             <div class="details">
                 <div class="title1">
                     <c:out value="${movie.name} (${movie.releaseYear})"/>
-                    <c:if test="${not empty rating}">
-                        <c:out value="${rating}"/>
-                    </c:if>
+
                 </div>
                 <div class="title2">
                     <c:out value="${movie.tagline}"/>
@@ -124,7 +128,7 @@
 <div class="comment-container">
     <div class="about-column">
         <h2><fmt:message key="movie.description"/></h2>
-        <p><c:out value="${movie.description}"/></p>
+        <p style="margin-left: 40px ; padding-right: 160px; padding-top: 10px"><c:out value="${movie.description}"/></p>
         <h2><fmt:message key="movie.comment"/></h2>
         <c:choose>
             <c:when test="${not empty review}">

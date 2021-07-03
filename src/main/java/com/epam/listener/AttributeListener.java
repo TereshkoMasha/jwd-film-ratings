@@ -13,19 +13,22 @@ public class AttributeListener implements HttpSessionAttributeListener {
 
     @Override
     public void attributeAdded(HttpSessionBindingEvent event) {
-        LOGGER.debug("Added attribute name: %s, value:%s %n", event.getName(),
-                event.getValue());
+        String attributeName = event.getName();
+        Object attributeValue = event.getValue();
+        LOGGER.debug("Attribute added : " + attributeName + " : " + attributeValue);
     }
 
     @Override
     public void attributeRemoved(HttpSessionBindingEvent event) {
-        LOGGER.debug("Removed attribute name: %s, value:%s %n", event.getName(),
-                event.getValue());
+        String attributeName = event.getName();
+        Object attributeValue = event.getValue();
+        LOGGER.debug("Attribute removed : " + attributeName + " : " + attributeValue);
     }
 
     @Override
     public void attributeReplaced(HttpSessionBindingEvent event) {
-        LOGGER.debug("Replaced attribute name: %s, value:%s %n", event.getName(),
-                event.getValue());
+        String attributeName = event.getName();
+        Object attributeValue = event.getValue();
+        LOGGER.debug("Attribute replaced : " + attributeName + " : " + attributeValue);
     }
 }

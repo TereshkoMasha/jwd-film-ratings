@@ -34,12 +34,22 @@ public class MovieServiceImpl implements MovieService {
 
     @Override
     public boolean update(Movie entity) throws ServiceException {
-        return false;
+        try {
+            return filmDao.update(entity);
+        } catch (DAOException e) {
+            LOGGER.error(e);
+            throw new ServiceException();
+        }
     }
 
     @Override
-    public boolean deleteById(Integer id) {
-        return false;
+    public boolean deleteById(Integer id) throws ServiceException {
+        try {
+            return filmDao.deleteById(id);
+        } catch (DAOException e) {
+            LOGGER.error(e);
+            throw new ServiceException();
+        }
     }
 
     @Override

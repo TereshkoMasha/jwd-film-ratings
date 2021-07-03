@@ -42,6 +42,7 @@
                        placeholder="<fmt:message key="movie.placeholder"/>"/>
             </form>
         </div>
+
         <nav class="menu">
             <a href="${pageContext.request.contextPath}/controller?command=main"><fmt:message key="header.main"/></a>
             <c:choose>
@@ -52,6 +53,7 @@
                     </c:if>
                     <a href="${pageContext.request.contextPath}/controller?command=logout">
                         <fmt:message key="header.logout"/></a>
+
                 </c:when>
                 <c:otherwise>
                     <a href="${pageContext.request.contextPath}/jsp/login.jsp"><fmt:message key="header.login"/></a>

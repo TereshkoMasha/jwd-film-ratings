@@ -14,6 +14,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class LeaveCommentCommand implements CommandRequest {
     private static final Logger LOGGER = LogManager.getLogger(LeaveCommentCommand.class);
@@ -22,10 +24,10 @@ public class LeaveCommentCommand implements CommandRequest {
 
     @Override
     public CommandExecute executeCommand(RequestData requestData) {
-        String text = null;
         try {
+            String text = "";
             if (requestData.getRequestParametersValues().containsKey(AttributeName.COMMENT)) {
-                text = requestData.getRequestParameter(AttributeName.COMMENT);
+                text = requestData.getRequestParameter(AttributeName.COMMENT).trim();
             }
             if (requestData.getRequestParametersValues().containsKey(AttributeName.RATING)) {
                 String rating = requestData.getRequestParameter(AttributeName.RATING);
@@ -38,6 +40,7 @@ public class LeaveCommentCommand implements CommandRequest {
                         requestData.addSessionAttribute("user", user);
                 }
                 List<User> users = (List<User>) requestData.getSessionAttribute("users");
+
                 if (!users.contains(user)) {
                     users.add(user);
                     requestData.addSessionAttribute("users", users);
@@ -48,8 +51,13 @@ public class LeaveCommentCommand implements CommandRequest {
                     }
                     requestData.addSessionAttribute("rating", reviewService.getAverageRating(movieId));
                     List<Review> reviewList = (List<Review>) requestData.getSessionAttribute("review");
-                    reviewList.add(reviewService.findByMovieIdUserId(movieId, user.getId()).get());
-                    requestData.addSessionAttribute("review", reviewList);
+
+                    Optional<Review> newReview = reviewService.findByMovieIdUserId(movieId, user.getId());
+                    newReview.ifPresent(reviewList::add);
+
+                    List<Review> reviewListWithText = reviewList.stream().filter(review -> !review.getText().isEmpty()).collect(Collectors.toList());
+
+                    requestData.addSessionAttribute("review", reviewListWithText);
                 }
             }
         } catch (ServiceException e) {

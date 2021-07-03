@@ -7,30 +7,32 @@ import com.epam.service.MovieService;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
+import java.util.Comparator;
+import java.util.List;
+import java.util.Optional;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 class MovieServiceImplTest {
+
     private final MovieService movieService = new MovieServiceImpl();
 
     @Test
-    void findAll() throws ServiceException {
-        Movie movieMock = Mockito.mock(Movie.class);
-        Mockito.when(movieMock.getName()).thenReturn("Джанго освобожденный");
-        Mockito.when(movieMock.getGenre()).thenReturn(Genre.THRILLER);
-        assertEquals(movieService.findAll().get(0).getName(), movieMock.getName());
-        assertEquals(movieService.findAll().get(0).getGenre(), movieMock.getGenre());
-    }
-
-    @Test
     void findByNamePositive() throws ServiceException {
-        assertEquals(movieService.findByName("Легенда о волках").get().getName(), "Легенда о волках");
+        String name = "Джанго освобожденный";
+        Movie movieMock = Mockito.mock(Movie.class);
+        Mockito.when(movieMock.getName()).thenReturn(name);
+        Optional<Movie> optionalMovie = movieService.findByName(name);
+        optionalMovie.ifPresent(movie -> assertEquals(movie.getName(), movieMock.getName()));
     }
 
     @Test
     void findAllByGenre() throws ServiceException {
-        Movie movieMock = Mockito.mock(Movie.class);
-        Mockito.when(movieMock.getGenre()).thenReturn(Genre.CARTOON);
-        assertEquals(movieService.findAllByGenre(Genre.CARTOON).get(0).getGenre(), movieMock.getGenre());
+        Genre genre = Genre.THRILLER;
+        List<Movie> movies = movieService.findAllByGenre(genre);
+        long numberOfMoviesWithGenre = movies.stream().map(movie -> movie.getGenre() == genre).count();
+        assertEquals(numberOfMoviesWithGenre, movies.size());
     }
 
     @Test
@@ -45,7 +47,21 @@ class MovieServiceImplTest {
         Movie movieMock = Mockito.mock(Movie.class);
         Mockito.when(movieMock.getName()).thenReturn("Легенда о волках");
         Mockito.when(movieMock.getGenre()).thenReturn(Genre.CARTOON);
-        assertEquals(movieService.getById(10).get().getName(), movieMock.getName());
-        assertEquals(movieService.getById(10).get().getGenre(), movieMock.getGenre());
+        Optional<Movie> movie = movieService.getById(10);
+        movie.ifPresent(value -> assertEquals(value.getName(), movieMock.getName()));
+        movie.ifPresent(value -> assertEquals(value.getGenre(), movieMock.getGenre()));
+    }
+
+    @Test
+    void deleteById() throws ServiceException {
+        List<Movie> movieList = movieService.findAll();
+        Optional<Movie> movie = movieList.stream().max(Comparator.comparing(Movie::getId));
+        if (movie.isPresent()) {
+            Integer id = movie.get().getId();
+            String name = movie.get().getName();
+            if (movieService.deleteById(id)) {
+                assertFalse(movieService.findByName(name).isPresent());
+            }
+        }
     }
 }

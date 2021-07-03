@@ -113,7 +113,7 @@ public class FilmDaoImpl extends AbstractDaoImpl<Movie> implements FilmDao {
     }
 
     @Override
-    public boolean update(Movie entity) {
+    public boolean update(Movie entity) throws DAOException {
         boolean updated = false;
         try (Connection connection = connectionPool.getConnection()) {
             try (PreparedStatement preparedStatement = connection.prepareStatement(getUpdateSql())) {

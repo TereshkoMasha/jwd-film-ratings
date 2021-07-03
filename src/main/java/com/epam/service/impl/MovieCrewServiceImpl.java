@@ -44,16 +44,16 @@ public class MovieCrewServiceImpl implements MovieCrewService {
         return Optional.empty();
     }
 
-
     @Override
     public boolean deleteById(Integer id) throws ServiceException {
         return false;
     }
 
     @Override
-    public boolean update(MovieCrewMember movieCrewMember) throws ServiceException {
+    public boolean update(MovieCrewMember entity) throws ServiceException {
         return false;
     }
+
 
     @Override
     public List<MovieCrewMember> findAllActorsByMovieId(Integer id) throws ServiceException {

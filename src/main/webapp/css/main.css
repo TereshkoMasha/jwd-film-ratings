@@ -38,7 +38,9 @@ body {
     width: 200px;
     box-shadow: 2px 2px 8px rgba(0, 0, 0, .1);
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-weight: lighter;
     z-index: 5;
+    letter-spacing: 1px;
 }
 
 .category-wrap h3 {
@@ -47,6 +49,8 @@ body {
     margin: 0 0 10px;
     padding: 0 5px;
     position: relative;
+    font-weight: lighter;
+    letter-spacing: 1px;
 }
 
 .category-wrap h3:after {

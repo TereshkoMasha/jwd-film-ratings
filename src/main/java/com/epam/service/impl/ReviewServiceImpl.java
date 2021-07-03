@@ -9,6 +9,8 @@ import com.epam.service.ReviewService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,7 +20,7 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     public List<Review> findAll() throws ServiceException {
-        List<Review> reviewList = null;
+        List<Review> reviewList;
         try {
             reviewList = reviewDao.findAll();
             if (!reviewList.isEmpty()) {
@@ -106,7 +108,9 @@ public class ReviewServiceImpl implements ReviewService {
         try {
             Double averageRating = reviewDao.getAverageRating(movieId);
             if (!averageRating.isNaN()) {
-                return averageRating;
+                BigDecimal bigDecimal = BigDecimal.valueOf(averageRating);
+                bigDecimal = bigDecimal.setScale(3, RoundingMode.HALF_UP);
+                return bigDecimal.doubleValue();
             }
         } catch (DAOException e) {
             LOGGER.error(e);
