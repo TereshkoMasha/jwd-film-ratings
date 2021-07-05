@@ -2,6 +2,7 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="pag-tag" uri="http://mypagtag" %>
 
 <html>
 <head>
@@ -24,29 +25,30 @@
 
 <body>
 <c:import url="header.jsp"/>
+
+<c:if test="${review eq null}">
+    <form id="jsform" method="post"
+          action=" ${pageContext.request.contextPath}/controller?command=movie-info&id=${movie.id}" hidden>
+    </form>
+    <script type="text/javascript">
+        document.getElementById('jsform').submit();
+    </script>
+</c:if>
+
 <div class="vl"></div>
 <div class="appraisal">
     <c:if test="${not empty rating}">
-        <c:out value="${rating}"/>
+        <c:out value="${rating}"/> <br>
+        <h3><c:out value="всего оценок - ${appraisalNumber}"/></h3>
     </c:if>
 </div>
 <div class="movie-container">
-    <c:if test="${sessionScope.review == null}">
-        <form id="jsform" method="post"
-              action=" ${pageContext.request.contextPath}/controller?command=movie-info&id=${movie.id}" hidden>
-        </form>
-        <script type="text/javascript">
-            document.getElementById('jsform').submit();
-        </script>
-    </c:if>
     <div class="movie-card">
-        <a href="#"><img src="${pageContext.request.contextPath}${movie.poster}" alt="${movie.name}"
-                         class="cover"></a>
+        <a href="#"><img src="${pageContext.request.contextPath}${movie.poster}" alt="${movie.name}" class="cover"></a>
         <div class="hero">
             <div class="details">
                 <div class="title1">
                     <c:out value="${movie.name} (${movie.releaseYear})"/>
-
                 </div>
                 <div class="title2">
                     <c:out value="${movie.tagline}"/>
@@ -132,17 +134,23 @@
         <h2><fmt:message key="movie.comment"/></h2>
         <c:choose>
             <c:when test="${not empty review}">
-                <c:choose>
-                    <c:when test="${page eq 1}">
-                        <c:set var="count" value="${0}"></c:set>
-                    </c:when>
-                    <c:otherwise>
-                        <c:set var="count" value="${page*3 - 3}"></c:set>
-                    </c:otherwise>
-                </c:choose>
-                <c:forEach var="review" items="${review}" begin="${count}" end="${count + 2}" varStatus="status">
+                <%--                <c:choose>--%>
+                <%--                    <c:when test="${page eq 1}">--%>
+                <%--                        <c:set var="count" value="${0}"></c:set>--%>
+                <%--                    </c:when>--%>
+                <%--                    <c:otherwise>--%>
+                <%--                        <c:set var="count" value="${page*3 - 3}"></c:set>--%>
+                <%--                    </c:otherwise>--%>
+                <%--                </c:choose>--%>
+                <c:forEach var="review" items="${review}" begin="${page}" end="${page + 2}" varStatus="status">
                     <c:if test="${not empty review.text}">
                         <div class="comment-block">
+                            <c:if test="${role eq 1}">
+                                <a href="${pageContext.request.contextPath}/controller?command=delete-user-comment&userId=${users[status.index].id}&movieId=${movie.id}">
+                                    <img src="${pageContext.request.contextPath}/img/delete.png"
+                                         alt="delete">
+                                </a>
+                            </c:if>
                             <p class="comment-text" style="margin-left: 0px"><c:out value="${review.text}"/></p>
                             <div class="bottom-comment">${users[status.index].name} - ${review.rating.id}</div>
                         </div>
@@ -152,11 +160,12 @@
                 <c:if test="${review.size() > 1}">
                     <div class="pagination p2">
                         <ul>
-                            <c:forEach begin="1" end="${movies.size()/3}" varStatus="loop">
-                                <a href="${pageContext.request.contextPath}/controller?command=movie-info&page=${loop.count}&id=${movie.id}">
-                                    <li>${loop.count}</li>
-                                </a>
-                            </c:forEach>
+                                <%--                            <c:forEach begin="1" end="${movies.size()/3}" varStatus="loop">--%>
+                                <%--                                <a href="${pageContext.request.contextPath}/controller?command=movie-info&page=${loop.count}&id=${movie.id}">--%>
+                                <%--                                    <li>${loop.count}</li>--%>
+                                <%--                                </a>--%>
+                                <%--                            </c:forEach>--%>
+                            <pag-tag:pag-tag movieReviewListSize="${review.size()}"/>
                         </ul>
                     </div>
                 </c:if>
@@ -165,6 +174,7 @@
                 <p class="comment-text"><fmt:message key="movie.first.comment"/></p>
             </c:otherwise>
         </c:choose>
+
         <c:choose>
             <c:when test="${not empty user}">
                 <c:choose>
@@ -197,8 +207,14 @@
                                                                                                         for="star1"
                                                                                                         title="Bad - 1 star"></label>
                             </fieldset>
+                            <p>
+                                <c:if test="${not empty errorReviewAlreadyExist}">
+                            <p style="margin-top: 5px ; padding-left: 10px ; color: rgba(105,8,0,0.71)"><fmt:message
+                                    key="${errorReviewAlreadyExist}"/></p>
+                            </c:if>
                             <button type="submit" style="margin-left: 400px; margin-top: 5px; margin-bottom: 90px">
                                 <fmt:message key="movie.review"/></button>
+                            </p>
                         </form>
                     </c:when>
                     <c:otherwise>
@@ -212,6 +228,7 @@
                 <p style="margin-bottom: 120px"><fmt:message key="movie.first.comment.reg"/></p>
             </c:otherwise>
         </c:choose>
+
         <jsp:include page="footer.jsp"/>
     </div>
 </div><!-- end movie-container -->

@@ -2,6 +2,7 @@ package com.epam.controller;
 
 import com.epam.command.*;
 import com.epam.command.factory.CommandFactory;
+import com.epam.context.Application;
 import com.epam.db.ConnectionPool;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -47,7 +48,7 @@ public class Controller extends HttpServlet {
                         requestDispatcher.forward(request, response);
                     }
                 } else {
-                    request.getSession().setAttribute("error", "Page not found");
+                    request.getSession().setAttribute("error", "404. Page not found");
                     response.sendRedirect(request.getContextPath() + Destination.ERROR.getPath());
                 }
             }
@@ -61,11 +62,13 @@ public class Controller extends HttpServlet {
     public void init() throws ServletException {
         super.init();
         ConnectionPool.getInstance();
+        Application.start();
     }
 
     @Override
     public void destroy() {
         super.destroy();
         ConnectionPool.getInstance().closePool();
+        LOGGER.debug("Connection pool closed");
     }
 }

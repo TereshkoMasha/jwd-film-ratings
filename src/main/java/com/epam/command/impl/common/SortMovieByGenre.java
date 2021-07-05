@@ -22,6 +22,7 @@ public class SortMovieByGenre implements CommandRequest {
             List<Movie> movieList = movieService.findAllByGenre(Genre.resolveGenreByName(genre));
             if (!movieList.isEmpty()) {
                 requestData.addSessionAttribute("movies", movieList);
+                requestData.deleteSessionAttribute(AttributeName.PAGE);
             }
         } catch (ServiceException e) {
             LOGGER.error("Exception while command define", e);

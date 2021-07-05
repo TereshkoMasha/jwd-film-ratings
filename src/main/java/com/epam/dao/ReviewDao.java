@@ -9,7 +9,11 @@ import java.util.Optional;
 public interface ReviewDao {
     List<Review> findAllByMovieId(Integer movieId) throws DAOException;
 
+    List<Review> findAllByUserId(Integer userId) throws DAOException;
+
     Optional<Review> findByMovieIdUserId(Integer movieId, Integer userId) throws DAOException;
 
     Double getAverageRating(Integer movieId) throws DAOException;
+
+    boolean deleteByMovieIdUserId(Integer movieId, Integer userID) throws  DAOException;
 }

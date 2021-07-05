@@ -33,12 +33,14 @@ public class AuthFilter implements Filter {
                     UserRole userRole = user.getRole();
                     if (userRole != null) {
                         if (userRole == UserRole.USER) {
+                            httpRequest.setAttribute("error", "400. Bad request");
                             httpResponse.sendError(400, "Bad request");
                         } else if (userRole == UserRole.ADMIN) {
                             filterChain.doFilter(httpRequest, httpResponse);
                         }
                     }
                 } else {
+                    httpRequest.setAttribute("error", "400. Bad request");
                     httpResponse.sendError(400, "Bad request");
                 }
             } else {
@@ -51,7 +53,7 @@ public class AuthFilter implements Filter {
 
     @Override
     public void init(FilterConfig filterConfig) {
-        EnumSet<CommandType> commandTypes = EnumSet.of(CommandType.CHANGE_RATING, CommandType.SHOW_USERS, CommandType.BAN_USER);
+        EnumSet<CommandType> commandTypes = EnumSet.of(CommandType.CHANGE_RATING, CommandType.SHOW_USERS, CommandType.BAN_USER, CommandType.DELETE_USER_COMMENT);
         commandTypes.forEach(commandType -> adminCommands.add(lower(commandType.name())));
     }
 

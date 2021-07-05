@@ -25,7 +25,7 @@ public class FilmDaoImpl extends AbstractDaoImpl<Movie> implements FilmDao {
             + "VALUES (?, ?, ?, ?, ?, ?)";
     private static final String SQL_DELETE = "DELETE FROM movie WHERE id = ? ";
 
-    private static final String SQL_FIND_ALL = "SELECT * FROM movie join country c on c.id = movie.country_id ";
+    private static final String SQL_FIND_ALL = "SELECT * FROM movie join country c on c.id = movie.country_id";
     private static final String SQL_FIND_BY_ID = "SELECT * FROM movie join country c on c.id = movie.country_id WHERE movie.id = ?";
     private static final String SQL_FIND_BY_NAME = "SELECT * FROM movie join country c on c.id = movie.country_id  WHERE movie.name = ?";
     private static final String SQL_FIND_BY_COUNTRY = "SELECT * FROM movie join country c on c.id = movie.country_id  WHERE country_id = ?";

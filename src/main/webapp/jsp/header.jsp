@@ -32,7 +32,7 @@
                     src="${pageContext.request.contextPath}/img/eng.png" alt="eng"></a>
             <a href="${pageContext.request.contextPath}/controller?command=change-language&locale=${'ru_RU'}"><img
                     src="${pageContext.request.contextPath}/img/rus.png" alt="rus"></a>
-            <a href="${pageContext.request.contextPath}/controller?command=main&page=1" style="margin-left: 40px">Film
+            <a href="${pageContext.request.contextPath}/controller?command=main&page=0" style="margin-left: 40px">Film
                 Ratings</a>
         </div>
         <div class="search-wrapper">
@@ -51,9 +51,9 @@
                         <a href="${pageContext.request.contextPath}/controller?command=show_users">
                             <fmt:message key="admin.main"/> </a>
                     </c:if>
+                    <a href="${pageContext.request.contextPath}/controller?command=view-user-profile" >Profile</a>
                     <a href="${pageContext.request.contextPath}/controller?command=logout">
                         <fmt:message key="header.logout"/></a>
-
                 </c:when>
                 <c:otherwise>
                     <a href="${pageContext.request.contextPath}/jsp/login.jsp"><fmt:message key="header.login"/></a>

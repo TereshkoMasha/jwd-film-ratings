@@ -2,6 +2,7 @@ package com.epam.command;
 
 import com.epam.command.impl.admin.BanUserCommand;
 import com.epam.command.impl.admin.ChangeUserRatingCommand;
+import com.epam.command.impl.admin.DeleteUserComment;
 import com.epam.command.impl.admin.ShowUsersCommand;
 import com.epam.command.impl.common.*;
 
@@ -17,6 +18,8 @@ public enum CommandType {
     BAN_USER(new BanUserCommand()),
     LEAVE_COMMENT(new LeaveCommentCommand()),
     CHANGE_RATING(new ChangeUserRatingCommand()),
+    VIEW_USER_PROFILE(new ViewUserProfile()),
+    DELETE_USER_COMMENT(new DeleteUserComment()),
     CHANGE_LANGUAGE(new ChangeLanguage());
 
     CommandRequest command;

@@ -22,7 +22,7 @@
 <fmt:setBundle basename="Locale"/>
 
 <body>
-<c:import url="../header.jsp"/>
+<jsp:include page="../header.jsp"/>
 <br>
 <section>
     <div class="tbl-header">

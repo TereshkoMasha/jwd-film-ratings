@@ -22,6 +22,7 @@ import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class ViewMovieInfoCommand implements CommandRequest {
     private static final Logger LOGGER = LogManager.getLogger(ViewMovieInfoCommand.class);
@@ -39,39 +40,42 @@ public class ViewMovieInfoCommand implements CommandRequest {
                 try {
                     requestData.addSessionAttribute(AttributeName.MOVIE, value);
                     List<MovieCrewMember> filmActors = movieCrewService.findAllActorsByMovieId(value.getId());
-                    if (!requestData.getSessionAttributes().containsKey(AttributeName.PAGE)) {
-                        requestData.addSessionAttribute(AttributeName.PAGE, 1);
-                    } else if (requestData.getRequestParametersValues().containsKey(AttributeName.PAGE)) {
-                        String page = requestData.getRequestParameter(AttributeName.PAGE);
-                        requestData.addSessionAttribute(AttributeName.PAGE, Integer.parseInt(page));
+
+                    if (requestData.getRequestParametersValues().containsKey("page")) {
+                        String page = requestData.getRequestParameter("page");
+                        requestData.addSessionAttribute("page", Integer.parseInt(page));
                     }
+
                     if (!filmActors.isEmpty()) {
-                        requestData.addSessionAttribute(AttributeName.ACTOR, filmActors);
-                    } else {
-                        requestData.deleteSessionAttribute(AttributeName.ACTOR);
+                        requestData.addRequestAttribute(AttributeName.ACTOR, filmActors);
                     }
+
                     MovieCrewMember director = movieCrewService.findDirectorByMovieId(value.getId());
                     if (director != null) {
-                        requestData.addSessionAttribute(AttributeName.DIRECTOR, director);
-                    } else {
-                        requestData.deleteSessionAttribute(AttributeName.DIRECTOR);
+                        requestData.addRequestAttribute(AttributeName.DIRECTOR, director);
                     }
+
+                    List<Review> reviewList = reviewService.findAllByMovieId(film.get().getId());
+
                     Double averageRating = reviewService.getAverageRating(id);
-                    if (averageRating != null && averageRating != 0.0) {
+                    if (averageRating != null && averageRating != 0.0 && !reviewList.isEmpty()) {
                         BigDecimal bd = new BigDecimal(Double.toString(averageRating));
                         bd = bd.setScale(2, RoundingMode.HALF_UP);
-                        requestData.addSessionAttribute(AttributeName.RATING, bd.doubleValue());
-                    } else {
-                        requestData.deleteSessionAttribute(AttributeName.RATING);
+                        requestData.addRequestAttribute(AttributeName.RATING, bd.doubleValue());
                     }
-                    List<Review> reviewList = reviewService.findAllByMovieId(film.get().getId());
+
+                    List<Review> reviewListWithText = reviewList.stream().filter(review -> !review.getText().isEmpty()).collect(Collectors.toList());
+                    requestData.addSessionAttribute(AttributeName.REVIEW, reviewListWithText);
+
                     List<User> users = new ArrayList<>();
                     for (Review review :
                             reviewList) {
                         users.add(userService.getById(review.getUserID()).get());
                     }
-                    requestData.addSessionAttribute(AttributeName.REVIEW, reviewList);
+
                     requestData.addSessionAttribute(AttributeName.USERS, users);
+                    requestData.addRequestAttribute("appraisalNumber", reviewList.size());
+
                 } catch (ServiceException e) {
                     LOGGER.error("Error while trying to login", e);
                 }

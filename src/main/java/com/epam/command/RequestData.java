@@ -81,6 +81,10 @@ public class RequestData {
         return requestParametersValues;
     }
 
+    public Map<String, Object> getRequestAttributeValues() {
+        return requestAttributeValues;
+    }
+
     private void extractSessionAndRequestAttribute(HttpServletRequest request) {
         HttpSession session = request.getSession();
         if (session != null) {

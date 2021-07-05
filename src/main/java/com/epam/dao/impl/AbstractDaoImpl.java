@@ -16,7 +16,6 @@ import java.util.List;
 import java.util.Optional;
 
 public abstract class AbstractDaoImpl<T extends BaseEntity> implements Dao<T> {
-    private static final String SQL_SELECT_LAST_ID = "SELECT LAST_INSERT_ID();";
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -25,6 +24,8 @@ public abstract class AbstractDaoImpl<T extends BaseEntity> implements Dao<T> {
     protected AbstractDaoImpl(ConnectionPool connectionPool) {
         this.connectionPool = connectionPool;
     }
+
+    private static final String SQL_SELECT_LAST_ID = "SELECT LAST_INSERT_ID();";
 
     protected abstract void prepareStatement(PreparedStatement preparedStatement, T entity) throws SQLException;
 
@@ -40,7 +41,7 @@ public abstract class AbstractDaoImpl<T extends BaseEntity> implements Dao<T> {
 
     protected abstract String getFindByIdSql();
 
-    protected  String getLastInsertIdSql(){
+    protected String getLastInsertIdSql() {
         return SQL_SELECT_LAST_ID;
     }
 

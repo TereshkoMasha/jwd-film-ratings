@@ -9,6 +9,7 @@
     <short-name>tag</short-name>
     <uri>tag</uri>
 
+
     <tag>
         <name>genre</name>
         <tag-class>com.epam.tag.GenreTag</tag-class>

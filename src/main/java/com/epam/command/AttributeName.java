@@ -26,4 +26,5 @@ public interface AttributeName {
     String ERROR_PASSWORD_MATCH = "errorPasswordMatch";
     String ERROR_LOGIN_MATCH = "errorLoginMatch";
     String ERROR_INVALID_INPUT = "errorInvalidInput";
+    String ERROR_REVIEW = "errorReviewAlreadyExist";
 }

@@ -1,5 +1,6 @@
 package com.epam.service.impl;
 
+import com.epam.context.impl.FilmRatingsContext;
 import com.epam.dao.impl.FilmDaoImpl;
 import com.epam.entity.Country;
 import com.epam.entity.Movie;
@@ -21,15 +22,18 @@ public class MovieServiceImpl implements MovieService {
     public List<Movie> findAll() throws ServiceException {
         List<Movie> movieList;
         try {
-            movieList = filmDao.findAll();
-            if (!movieList.isEmpty()) {
-                return movieList;
+            if (FilmRatingsContext.getInstance().retrieveBaseEntityList(Movie.class).isEmpty()) {
+                movieList = filmDao.findAll();
+                for (Movie movie :
+                        movieList) {
+                    FilmRatingsContext.getInstance().retrieveBaseEntityList(Movie.class).add(movie);
+                }
             }
         } catch (DAOException e) {
             LOGGER.error(e);
             throw new ServiceException();
         }
-        return movieList;
+        return (List<Movie>) FilmRatingsContext.getInstance().retrieveBaseEntityList(Movie.class);
     }
 
     @Override

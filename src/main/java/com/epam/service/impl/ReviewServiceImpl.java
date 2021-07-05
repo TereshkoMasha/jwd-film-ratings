@@ -16,6 +16,7 @@ import java.util.Optional;
 
 public class ReviewServiceImpl implements ReviewService {
     private static final Logger LOGGER = LogManager.getLogger(ReviewService.class);
+
     private static final ReviewDaoImpl reviewDao = ReviewDaoImpl.INSTANCE;
 
     @Override
@@ -83,6 +84,21 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
+    public List<Review> findAllByUserId(Integer id) throws ServiceException {
+        List<Review> reviewList;
+        try {
+            reviewList = reviewDao.findAllByUserId(id);
+            if (!reviewList.isEmpty()) {
+                return reviewList;
+            }
+        } catch (DAOException e) {
+            LOGGER.error(e);
+            throw new ServiceException();
+        }
+        return reviewList;
+    }
+
+    @Override
     public boolean create(String text, Appraisal appraisal, Integer movieId, Integer userId) throws ServiceException {
         try {
             reviewDao.create(Review.builder().setMovieID(movieId).setUserID(userId).setRating(appraisal).setText(text).build());
@@ -117,5 +133,15 @@ public class ReviewServiceImpl implements ReviewService {
             throw new ServiceException();
         }
         return 0.0;
+    }
+
+    @Override
+    public boolean deleteByMovieIdUserId(Integer movieId, Integer userId) throws ServiceException {
+        try {
+            return reviewDao.deleteByMovieIdUserId(movieId, userId);
+        } catch (DAOException e) {
+            LOGGER.error(e);
+            throw new ServiceException();
+        }
     }
 }

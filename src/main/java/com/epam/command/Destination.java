@@ -5,6 +5,7 @@ public enum Destination {
     LOGIN("/jsp/login.jsp"),
     ERROR("/jsp/error.jsp"),
     MOVIE_PAGE("/jsp/movie.jsp"),
+    PROFILE("/jsp/profile.jsp"),
     USERS("/jsp/admin/users.jsp"),
     MAIN_REDIRECT("/controller?command=main");
 
