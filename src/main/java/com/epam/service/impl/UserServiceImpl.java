@@ -92,6 +92,21 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public List<User> findAllUsersByMovieId(Integer id) throws ServiceException {
+        List<User> userList = null;
+        try {
+            userList = userDao.findAllByMovieId(id);
+            if (!userList.isEmpty()) {
+                return userList;
+            }
+        } catch (DAOException e) {
+            LOGGER.error("Service Execution Exception", e);
+            throw new ServiceException();
+        }
+        return userList;
+    }
+
+    @Override
     public boolean update(User user) throws ServiceException {
         try {
             return userDao.update(user);
@@ -142,7 +157,7 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public boolean updateStatus(UserStatus status, Integer userId) throws ServiceException {
+    public boolean blockUser(UserStatus status, Integer userId) throws ServiceException {
         try {
             return userDao.updateStatus(status, userId);
         } catch (DAOException e) {

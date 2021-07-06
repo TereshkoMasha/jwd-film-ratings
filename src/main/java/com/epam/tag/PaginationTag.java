@@ -3,6 +3,12 @@ package com.epam.tag;
 import javax.servlet.jsp.tagext.SimpleTagSupport;
 import java.io.IOException;
 
+/**
+ * The tag is used to form pagination on the page
+ * the default number of items per page is 3
+ * when displaying movies - 1 item is displayed separately.
+ */
+
 public class PaginationTag extends SimpleTagSupport {
 
     private Integer reviewOnProfileListSize;
@@ -50,7 +56,7 @@ public class PaginationTag extends SimpleTagSupport {
         if (movieReviewListSize != null) {
             try {
                 int pages = movieReviewListSize / 3;
-                if (pages * 3 + 1 == movieReviewListSize) {
+                if (pages * 3 + 1 <= movieReviewListSize) {
                     pages++;
                 }
                 StringBuilder stringBuilder = new StringBuilder();
@@ -72,7 +78,7 @@ public class PaginationTag extends SimpleTagSupport {
         if (movieListSize != null) {
             try {
                 int pages = (movieListSize - 1) / 3;
-                if (pages * 3 + 1 == (movieListSize - 1) || pages == 1) {
+                if (pages * 3 + 1 <= (movieListSize - 1)) {
                     pages++;
                 }
                 StringBuilder stringBuilder = new StringBuilder();

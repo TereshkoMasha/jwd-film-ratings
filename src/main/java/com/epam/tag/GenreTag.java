@@ -4,6 +4,10 @@ import javax.servlet.jsp.tagext.SimpleTagSupport;
 import java.io.IOException;
 import java.util.Locale;
 
+/**
+ * The tag is used to format the genre names that are derived from {@link Enum}
+ */
+
 public class GenreTag extends SimpleTagSupport {
     private String genre;
 

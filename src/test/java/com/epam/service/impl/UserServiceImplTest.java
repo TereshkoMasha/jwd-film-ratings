@@ -66,7 +66,7 @@ class UserServiceImplTest {
         User user = Mockito.mock(User.class);
         Mockito.when(user.getStatus()).thenReturn(UserStatus.BANNED);
         if (userService.getById(2).get().getStatus() != UserStatus.BANNED) {
-            userService.updateStatus(UserStatus.BANNED, 2);
+            userService.blockUser(UserStatus.BANNED, 2);
         }
         Assertions.assertEquals(userService.getById(2).get().getStatus(), user.getStatus());
     }
@@ -87,5 +87,10 @@ class UserServiceImplTest {
         List<User> userList = userService.findAll();
         User user = userList.get(userList.size() - 1);
         assertTrue(userService.registerUser("max112", "4357395400", "Max") > user.getId());
+    }
+
+    @Test
+    void findAllUsersByMovieId() {
+
     }
 }

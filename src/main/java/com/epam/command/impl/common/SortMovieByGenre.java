@@ -22,7 +22,11 @@ public class SortMovieByGenre implements CommandRequest {
             List<Movie> movieList = movieService.findAllByGenre(Genre.resolveGenreByName(genre));
             if (!movieList.isEmpty()) {
                 requestData.addSessionAttribute("movies", movieList);
-                requestData.deleteSessionAttribute(AttributeName.PAGE);
+                //requestData.deleteSessionAttribute(AttributeName.PAGE);
+                if (requestData.getRequestParametersValues().containsKey(AttributeName.PAGE)) {
+                    String page = requestData.getRequestParameter(AttributeName.PAGE);
+                    requestData.addSessionAttribute(AttributeName.PAGE, Integer.parseInt(page));
+                }
             }
         } catch (ServiceException e) {
             LOGGER.error("Exception while command define", e);

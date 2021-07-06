@@ -1,5 +1,6 @@
 package com.epam.filter;
 
+import com.epam.command.AttributeName;
 import com.epam.command.CommandType;
 import com.epam.entity.User;
 import com.epam.entity.enums.UserRole;
@@ -14,6 +15,7 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Locale;
+
 
 @WebFilter(urlPatterns = "/controller/*")
 public class AuthFilter implements Filter {
@@ -33,14 +35,14 @@ public class AuthFilter implements Filter {
                     UserRole userRole = user.getRole();
                     if (userRole != null) {
                         if (userRole == UserRole.USER) {
-                            httpRequest.setAttribute("error", "400. Bad request");
+                            httpRequest.setAttribute(AttributeName.ERROR, "400. Bad request");
                             httpResponse.sendError(400, "Bad request");
                         } else if (userRole == UserRole.ADMIN) {
                             filterChain.doFilter(httpRequest, httpResponse);
                         }
                     }
                 } else {
-                    httpRequest.setAttribute("error", "400. Bad request");
+                    httpRequest.setAttribute(AttributeName.ERROR, "error.message.400");
                     httpResponse.sendError(400, "Bad request");
                 }
             } else {
@@ -51,6 +53,10 @@ public class AuthFilter implements Filter {
         }
     }
 
+
+    /**
+     * Create a {@link EnumSet<CommandType>} from admin-only commands
+     */
     @Override
     public void init(FilterConfig filterConfig) {
         EnumSet<CommandType> commandTypes = EnumSet.of(CommandType.CHANGE_RATING, CommandType.SHOW_USERS, CommandType.BAN_USER, CommandType.DELETE_USER_COMMENT);

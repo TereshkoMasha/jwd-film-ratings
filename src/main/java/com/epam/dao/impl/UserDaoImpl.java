@@ -39,6 +39,8 @@ public class UserDaoImpl extends AbstractDaoImpl<User> implements UserDao {
     private static final String SQL_FIND_BY_ID = "SELECT * FROM user WHERE id = ? ";
     private static final String SQL_FIND_BY_LOGIN = "SELECT * FROM user WHERE login= ?";
     private static final String SQL_FIND_BY_LOGIN_PASSWORD = "SELECT * FROM user WHERE login= ? AND password = ?";
+    private static final String SQL_FIND_USERS_BY_MOVIE_ID = "SELECT * FROM user JOIN movie_review mr on user.id = mr.user_id where movie_id = ?";
+
 
     @Override
     protected void prepareStatement(PreparedStatement preparedStatement, User entity) throws SQLException {
@@ -96,6 +98,10 @@ public class UserDaoImpl extends AbstractDaoImpl<User> implements UserDao {
         return SQL_FIND_BY_LOGIN_PASSWORD;
     }
 
+    public static String getFindUsersByMovieIdSql() {
+        return SQL_FIND_USERS_BY_MOVIE_ID;
+    }
+
     @Override
     protected Optional<User> parseResultSet(ResultSet resultSet) throws SQLException {
         User user = User.builder()
@@ -114,11 +120,14 @@ public class UserDaoImpl extends AbstractDaoImpl<User> implements UserDao {
         boolean updated = false;
         try (Connection connection = connectionPool.getConnection()) {
             try (PreparedStatement preparedStatement = connection.prepareStatement(getUpdateSql())) {
+                connection.setAutoCommit(false);
                 preparedStatement.setString(1, entity.getPassword());
                 preparedStatement.setInt(2, entity.getId());
                 if (preparedStatement.executeUpdate() != 0) {
                     updated = true;
                 }
+                connection.commit();
+                connection.setAutoCommit(true);
             }
         } catch (SQLException | InterruptedException e) {
             LOGGER.error("Failed to update entity", new DAOException(e.getMessage()));
@@ -132,6 +141,7 @@ public class UserDaoImpl extends AbstractDaoImpl<User> implements UserDao {
         List<User> userList = new ArrayList<>();
         try (Connection connection = connectionPool.getConnection()) {
             try (PreparedStatement statement = connection.prepareStatement(getFindALLByRoleId())) {
+                connection.setAutoCommit(false);
                 statement.setInt(1, id);
                 ResultSet resultSet = statement.executeQuery();
                 while (resultSet.next()) {
@@ -139,6 +149,8 @@ public class UserDaoImpl extends AbstractDaoImpl<User> implements UserDao {
                     optionalUser.ifPresent(userList::add);
                 }
             }
+            connection.commit();
+            connection.setAutoCommit(true);
         } catch (SQLException | InterruptedException e) {
             LOGGER.error(new DAOException(e.getMessage()));
             Thread.currentThread().interrupt();
@@ -152,17 +164,42 @@ public class UserDaoImpl extends AbstractDaoImpl<User> implements UserDao {
         int roleId = 0;
         try (Connection connection = connectionPool.getConnection()) {
             try (PreparedStatement statement = connection.prepareStatement(getFindByLoginSql())) {
+                connection.setAutoCommit(false);
                 statement.setString(1, login);
                 ResultSet resultSet = statement.executeQuery();
                 while (resultSet.next()) {
                     roleId = resultSet.getInt("role_id");
                 }
             }
+            connection.commit();
+            connection.setAutoCommit(true);
         } catch (SQLException | InterruptedException e) {
             LOGGER.error(new DAOException(e.getMessage()));
             Thread.currentThread().interrupt();
         }
         return roleId;
+    }
+
+    @Override
+    public List<User> findAllByMovieId(Integer id) throws DAOException {
+        List<User> userList = new ArrayList<>();
+        try (Connection connection = connectionPool.getConnection()) {
+            try (PreparedStatement statement = connection.prepareStatement(getFindUsersByMovieIdSql())) {
+                connection.setAutoCommit(false);
+                statement.setInt(1, id);
+                ResultSet resultSet = statement.executeQuery();
+                while (resultSet.next()) {
+                    Optional<User> optionalUser = parseResultSet(resultSet);
+                    optionalUser.ifPresent(userList::add);
+                }
+            }
+            connection.commit();
+            connection.setAutoCommit(true);
+        } catch (SQLException | InterruptedException e) {
+            LOGGER.error(new DAOException(e.getMessage()));
+            Thread.currentThread().interrupt();
+        }
+        return userList;
     }
 
 
@@ -171,12 +208,15 @@ public class UserDaoImpl extends AbstractDaoImpl<User> implements UserDao {
         Optional<User> entityOptional = Optional.empty();
         try (Connection connection = connectionPool.getConnection()) {
             try (PreparedStatement preparedStatement = connection.prepareStatement(getFindByLoginSql())) {
+                connection.setAutoCommit(false);
                 preparedStatement.setString(1, login);
                 ResultSet resultSet = preparedStatement.executeQuery();
                 while (resultSet.next()) {
                     entityOptional = parseResultSet(resultSet);
                 }
             }
+            connection.commit();
+            connection.setAutoCommit(true);
         } catch (SQLException | InterruptedException e) {
             LOGGER.error(new DAOException(e));
             Thread.currentThread().interrupt();
@@ -189,10 +229,13 @@ public class UserDaoImpl extends AbstractDaoImpl<User> implements UserDao {
         boolean state = false;
         try (Connection connection = connectionPool.getConnection()) {
             try (PreparedStatement statement = connection.prepareStatement(getFindByLoginSql())) {
+                connection.setAutoCommit(false);
                 statement.setString(1, login);
                 ResultSet resultSet = statement.executeQuery();
                 state = resultSet.next();
             }
+            connection.commit();
+            connection.setAutoCommit(true);
         } catch (SQLException | InterruptedException e) {
             LOGGER.error(new DAOException(e.getMessage()));
             Thread.currentThread().interrupt();
@@ -205,11 +248,14 @@ public class UserDaoImpl extends AbstractDaoImpl<User> implements UserDao {
         boolean state = false;
         try (Connection connection = connectionPool.getConnection()) {
             try (PreparedStatement statement = connection.prepareStatement(getFindByLoginPasswordSql())) {
+                connection.setAutoCommit(false);
                 statement.setString(1, login);
                 statement.setString(2, password);
                 ResultSet resultSet = statement.executeQuery();
                 state = resultSet.next();
             }
+            connection.commit();
+            connection.setAutoCommit(true);
         } catch (SQLException | InterruptedException e) {
             LOGGER.error(new DAOException(e.getMessage()));
             Thread.currentThread().interrupt();
@@ -219,14 +265,18 @@ public class UserDaoImpl extends AbstractDaoImpl<User> implements UserDao {
 
     @Override
     public boolean updateStatus(UserStatus userStatus, Integer id) throws DAOException {
+        boolean updated = false;
         try (Connection connection = connectionPool.getConnection()) {
             try (PreparedStatement preparedStatement = connection.prepareStatement(getUpdateRatingSql())) {
+                connection.setAutoCommit(false);
                 Optional<User> user = getById(id);
                 if (user.isPresent()) {
                     preparedStatement.setInt(1, userStatus.getId());
                     preparedStatement.setInt(2, id);
                     if (preparedStatement.executeUpdate() != 0) {
-                        return true;
+                        connection.commit();
+                        connection.setAutoCommit(true);
+                        updated = true;
                     }
                 }
             }
@@ -234,13 +284,15 @@ public class UserDaoImpl extends AbstractDaoImpl<User> implements UserDao {
             LOGGER.error("Failed to update entity", new DAOException(e.getMessage()));
             Thread.currentThread().interrupt();
         }
-        return false;
+        return updated;
     }
 
     @Override
     public boolean updateRatingAfterEvaluating(Boolean action, Integer id) throws DAOException {
+        boolean updated = false;
         try (Connection connection = connectionPool.getConnection()) {
             try (PreparedStatement preparedStatement = connection.prepareStatement(getUpdateRatingSql())) {
+                connection.setAutoCommit(false);
                 Optional<User> user = getById(id);
                 if (user.isPresent()) {
                     if (action) preparedStatement.setDouble(1, user.get().getRating() + 0.5);
@@ -249,27 +301,34 @@ public class UserDaoImpl extends AbstractDaoImpl<User> implements UserDao {
                     }
                     preparedStatement.setInt(2, id);
                     if (preparedStatement.executeUpdate() != 0) {
-                        return true;
+                        connection.commit();
+                        connection.setAutoCommit(true);
+                        updated = true;
                     }
                 }
             }
+
         } catch (SQLException | InterruptedException e) {
             LOGGER.error("Failed to update entity", new DAOException(e.getMessage()));
             Thread.currentThread().interrupt();
         }
-        return false;
+        return updated;
     }
 
     @Override
     public boolean updateRating(Integer id, Double rating) throws DAOException {
+        boolean updated = false;
         try (Connection connection = connectionPool.getConnection()) {
+            connection.setAutoCommit(false);
             try (PreparedStatement preparedStatement = connection.prepareStatement(getUpdateRatingSql())) {
                 Optional<User> user = getById(id);
                 if (user.isPresent()) {
                     preparedStatement.setDouble(1, rating);
                     preparedStatement.setInt(2, id);
                     if (preparedStatement.executeUpdate() != 0) {
-                        return true;
+                        connection.commit();
+                        connection.setAutoCommit(true);
+                        updated = true;
                     }
                 }
             }
@@ -277,6 +336,6 @@ public class UserDaoImpl extends AbstractDaoImpl<User> implements UserDao {
             LOGGER.error("Failed to update entity", new DAOException(e.getMessage()));
             Thread.currentThread().interrupt();
         }
-        return false;
+        return updated;
     }
 }

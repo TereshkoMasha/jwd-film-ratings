@@ -7,6 +7,9 @@ import javax.servlet.annotation.WebListener;
 import javax.servlet.http.HttpSessionAttributeListener;
 import javax.servlet.http.HttpSessionBindingEvent;
 
+/***
+ * {@link AttributeListener} implements interface for receiving notification events about HttpSession attribute changes.
+ */
 @WebListener
 public class AttributeListener implements HttpSessionAttributeListener {
     private static final Logger LOGGER = LogManager.getLogger(AttributeListener.class);

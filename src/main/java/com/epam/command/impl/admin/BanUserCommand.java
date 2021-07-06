@@ -21,9 +21,9 @@ public class BanUserCommand implements CommandRequest {
         boolean ban = Boolean.parseBoolean(requestData.getRequestParameter(AttributeName.BAN));
         try {
             if (ban) {
-                userService.updateStatus(UserStatus.LOW, id);
+                userService.blockUser(UserStatus.LOW, id);
             } else {
-                userService.updateStatus(UserStatus.BANNED, id);
+                userService.blockUser(UserStatus.BANNED, id);
             }
             List<User> users = (List<User>) requestData.getSessionAttribute("users_list");
             for (int i = 0; i < users.size(); i++) {

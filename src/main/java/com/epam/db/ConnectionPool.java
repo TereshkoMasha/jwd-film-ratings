@@ -14,6 +14,13 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.ReentrantLock;
 
+/**
+ * {@link ConnectionPool} A thread safe class for connecting to a database.
+ * Contains a  {@link BlockingQueue} for storing available connections.
+ * Initially, {@link BlockingQueue} contains the initial number of connections, does not exceed the maximum.
+ * Contains a {@link Queue} for storing used connections
+ * The maximum number of connections does not exceed the value declared in the properties file
+ */
 public class ConnectionPool {
     private static final Logger logger = LogManager.getLogger(ConnectionPool.class);
     private static ConnectionPool instance;
@@ -28,6 +35,7 @@ public class ConnectionPool {
     private ConnectionPool() throws SQLException {
         DriverManager.registerDriver(new com.mysql.jdbc.Driver());
     }
+
 
     public static ConnectionPool getInstance() {
         if (!instance_initialize.get()) {
@@ -54,15 +62,26 @@ public class ConnectionPool {
         logger.info("Connection pool successful initialization");
     }
 
+    /**
+     * Create {@link ConnectionProxy}
+     */
     private static void createConnection() {
-        try (Connection connection = new ConnectionProxy(
-                DriverManager.getConnection(properties.getUrl(), properties.getUser(), properties.getPassword()))) {
+        try {
+            Connection connection = new ConnectionProxy(DriverManager.getConnection(properties.getUrl(), properties.getUser(), properties.getPassword()));
             availableConnections.add(connection);
         } catch (SQLException e) {
             logger.error("SQL Exception during the connection creating: check database||properties settings", e);
         }
     }
 
+    /**
+     * If the {@link BlockingQueue} is empty and
+     * the number of created connections does not exceed the maximum, a new connection is created.
+     * Takes a {@link Connection}  from the queue if it is not empty.
+     * If necessary, waiting for a connection to appear in the queue
+     *
+     * @return {@link Connection} from the {@link BlockingQueue}
+     */
     public Connection getConnection() throws InterruptedException {
         Connection connection = null;
         try {
@@ -78,7 +97,9 @@ public class ConnectionPool {
         return connection;
     }
 
-
+    /**
+     * Returns the connection to {@link ConnectionPool}
+     */
     public void releaseConnection(Connection proxy) {
         if (availableConnections.offer(proxy)) {
             usedConnections.remove(proxy);

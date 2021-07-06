@@ -13,10 +13,8 @@ public class LocaleFilter implements Filter {
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
-        String locale = httpServletRequest.getParameter("locale");
-        httpServletRequest.getRequestURI();
+        String locale = httpServletRequest.getParameter(AttributeName.LOCALE);
         httpServletRequest.getSession().setAttribute(AttributeName.LOCALE, locale);
         filterChain.doFilter(httpServletRequest, servletResponse);
-
     }
 }

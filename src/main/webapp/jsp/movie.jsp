@@ -26,7 +26,7 @@
 <body>
 <c:import url="header.jsp"/>
 
-<c:if test="${review eq null}">
+<c:if test="${not empty reload}">
     <form id="jsform" method="post"
           action=" ${pageContext.request.contextPath}/controller?command=movie-info&id=${movie.id}" hidden>
     </form>
@@ -134,14 +134,6 @@
         <h2><fmt:message key="movie.comment"/></h2>
         <c:choose>
             <c:when test="${not empty review}">
-                <%--                <c:choose>--%>
-                <%--                    <c:when test="${page eq 1}">--%>
-                <%--                        <c:set var="count" value="${0}"></c:set>--%>
-                <%--                    </c:when>--%>
-                <%--                    <c:otherwise>--%>
-                <%--                        <c:set var="count" value="${page*3 - 3}"></c:set>--%>
-                <%--                    </c:otherwise>--%>
-                <%--                </c:choose>--%>
                 <c:forEach var="review" items="${review}" begin="${page}" end="${page + 2}" varStatus="status">
                     <c:if test="${not empty review.text}">
                         <div class="comment-block">
@@ -160,11 +152,6 @@
                 <c:if test="${review.size() > 1}">
                     <div class="pagination p2">
                         <ul>
-                                <%--                            <c:forEach begin="1" end="${movies.size()/3}" varStatus="loop">--%>
-                                <%--                                <a href="${pageContext.request.contextPath}/controller?command=movie-info&page=${loop.count}&id=${movie.id}">--%>
-                                <%--                                    <li>${loop.count}</li>--%>
-                                <%--                                </a>--%>
-                                <%--                            </c:forEach>--%>
                             <pag-tag:pag-tag movieReviewListSize="${review.size()}"/>
                         </ul>
                     </div>

@@ -25,5 +25,7 @@ public interface UserDao {
 
     Integer getRoleId(String login) throws DAOException;
 
+    List<User> findAllByMovieId(Integer id) throws DAOException;
+
 }
 

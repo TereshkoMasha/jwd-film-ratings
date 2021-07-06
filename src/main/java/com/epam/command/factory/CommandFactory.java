@@ -15,14 +15,14 @@ public class CommandFactory {
     private static final Logger LOGGER = LogManager.getLogger(CommandFactory.class);
 
     public Optional<CommandRequest> defineCommand(RequestData requestData) {
-        Optional<CommandRequest> optionalCommand;
+        Optional<CommandRequest> optionalCommand = Optional.empty();
         try {
             String command = requestData.getRequestParameter(AttributeName.COMMAND);
             CommandType commandType = CommandType.valueOf(upper(command));
             optionalCommand = Optional.of(commandType.getCommand());
         } catch (IllegalArgumentException | NullPointerException e) {
+            requestData.addRequestAttribute(AttributeName.ERROR, "error.message.400");
             LOGGER.error("Exception while command define", e);
-            return Optional.of(CommandType.MAIN.getCommand());
         }
         return optionalCommand;
     }
@@ -30,5 +30,4 @@ public class CommandFactory {
     public static String upper(String name) {
         return name.replace("-", "_").toUpperCase(Locale.ROOT);
     }
-
 }

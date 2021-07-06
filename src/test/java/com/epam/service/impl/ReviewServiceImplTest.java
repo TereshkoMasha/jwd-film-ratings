@@ -35,7 +35,7 @@ class ReviewServiceImplTest {
 
     @Test
     void create() throws ServiceException {
-        reviewService.create("Good movie", Appraisal.GOOD, 5, 2);
+        reviewService.create("Good movie", Appraisal.GOOD, 1, 2);
         assertTrue(reviewService.findByMovieIdUserId(1, 2).isPresent());
     }
 

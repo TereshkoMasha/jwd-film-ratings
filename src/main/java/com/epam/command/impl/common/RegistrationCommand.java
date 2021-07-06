@@ -36,9 +36,7 @@ public class RegistrationCommand implements CommandRequest {
                 if (dataValidator.validatePasswordLogin(password, login)) {
                     int id = userService.registerUser(login, password, firstName + " " + lastName);
                     Optional<User> user = userService.getById(id);
-                    if (user.isPresent()) {
-                        requestData.addSessionAttribute(AttributeName.USER, user);
-                    }
+                    user.ifPresent(value -> requestData.addSessionAttribute(AttributeName.USER, value));
                 } else {
                     requestData.addRequestAttribute(AttributeName.ERROR_PASSWORD_MATCH, "error.message.valid.password");
                     commandExecute.setPagePath(Destination.LOGIN.getPath());

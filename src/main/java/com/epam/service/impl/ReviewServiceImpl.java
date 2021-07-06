@@ -120,9 +120,9 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    public Double getAverageRating(Integer movieId) throws ServiceException {
+    public Double getAverageRating(Integer id) throws ServiceException {
         try {
-            Double averageRating = reviewDao.getAverageRating(movieId);
+            Double averageRating = reviewDao.getAverageRating(id);
             if (!averageRating.isNaN()) {
                 BigDecimal bigDecimal = BigDecimal.valueOf(averageRating);
                 bigDecimal = bigDecimal.setScale(3, RoundingMode.HALF_UP);

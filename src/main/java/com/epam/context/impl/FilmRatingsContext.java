@@ -14,7 +14,6 @@ public class FilmRatingsContext implements ApplicationContext {
 
     private static final Logger logger = LogManager.getLogger(FilmRatingsContext.class);
     private static final FilmRatingsContext instance = new FilmRatingsContext();
-
     private Collection<Movie> movies = new ArrayList<>();
 
 

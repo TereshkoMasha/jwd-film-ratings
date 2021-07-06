@@ -22,9 +22,11 @@ public class MainCommand implements CommandRequest {
             requestData.addSessionAttribute("page", Integer.parseInt(page));
         }
         try {
-            if (!requestData.getRequestParametersValues().containsKey("movies") && !requestData.getRequestParametersValues().containsKey("genres")) {
+            if ((!requestData.getSessionAttributes().containsKey("movies") && !requestData.getSessionAttributes().containsKey("genres"))
+                    || !requestData.getRequestParametersValues().containsKey("page")) {
                 requestData.addSessionAttribute("movies", movieService.findAll());
                 requestData.addSessionAttribute("genres", genreService.findAll());
+                requestData.addSessionAttribute("page", 0);
             }
         } catch (ServiceException e) {
             LOGGER.error("Error while trying to load information for the page", e);

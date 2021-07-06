@@ -22,40 +22,36 @@ public class Controller extends HttpServlet {
     private static final Logger LOGGER = LogManager.getLogger(Controller.class);
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         processRequest(request, response);
     }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         processRequest(request, response);
     }
 
-    private void processRequest(HttpServletRequest request, HttpServletResponse response) {
-        try {
-            RequestData requestData = new RequestData(request);
-            CommandFactory commandFactory = new CommandFactory();
-            Optional<CommandRequest> command = commandFactory.defineCommand(requestData);
+    private void processRequest(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 
-            if (command.isPresent()) {
-                CommandExecute commandExecute = command.get().executeCommand(requestData);
-                if (commandExecute != null) {
-                    requestData.insertSessionAndRequestAttributes(request);
-                    if (commandExecute.getRouteType().equals(RouteType.REDIRECT)) {
-                        response.sendRedirect(request.getContextPath() + commandExecute.getPagePath());
-                    } else {
-                        RequestDispatcher requestDispatcher = request.getRequestDispatcher(commandExecute.getPagePath());
-                        requestDispatcher.forward(request, response);
-                    }
+        RequestData requestData = new RequestData(request);
+        CommandFactory commandFactory = new CommandFactory();
+        Optional<CommandRequest> command = commandFactory.defineCommand(requestData);
+        if (command.isPresent()) {
+            CommandExecute commandExecute = command.get().executeCommand(requestData);
+            if (commandExecute != null) {
+                requestData.insertSessionAndRequestAttributes(request);
+                if (commandExecute.getRouteType().equals(RouteType.REDIRECT)) {
+                    response.sendRedirect(request.getContextPath() + commandExecute.getPagePath());
                 } else {
-                    request.getSession().setAttribute("error", "404. Page not found");
-                    response.sendRedirect(request.getContextPath() + Destination.ERROR.getPath());
+                    RequestDispatcher requestDispatcher = request.getRequestDispatcher(commandExecute.getPagePath());
+                    requestDispatcher.forward(request, response);
                 }
+            } else {
+                request.getSession().setAttribute(AttributeName.ERROR, "error.message.404");
+                response.sendRedirect(request.getContextPath() + Destination.ERROR.getPath());
             }
-
-        } catch (ServletException | IOException e) {
-            LOGGER.error(new ServletException(e.getMessage()));
         }
+
     }
 
     @Override

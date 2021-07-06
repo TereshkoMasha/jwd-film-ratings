@@ -1,6 +1,7 @@
 package com.epam.dao;
 
 import com.epam.entity.Review;
+import com.epam.entity.User;
 import com.epam.exception.DAOException;
 
 import java.util.List;
@@ -16,4 +17,5 @@ public interface ReviewDao {
     Double getAverageRating(Integer movieId) throws DAOException;
 
     boolean deleteByMovieIdUserId(Integer movieId, Integer userID) throws  DAOException;
+
 }

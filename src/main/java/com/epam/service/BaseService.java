@@ -15,5 +15,4 @@ public interface BaseService<T extends BaseEntity> {
     boolean deleteById(Integer id) throws ServiceException;
 
     boolean update(T entity) throws ServiceException;
-
 }

@@ -20,8 +20,15 @@ public class FindMovieCommand implements CommandRequest {
         try {
             Optional<Movie> optionalFilm = movieService.findByName(filmName);
             if (optionalFilm.isPresent()) {
-                requestData.addRequestAttribute("movie", optionalFilm.get());
+                requestData.addSessionAttribute(AttributeName.MOVIE, optionalFilm.get());
+                requestData.addRequestAttribute("reload", "reload");
                 requestData.deleteSessionAttribute(AttributeName.PAGE);
+
+                if (requestData.getSessionAttributes().containsKey(AttributeName.REVIEW)) {
+                    requestData.deleteSessionAttribute(AttributeName.REVIEW);
+                    requestData.deleteSessionAttribute(AttributeName.USERS);
+                }
+
                 return new CommandExecute(RouteType.FORWARD, Destination.MOVIE_PAGE.getPath());
             } else {
                 return new CommandExecute(RouteType.FORWARD, Destination.MAIN_PAGE.getPath());
