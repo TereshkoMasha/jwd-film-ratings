@@ -5,7 +5,8 @@ import com.epam.entity.enums.UserStatus;
 
 import java.util.Objects;
 
-public class User extends AbstractBaseEntity {
+public class User extends AbstractBaseEntity implements Comparable<User> {
+
 
     private String login;
 
@@ -62,6 +63,11 @@ public class User extends AbstractBaseEntity {
 
     public Double getRating() {
         return rating;
+    }
+
+    @Override
+    public int compareTo(User o) {
+        return this.getId() - o.getId();
     }
 
     public static class Builder {

@@ -28,6 +28,7 @@ public class ReviewDaoImpl extends AbstractDaoImpl<Review> implements ReviewDao 
     private static final String SQL_DELETE = "DELETE FROM movie_review WHERE movie_id = ? AND user_id = ? ";
     private static final String SQL_UPDATE = "UPDATE movie_review SET text = ? WHERE movie_id = ? user_id = ?";
     private static final String SQL_FIND_BY_ID = "SELECT * FROM movie_review WHERE user_id = ? ";
+    private static final String SQL_FIND_AVERAGE = "SELECT AVG(rating) FROM movie_review WHERE movie_id = ?";
 
 
     protected ReviewDaoImpl(ConnectionPool connectionPool) {
@@ -89,12 +90,16 @@ public class ReviewDaoImpl extends AbstractDaoImpl<Review> implements ReviewDao 
         return SQL_FIND_BY_MOVIE_ID_USER_ID;
     }
 
+    public static String getFindAverageSql() {
+        return SQL_FIND_AVERAGE;
+    }
 
     @Override
     public boolean update(Review entity) throws DAOException {
         boolean updated = false;
         try (Connection connection = connectionPool.getConnection()) {
             try (PreparedStatement preparedStatement = connection.prepareStatement(getUpdateSql())) {
+                connection.setAutoCommit(false);
                 preparedStatement.setString(1, entity.getText());
                 preparedStatement.setInt(2, entity.getMovieID());
                 preparedStatement.setInt(3, entity.getUserID());
@@ -102,6 +107,8 @@ public class ReviewDaoImpl extends AbstractDaoImpl<Review> implements ReviewDao 
                     updated = true;
                 }
             }
+            connection.commit();
+            connection.setAutoCommit(true);
         } catch (SQLException | InterruptedException e) {
             LOGGER.error("Failed to update entity", new DAOException(e.getMessage()));
             Thread.currentThread().interrupt();
@@ -115,6 +122,7 @@ public class ReviewDaoImpl extends AbstractDaoImpl<Review> implements ReviewDao 
         List<Review> reviewList = new ArrayList<>();
         try (Connection connection = connectionPool.getConnection()) {
             try (PreparedStatement statement = connection.prepareStatement(getFindAllByMovieIdSql())) {
+                connection.setAutoCommit(false);
                 statement.setInt(1, movieId);
                 ResultSet resultSet = statement.executeQuery();
                 while (resultSet.next()) {
@@ -122,6 +130,8 @@ public class ReviewDaoImpl extends AbstractDaoImpl<Review> implements ReviewDao 
                     optionalReview.ifPresent(reviewList::add);
                 }
             }
+            connection.commit();
+            connection.setAutoCommit(true);
         } catch (SQLException | InterruptedException e) {
             LOGGER.error(new DAOException(e.getMessage()));
             Thread.currentThread().interrupt();
@@ -134,6 +144,7 @@ public class ReviewDaoImpl extends AbstractDaoImpl<Review> implements ReviewDao 
         List<Review> reviewList = new ArrayList<>();
         try (Connection connection = connectionPool.getConnection()) {
             try (PreparedStatement statement = connection.prepareStatement(getFindAllByUserIdSql())) {
+                connection.setAutoCommit(false);
                 statement.setInt(1, userId);
                 ResultSet resultSet = statement.executeQuery();
                 while (resultSet.next()) {
@@ -141,6 +152,8 @@ public class ReviewDaoImpl extends AbstractDaoImpl<Review> implements ReviewDao 
                     optionalReview.ifPresent(reviewList::add);
                 }
             }
+            connection.commit();
+            connection.setAutoCommit(true);
         } catch (SQLException | InterruptedException e) {
             LOGGER.error(new DAOException(e.getMessage()));
             Thread.currentThread().interrupt();
@@ -152,6 +165,7 @@ public class ReviewDaoImpl extends AbstractDaoImpl<Review> implements ReviewDao 
     public Optional<Review> findByMovieIdUserId(Integer movieId, Integer userId) throws DAOException {
         Optional<Review> optionalReview = Optional.empty();
         try (Connection connection = connectionPool.getConnection()) {
+            connection.setAutoCommit(false);
             try (PreparedStatement statement = connection.prepareStatement(getFindByMovieIdUserIdSql())) {
                 statement.setInt(1, movieId);
                 statement.setInt(2, userId);
@@ -161,6 +175,8 @@ public class ReviewDaoImpl extends AbstractDaoImpl<Review> implements ReviewDao 
                     optionalReview = parseResultSet(resultSet);
                 }
             }
+            connection.commit();
+            connection.setAutoCommit(true);
         } catch (SQLException | InterruptedException e) {
             LOGGER.error(new DAOException(e.getMessage()));
             Thread.currentThread().interrupt();
@@ -170,41 +186,44 @@ public class ReviewDaoImpl extends AbstractDaoImpl<Review> implements ReviewDao 
 
     @Override
     public Double getAverageRating(Integer movieId) throws DAOException {
-        List<Appraisal> rating = new ArrayList<>();
-        Double averageAppraisal = 0.0;
+        double averageAppraisal = 0.0;
         try (Connection connection = connectionPool.getConnection()) {
-            try (PreparedStatement statement = connection.prepareStatement(getFindAllByMovieIdSql())) {
+            try (PreparedStatement statement = connection.prepareStatement(getFindAverageSql())) {
+                connection.setAutoCommit(false);
                 statement.setInt(1, movieId);
                 ResultSet resultSet = statement.executeQuery();
                 while (resultSet.next()) {
-                    Optional<Review> optionalReview = parseResultSet(resultSet);
-                    optionalReview.ifPresent(review -> rating.add(review.getRating()));
+                    averageAppraisal = resultSet.getDouble("AVG(rating)");
                 }
             }
-            for (Appraisal appraisal : rating) {
-                averageAppraisal += appraisal.getId();
-            }
+            connection.commit();
+            connection.setAutoCommit(true);
         } catch (SQLException | InterruptedException e) {
             LOGGER.error(new DAOException(e.getMessage()));
             Thread.currentThread().interrupt();
         }
-        return averageAppraisal / rating.size();
+        return averageAppraisal;
     }
 
     @Override
     public boolean deleteByMovieIdUserId(Integer movieId, Integer userID) throws DAOException {
+        boolean state = false;
         try (Connection connection = connectionPool.getConnection()) {
             try (PreparedStatement preparedStatement = connection.prepareStatement(getDeleteSql())) {
+                connection.setAutoCommit(false);
                 preparedStatement.setInt(1, movieId);
                 preparedStatement.setInt(2, userID);
-                preparedStatement.execute();
-                return true;
+                if (!preparedStatement.execute()) {
+                    state = true;
+                }
             }
+            connection.commit();
+            connection.setAutoCommit(true);
         } catch (SQLException | InterruptedException e) {
             LOGGER.error("Failed to delete entity", new DAOException(e));
             Thread.currentThread().interrupt();
         }
-        return false;
+        return state;
     }
 
 }

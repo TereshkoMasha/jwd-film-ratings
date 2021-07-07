@@ -9,7 +9,6 @@ import java.util.Optional;
 
 public interface UserDao {
 
-    List<User> findAllByRoleID(Integer id) throws DAOException;
 
     boolean checkLogin(String login) throws DAOException;
 

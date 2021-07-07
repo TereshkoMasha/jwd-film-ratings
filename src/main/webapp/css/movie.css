@@ -225,6 +225,7 @@ textarea:focus {
 .rating > label {
     color: #ddd;
     float: right;
+    padding-bottom: 60px;
 }
 
 /***** CSS Magic to Highlight Stars on Hover *****/
@@ -256,6 +257,7 @@ textarea:focus {
 
 .comment-block {
     min-width: 500px;
+    max-width: 500px;
     max-height: 300px;
     padding: 16px;
     background-color: #F0F0ED;
@@ -293,7 +295,7 @@ textarea:focus {
 }
 
 .about-column h2 {
-    margin-top: 20px;
+    margin-top: 18px;
     color: #2e3235;
     font-family: 'Poppins', cursive;
 }

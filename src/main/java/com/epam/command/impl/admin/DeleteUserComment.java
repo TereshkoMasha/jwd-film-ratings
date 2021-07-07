@@ -31,12 +31,12 @@ public class DeleteUserComment implements CommandRequest {
             if (!reviewService.deleteByMovieIdUserId(movieId, userId)) {
                 return new CommandExecute(RouteType.REDIRECT, Destination.ERROR.getPath());
             } else {
-                requestData.addSessionAttribute(AttributeName.RATING, reviewService.getAverageRating(movieId));
-                requestData.addSessionAttribute("appraisalNumber", reviewService.findAllByMovieId(movieId).size());
+                requestData.addRequestAttribute(AttributeName.RATING, reviewService.getAverageRating(movieId));
+                requestData.addRequestAttribute("appraisalNumber", reviewService.findAllByMovieId(movieId).size());
 
                 List<User> users = userService.findAllUsersByMovieId(movieId);
                 requestData.deleteSessionAttribute(AttributeName.USERS);
-                requestData.addRequestAttribute(AttributeName.USERS, users);
+                requestData.addSessionAttribute(AttributeName.USERS, users);
 
                 List<Review> reviewList = reviewService.findAllByMovieId(movieId);
                 List<Review> reviewListWithText = reviewList.stream().filter(review -> !review.getText().isEmpty()).collect(Collectors.toList());

@@ -43,7 +43,8 @@ public class ViewMovieInfoCommand implements CommandRequest {
                 movieID = movie.getId();
                 movieOptional = Optional.of(movie);
             }
-            requestData.addSessionAttribute(AttributeName.MOVIE, movieOptional.get());
+
+            movieOptional.ifPresent(movie -> requestData.addSessionAttribute(AttributeName.MOVIE, movie));
 
             movieOptional.ifPresent(value -> {
                 try {
@@ -51,18 +52,15 @@ public class ViewMovieInfoCommand implements CommandRequest {
                         String page = requestData.getRequestParameter(AttributeName.PAGE);
                         requestData.addSessionAttribute(AttributeName.PAGE, Integer.parseInt(page));
                     }
+
                     List<MovieCrewMember> filmActors = movieCrewService.findAllActorsByMovieId(value.getId());
                     if (!filmActors.isEmpty()) {
                         requestData.addRequestAttribute(AttributeName.ACTOR, filmActors);
-                    } /*else {
-                        requestData.deleteSessionAttribute(AttributeName.ACTOR);
-                    }*/
+                    }
                     MovieCrewMember director = movieCrewService.findDirectorByMovieId(value.getId());
                     if (director.getName() != null) {
                         requestData.addRequestAttribute(AttributeName.DIRECTOR, director);
-                    }/* else {
-                        requestData.deleteSessionAttribute(AttributeName.DIRECTOR);
-                    }*/
+                    }
 
                     List<Review> reviewList = reviewService.findAllByMovieId(movieOptional.get().getId());
 
@@ -70,7 +68,7 @@ public class ViewMovieInfoCommand implements CommandRequest {
                     if (averageRating != null && averageRating != 0.0 && !reviewList.isEmpty()) {
                         BigDecimal bd = new BigDecimal(Double.toString(averageRating));
                         bd = bd.setScale(2, RoundingMode.HALF_UP);
-                        requestData.addSessionAttribute(AttributeName.RATING, bd.doubleValue());
+                        requestData.addRequestAttribute(AttributeName.RATING, bd.doubleValue());
                     }
 
                     List<Review> reviewListWithText = reviewList.stream().filter(review -> !review.getText().isEmpty()).collect(Collectors.toList());
@@ -79,7 +77,14 @@ public class ViewMovieInfoCommand implements CommandRequest {
                     List<User> users = userService.findAllUsersByMovieId(movieID);
                     requestData.deleteSessionAttribute(AttributeName.USERS);
                     requestData.addSessionAttribute(AttributeName.USERS, users);
-                    requestData.addSessionAttribute("appraisalNumber", reviewList.size());
+                    if (!reviewList.isEmpty()) {
+                        requestData.addRequestAttribute("appraisalNumber", reviewList.size());
+                    }
+
+                    if (requestData.getSessionAttributes().containsKey(AttributeName.ERROR_REVIEW)) {
+                        requestData.addRequestAttribute(AttributeName.ERROR_REVIEW, requestData.getSessionAttribute(AttributeName.ERROR_REVIEW));
+                        requestData.deleteSessionAttribute(AttributeName.ERROR_REVIEW);
+                    }
 
                 } catch (ServiceException e) {
                     LOGGER.error("Error while trying to load movie page", e);

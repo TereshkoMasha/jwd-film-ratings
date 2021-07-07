@@ -31,7 +31,7 @@ header {
 header nav {
     float: right;
     line-height: 60px;
-    width: 30%;
+    width: 33%;
     text-align: right;
 }
 
@@ -47,7 +47,7 @@ header nav a {
     font-family: 'Poppins', sans-serif;
     letter-spacing: 2px;
     font-size: 15px;
-    margin: 0 17px;
+    margin: 0 15px;
     color: #b3b3b3c4;
     transition: 1s;
 }

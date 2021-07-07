@@ -4,7 +4,7 @@ import com.epam.entity.enums.Appraisal;
 
 import java.util.Objects;
 
-public class Review extends AbstractBaseEntity {
+public class Review extends AbstractBaseEntity implements Comparable<Review> {
     private final int userID;
     private final int movieID;
     private final String text;
@@ -35,6 +35,11 @@ public class Review extends AbstractBaseEntity {
 
     public Appraisal getRating() {
         return rating;
+    }
+
+    @Override
+    public int compareTo(Review o) {
+        return this.userID - o.userID;
     }
 
 

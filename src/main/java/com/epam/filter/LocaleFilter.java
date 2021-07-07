@@ -1,3 +1,4 @@
+/*
 package com.epam.filter;
 
 import com.epam.command.AttributeName;
@@ -18,3 +19,4 @@ public class LocaleFilter implements Filter {
         filterChain.doFilter(httpServletRequest, servletResponse);
     }
 }
+*/

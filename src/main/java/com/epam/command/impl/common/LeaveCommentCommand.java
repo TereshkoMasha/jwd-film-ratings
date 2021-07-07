@@ -15,6 +15,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -40,25 +41,38 @@ public class LeaveCommentCommand implements CommandRequest {
             }
             if (requestData.getSessionAttributes().containsKey(AttributeName.REVIEW)) {
                 reviewList = (List<Review>) requestData.getSessionAttribute(AttributeName.REVIEW);
-                avrRating = (Double) requestData.getSessionAttribute(AttributeName.RATING);
             } else {
                 reviewList = new ArrayList<>();
-                avrRating = 0.0;
             }
 
             User user = (User) requestData.getSessionAttribute(AttributeName.USER);
+            Optional<User> optionalUser = userService.findByLogin(user.getLogin());
+            if (optionalUser.isPresent()) {
+                user = optionalUser.get();
+            }
+
             List<User> users = (List<User>) requestData.getSessionAttribute(AttributeName.USERS);
-            if (!users.contains(user)) {
+            String login = user.getLogin();
+
+            if (user.getStatus() == UserStatus.BANNED) {
+                requestData.addRequestAttribute(AttributeName.ERROR_REVIEW, "user.ban");
+            } else if (users.stream().noneMatch(user1 -> user1.getLogin().equals(login))) {
                 if (!requestData.getRequestParametersValues().containsKey(AttributeName.RATING)) {
                     requestData.addRequestAttribute(AttributeName.ERROR_REVIEW, "error.message.review.rating");
                 } else {
                     if (reviewService.create(text, Appraisal.resolveGenreById(Integer.parseInt(rating)), movieId, user.getId())) {
                         users.add(user);
+                        Collections.sort(users);
                         requestData.addSessionAttribute(AttributeName.USERS, users);
                         if ((reviewList.size() + 1) % 5 == 0) {
+                            avrRating = reviewService.getAverageRating(movieId);
                             for (User userToUpdate :
                                     users) {
-                                Integer movieAppraisal = reviewService.findByMovieIdUserId(movieId, userToUpdate.getId()).get().getRating().getId();
+                                Integer movieAppraisal = 0;
+                                Optional<Review> review = reviewService.findByMovieIdUserId(movieId, userToUpdate.getId());
+                                if (review.isPresent()) {
+                                    movieAppraisal = review.get().getRating().getId();
+                                }
                                 if (avrRating <= movieAppraisal + 0.5 && avrRating >= movieAppraisal - 0.5) {
                                     if (userToUpdate.getStatus() != UserStatus.HIGH && userToUpdate.getRole() != UserRole.ADMIN) {
                                         userService.updateRatingAfterEvaluating(user.getId(), true);
@@ -80,11 +94,12 @@ public class LeaveCommentCommand implements CommandRequest {
                 newReview.ifPresent(reviewList::add);
             }
 
-            requestData.addRequestAttribute("appraisalNumber", reviewList.size());
-            requestData.addRequestAttribute("id", movieId);
+            requestData.addRequestAttribute(AttributeName.ID, movieId);
 
-            List<Review> reviewListWithText = reviewList.stream().filter(review -> !review.getText().isEmpty()).collect(Collectors.toList());
+            List<Review> reviewListWithText = reviewList.stream().filter(review -> !review.getText().isEmpty()).sorted().collect(Collectors.toList());
             requestData.addSessionAttribute(AttributeName.REVIEW, reviewListWithText);
+
+            requestData.addRequestAttribute("appraisalNumber", reviewService.findAllByMovieId(movieId).size());
 
 
         } catch (ServiceException e) {

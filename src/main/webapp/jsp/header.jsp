@@ -51,7 +51,8 @@
                         <a href="${pageContext.request.contextPath}/controller?command=show_users">
                             <fmt:message key="admin.main"/> </a>
                     </c:if>
-                    <a href="${pageContext.request.contextPath}/controller?command=view-user-profile" >Profile</a>
+                    <a href="${pageContext.request.contextPath}/controller?command=view-user-profile"><fmt:message
+                            key="header.profile"/></a>
                     <a href="${pageContext.request.contextPath}/controller?command=logout">
                         <fmt:message key="header.logout"/></a>
                 </c:when>

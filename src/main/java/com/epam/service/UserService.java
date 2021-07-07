@@ -46,7 +46,7 @@ public interface UserService extends BaseService<User> {
      * @return {@code true} if the status has been changed, otherwise {@code false}
      * @throws ServiceException if {@code DAOException} occurs
      */
-    boolean blockUser(UserStatus status, Integer userId) throws ServiceException;
+    boolean updateStatus(UserStatus status, Integer userId) throws ServiceException;
 
     /**
      * Updates a column rating table user

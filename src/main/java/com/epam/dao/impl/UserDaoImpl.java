@@ -35,7 +35,6 @@ public class UserDaoImpl extends AbstractDaoImpl<User> implements UserDao {
     private static final String SQL_DELETE = "DELETE FROM user WHERE id = ? ";
 
     private static final String SQL_FIND_ALL = "SELECT * FROM user";
-    private static final String SQL_FIND_ALL_BY_ROLE_ID = "SELECT * FROM user WHERE role_id = ?";
     private static final String SQL_FIND_BY_ID = "SELECT * FROM user WHERE id = ? ";
     private static final String SQL_FIND_BY_LOGIN = "SELECT * FROM user WHERE login= ?";
     private static final String SQL_FIND_BY_LOGIN_PASSWORD = "SELECT * FROM user WHERE login= ? AND password = ?";
@@ -75,10 +74,6 @@ public class UserDaoImpl extends AbstractDaoImpl<User> implements UserDao {
     @Override
     protected String getFindByIdSql() {
         return SQL_FIND_BY_ID;
-    }
-
-    protected String getFindALLByRoleId() {
-        return SQL_FIND_ALL_BY_ROLE_ID;
     }
 
     protected static String getUpdateLoginSql() {
@@ -134,28 +129,6 @@ public class UserDaoImpl extends AbstractDaoImpl<User> implements UserDao {
             Thread.currentThread().interrupt();
         }
         return updated;
-    }
-
-    @Override
-    public List<User> findAllByRoleID(Integer id) {
-        List<User> userList = new ArrayList<>();
-        try (Connection connection = connectionPool.getConnection()) {
-            try (PreparedStatement statement = connection.prepareStatement(getFindALLByRoleId())) {
-                connection.setAutoCommit(false);
-                statement.setInt(1, id);
-                ResultSet resultSet = statement.executeQuery();
-                while (resultSet.next()) {
-                    Optional<User> optionalUser = parseResultSet(resultSet);
-                    optionalUser.ifPresent(userList::add);
-                }
-            }
-            connection.commit();
-            connection.setAutoCommit(true);
-        } catch (SQLException | InterruptedException e) {
-            LOGGER.error(new DAOException(e.getMessage()));
-            Thread.currentThread().interrupt();
-        }
-        return userList;
     }
 
 

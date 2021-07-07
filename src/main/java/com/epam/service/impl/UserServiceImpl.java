@@ -60,6 +60,7 @@ public class UserServiceImpl implements UserService {
         return userDao.findByLogin(login);
     }
 
+
     @Override
     public int getRoleId(String login) throws ServiceException {
         int id;
@@ -157,7 +158,7 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public boolean blockUser(UserStatus status, Integer userId) throws ServiceException {
+    public boolean updateStatus(UserStatus status, Integer userId) throws ServiceException {
         try {
             return userDao.updateStatus(status, userId);
         } catch (DAOException e) {
@@ -188,13 +189,14 @@ public class UserServiceImpl implements UserService {
     }
 
     private int create(User user) {
+        int id = 0;
         try {
-            return userDao.create(user);
+            id = userDao.create(user);
         } catch (DAOException e) {
             LOGGER.error("Exception during data update", e);
 
         }
-        return -1;
+        return id;
     }
 
 }

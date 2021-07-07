@@ -7,8 +7,9 @@ import com.epam.service.ReviewService;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 class ReviewServiceImplTest {
     private final ReviewService reviewService = new ReviewServiceImpl();
@@ -22,9 +23,9 @@ class ReviewServiceImplTest {
     }
 
     @Test
-    void getByMovieIdUserId() throws ServiceException {
-        Integer movie_id = 4;
-        Integer user_id = 2;
+    void findByMovieIdUserId() throws ServiceException {
+        Integer movie_id = 1;
+        Integer user_id = 1;
         Review reviewMock = Mockito.mock(Review.class);
         Mockito.when(reviewMock.getMovieID()).thenReturn(movie_id);
         Mockito.when(reviewMock.getUserID()).thenReturn(user_id);
@@ -42,5 +43,14 @@ class ReviewServiceImplTest {
     @Test
     void getAverageRating() throws ServiceException {
         assertEquals(reviewService.getAverageRating(8), 0.0);
+    }
+
+    @Test
+    void deleteByUserIdMovieID() throws ServiceException {
+        List<Review> reviewList = reviewService.findAll();
+        if (!reviewList.isEmpty()) {
+            Review review = reviewList.get(0);
+            assertTrue(reviewService.deleteByMovieIdUserId(review.getMovieID(), review.getUserID()));
+        }
     }
 }
