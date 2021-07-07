@@ -37,6 +37,7 @@ public class GenreDaoImpl implements GenreDao {
     public List<Genre> findAll() throws DAOException {
         List<Genre> entitiesList = new ArrayList<>();
         try (Connection connection = connectionPool.getConnection()) {
+            connection.setAutoCommit(false);
             try (PreparedStatement preparedStatement = connection.prepareStatement(getFindAllSql())) {
                 ResultSet resultSet = preparedStatement.executeQuery();
                 while (resultSet.next()) {
@@ -44,6 +45,8 @@ public class GenreDaoImpl implements GenreDao {
                     entityOptional.ifPresent(entitiesList::add);
                 }
             }
+            connection.commit();
+            connection.setAutoCommit(true);
         } catch (SQLException | InterruptedException e) {
             LOGGER.error(new DAOException(e));
             Thread.currentThread().interrupt();

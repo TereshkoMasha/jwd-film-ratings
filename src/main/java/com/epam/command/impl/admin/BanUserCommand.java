@@ -10,10 +10,20 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.List;
+import java.util.Optional;
 
 public class BanUserCommand implements CommandRequest {
     private static final Logger LOGGER = LogManager.getLogger(BanUserCommand.class);
     UserService userService = new UserServiceImpl();
+
+    /**
+     * Changing user status. By the request parameter, the blocking / unlock operation is determined.
+     * When blocking the user rating is reduced to 0. When unlocking, a rating is set 1.
+     *
+     * @param requestData an object that
+     *                    contains the request the client has made
+     * @see UserService#updateStatus(UserStatus, Integer)
+     */
 
     @Override
     public CommandExecute executeCommand(RequestData requestData) {
@@ -25,14 +35,17 @@ public class BanUserCommand implements CommandRequest {
             } else {
                 userService.updateStatus(UserStatus.BANNED, id);
             }
-            List<User> users = (List<User>) requestData.getSessionAttribute("users_list");
+            List<User> users = (List<User>) requestData.getSessionAttribute(AttributeName.USERS_L);
             for (int i = 0; i < users.size(); i++) {
                 if (users.get(i).getId().equals(id)) {
-                    users.set(i, userService.getById(id).get());
+                    Optional<User> optional = userService.getById(id);
+                    if (optional.isPresent()) {
+                        users.set(i, optional.get());
+                    }
                     break;
                 }
             }
-            requestData.addSessionAttribute("users_list", users);
+            requestData.addSessionAttribute(AttributeName.USERS_L, users);
         } catch (ServiceException e) {
             LOGGER.error("Exception while changing user status", e);
             return new CommandExecute(RouteType.REDIRECT, Destination.ERROR.getPath());

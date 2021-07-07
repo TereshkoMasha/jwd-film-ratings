@@ -2,7 +2,6 @@ package com.epam.command.impl.admin;
 
 import com.epam.command.*;
 import com.epam.entity.User;
-import com.epam.entity.enums.UserRole;
 import com.epam.exception.ServiceException;
 import com.epam.service.UserService;
 import com.epam.service.impl.UserServiceImpl;
@@ -13,25 +12,30 @@ import java.util.List;
 
 public class ShowUsersCommand implements CommandRequest {
     private static final Logger LOGGER = LogManager.getLogger(ShowUsersCommand.class);
+    UserService userService = new UserServiceImpl();
 
+    /**
+     * Gets all users from the database,
+     *
+     * @param requestData an object that
+     *                    contains the request the client has made
+     * @see UserService#findAll()
+     */
     @Override
     public CommandExecute executeCommand(RequestData requestData) {
-        CommandExecute commandExecute = null;
+        CommandExecute commandExecute = new CommandExecute(RouteType.REDIRECT, Destination.USERS.getPath());
         try {
-            UserService userService = new UserServiceImpl();
             List<User> userList = userService.findAll();
-            User user = (User) requestData.getSessionAttribute(AttributeName.USER);
-            if (user.getRole() == UserRole.ADMIN) {
-                if (!userList.isEmpty()) {
-                    requestData.addSessionAttribute("users_list", userList);
-                    commandExecute = new CommandExecute(RouteType.REDIRECT, Destination.USERS.getPath());
-                }
+            if (!userList.isEmpty()) {
+                requestData.addSessionAttribute(AttributeName.USERS_L, userList);
             } else {
-                commandExecute = new CommandExecute(RouteType.REDIRECT, Destination.ERROR.getPath());
+                commandExecute.setPagePath(Destination.ERROR.getPath());
+                requestData.addRequestAttribute(AttributeName.ERROR, "error.message.400");
             }
         } catch (ServiceException e) {
             LOGGER.error("Error loading user list", e);
-            return new CommandExecute(RouteType.REDIRECT, Destination.ERROR.getPath());
+            commandExecute.setPagePath(Destination.ERROR.getPath());
+            return commandExecute;
         }
         return commandExecute;
     }

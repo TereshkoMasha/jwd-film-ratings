@@ -496,6 +496,7 @@ img {
 
 .comment-block {
     min-width: 500px;
+    max-width: 500px;
     max-height: 300px;
     padding: 16px;
     background-color: #F0F0ED;

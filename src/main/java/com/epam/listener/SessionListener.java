@@ -6,13 +6,15 @@ import org.apache.logging.log4j.Logger;
 import javax.servlet.annotation.WebListener;
 import javax.servlet.http.HttpSessionAttributeListener;
 import javax.servlet.http.HttpSessionBindingEvent;
+import javax.servlet.http.HttpSessionEvent;
+import javax.servlet.http.HttpSessionListener;
 
 /***
- * {@link AttributeListener} implements interface for receiving notification events about HttpSession attribute changes.
+ * {@link SessionListener} implements interface for receiving notification events about HttpSession attribute changes.
  */
 @WebListener
-public class AttributeListener implements HttpSessionAttributeListener {
-    private static final Logger LOGGER = LogManager.getLogger(AttributeListener.class);
+public class SessionListener implements HttpSessionAttributeListener, HttpSessionListener {
+    private static final Logger LOGGER = LogManager.getLogger(SessionListener.class);
 
     @Override
     public void attributeAdded(HttpSessionBindingEvent event) {
@@ -33,5 +35,15 @@ public class AttributeListener implements HttpSessionAttributeListener {
         String attributeName = event.getName();
         Object attributeValue = event.getValue();
         LOGGER.debug("Attribute replaced : " + attributeName + " : " + attributeValue);
+    }
+
+    @Override
+    public void sessionCreated(HttpSessionEvent se) {
+        LOGGER.debug("New session created");
+    }
+
+    @Override
+    public void sessionDestroyed(HttpSessionEvent se) {
+        LOGGER.debug("Session destroyed");
     }
 }

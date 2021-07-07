@@ -200,7 +200,7 @@
                     <p style="margin-top: 5px ; padding-left: 10px ; color: rgba(105,8,0,0.71)"><fmt:message
                             key="${errorReviewAlreadyExist}"/></p>
                     </c:if>
-                    <button type="submit" style="margin-left: 10px; margin-top: 5px; margin-bottom: 90px">
+                    <button type="submit" style="margin-left: 400px; margin-top: 5px; margin-bottom: 90px">
                         <fmt:message key="movie.review"/></button>
                     </p>
                 </form>

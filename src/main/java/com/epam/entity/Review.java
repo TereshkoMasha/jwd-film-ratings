@@ -17,6 +17,11 @@ public class Review extends AbstractBaseEntity implements Comparable<Review> {
         this.rating = Objects.requireNonNull(builder.rating);
     }
 
+    @Override
+    public int compareTo(Review o) {
+        return this.userID - o.userID;
+    }
+
     public static Builder builder() {
         return new Builder();
     }
@@ -35,11 +40,6 @@ public class Review extends AbstractBaseEntity implements Comparable<Review> {
 
     public Appraisal getRating() {
         return rating;
-    }
-
-    @Override
-    public int compareTo(Review o) {
-        return this.userID - o.userID;
     }
 
 

@@ -44,8 +44,6 @@ public class ViewMovieInfoCommand implements CommandRequest {
                 movieOptional = Optional.of(movie);
             }
 
-            movieOptional.ifPresent(movie -> requestData.addSessionAttribute(AttributeName.MOVIE, movie));
-
             movieOptional.ifPresent(value -> {
                 try {
                     if (requestData.getRequestParametersValues().containsKey(AttributeName.PAGE)) {
@@ -85,7 +83,7 @@ public class ViewMovieInfoCommand implements CommandRequest {
                         requestData.addRequestAttribute(AttributeName.ERROR_REVIEW, requestData.getSessionAttribute(AttributeName.ERROR_REVIEW));
                         requestData.deleteSessionAttribute(AttributeName.ERROR_REVIEW);
                     }
-
+                    movieOptional.ifPresent(movie -> requestData.addSessionAttribute(AttributeName.MOVIE, movie));
                 } catch (ServiceException e) {
                     LOGGER.error("Error while trying to load movie page", e);
                 }

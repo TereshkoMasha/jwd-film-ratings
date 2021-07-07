@@ -49,7 +49,8 @@ public abstract class AbstractDaoImpl<T extends BaseEntity> implements Dao<T> {
 
     @Override
     public int create(final T entity) throws DAOException {
-        try (Connection connection = connectionPool.getConnection();) {
+        try (Connection connection = connectionPool.getConnection()) {
+            connection.setAutoCommit(false);
             try (PreparedStatement preparedStatement = connection.prepareStatement(getCreateSql())) {
                 prepareStatement(preparedStatement, entity);
                 preparedStatement.execute();
@@ -58,10 +59,14 @@ public abstract class AbstractDaoImpl<T extends BaseEntity> implements Dao<T> {
                     ResultSet resultSet = statement.executeQuery();
                     while (resultSet.next()) {
                         id = resultSet.getInt("last_insert_id()");
+
                     }
+                    connection.commit();
+                    connection.setAutoCommit(true);
                     return id;
                 }
             }
+
         } catch (SQLException | InterruptedException e) {
             LOGGER.error("Failed to create entity", new DAOException(e));
             Thread.currentThread().interrupt();
@@ -73,6 +78,7 @@ public abstract class AbstractDaoImpl<T extends BaseEntity> implements Dao<T> {
     public List<T> findAll() throws DAOException {
         List<T> entitiesList = new ArrayList<>();
         try (Connection connection = connectionPool.getConnection()) {
+            connection.setAutoCommit(false);
             try (PreparedStatement preparedStatement = connection.prepareStatement(getFindAllSql())) {
                 ResultSet resultSet = preparedStatement.executeQuery();
                 while (resultSet.next()) {
@@ -80,6 +86,8 @@ public abstract class AbstractDaoImpl<T extends BaseEntity> implements Dao<T> {
                     entityOptional.ifPresent(entitiesList::add);
                 }
             }
+            connection.commit();
+            connection.setAutoCommit(true);
         } catch (SQLException | InterruptedException e) {
             LOGGER.error(new DAOException(e));
             Thread.currentThread().interrupt();
@@ -89,23 +97,28 @@ public abstract class AbstractDaoImpl<T extends BaseEntity> implements Dao<T> {
 
     @Override
     public boolean deleteById(Integer id) throws DAOException {
+        boolean deleted = false;
         try (Connection connection = connectionPool.getConnection()) {
+            connection.setAutoCommit(false);
             try (PreparedStatement preparedStatement = connection.prepareStatement(getDeleteSql())) {
                 preparedStatement.setInt(1, id);
                 preparedStatement.execute();
-                return true;
+                deleted = true;
             }
+            connection.commit();
+            connection.setAutoCommit(true);
         } catch (SQLException | InterruptedException e) {
             LOGGER.error("Failed to delete entity", new DAOException(e));
             Thread.currentThread().interrupt();
         }
-        return false;
+        return deleted;
     }
 
     @Override
     public Optional<T> getById(Integer id) throws DAOException {
         Optional<T> entityOptional = Optional.empty();
         try (Connection connection = connectionPool.getConnection()) {
+            connection.setAutoCommit(false);
             try (PreparedStatement preparedStatement = connection.prepareStatement(getFindByIdSql())) {
                 preparedStatement.setInt(1, id);
                 ResultSet resultSet = preparedStatement.executeQuery();
@@ -113,6 +126,8 @@ public abstract class AbstractDaoImpl<T extends BaseEntity> implements Dao<T> {
                     entityOptional = parseResultSet(resultSet);
                 }
             }
+            connection.commit();
+            connection.setAutoCommit(true);
         } catch (SQLException | InterruptedException e) {
             LOGGER.error(new DAOException(e));
             Thread.currentThread().interrupt();

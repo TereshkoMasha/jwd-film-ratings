@@ -25,7 +25,7 @@ public class SortMovieByGenre implements CommandRequest {
                 //requestData.deleteSessionAttribute(AttributeName.PAGE);
                 if (requestData.getRequestParametersValues().containsKey(AttributeName.PAGE)) {
                     String page = requestData.getRequestParameter(AttributeName.PAGE);
-                    requestData.addSessionAttribute(AttributeName.PAGE, Integer.parseInt(page));
+                    requestData.addRequestAttribute(AttributeName.PAGE, Integer.parseInt(page));
                 }
             }
         } catch (ServiceException e) {

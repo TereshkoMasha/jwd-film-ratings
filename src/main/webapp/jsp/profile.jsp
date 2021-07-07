@@ -1,8 +1,20 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="pag-tag" uri="http://mypagtag" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!DOCTYPE>
 <html>
+
+<c:choose>
+    <c:when test="${not empty sessionScope.locale}">
+        <fmt:setLocale value="${sessionScope.locale}" scope="session"/>
+    </c:when>
+    <c:otherwise>
+        <fmt:setLocale value="en_US" scope="session"/>
+    </c:otherwise>
+</c:choose>
+<fmt:setBundle basename="Locale"/>
+
 <head>
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/profile.css">
     <title>Profile</title>
@@ -17,21 +29,21 @@
         </div>
         <div class="container">
             <div class="photo-container">
-                <a><img src="${pageContext.request.contextPath}/img/image_2021-07-04_23-53-52.png" alt=""></a>
+                <a href="#"><img src="${pageContext.request.contextPath}/img/image_2021-07-04_23-53-52.png" alt=""></a>
             </div>
             <h3 class="title">${user.name}</h3>
             <p class="category">${user.role} - ${user.status}</p>
             <div class="content">
                 <div class="social-description">
                     <h2>${review.size()}</h2>
-                    <p>Reviews</p>
+                    <p><fmt:message key="profile.review"/></p>
                 </div>
             </div>
         </div>
     </div>
     <div class="section">
         <div class="container">
-            <h3 class="title">Comments</h3>
+            <h3 class="title"><fmt:message key="profile.comments"/></h3>
             <c:forEach var="review" items="${review}" begin="${page}" end="${page + 2}">
                 <div class="comment-block">
                     <p class="comment-text" style="margin-left: 0px"><c:out value="${review.text}"/></p>

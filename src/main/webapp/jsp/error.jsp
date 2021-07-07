@@ -22,7 +22,7 @@
     <div class="fof">
         <c:choose>
             <c:when test="${error ne null}">
-                <h1><fmt:message key="${error}"/></h1>
+                <h1>${error}</h1>
             </c:when>
             <c:otherwise>
                 <h1><fmt:message key="error.message.404"/></h1>

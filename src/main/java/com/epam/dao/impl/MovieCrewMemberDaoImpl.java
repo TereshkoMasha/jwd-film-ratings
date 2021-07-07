@@ -90,6 +90,7 @@ public class MovieCrewMemberDaoImpl extends AbstractDaoImpl<MovieCrewMember> imp
     public boolean update(MovieCrewMember entity) {
         boolean updated = false;
         try (Connection connection = connectionPool.getConnection()) {
+            connection.setAutoCommit(false);
             try (PreparedStatement preparedStatement = connection.prepareStatement(getUpdateSql())) {
                 preparedStatement.setString(1, entity.getName());
                 preparedStatement.setInt(2, entity.getId());
@@ -97,6 +98,8 @@ public class MovieCrewMemberDaoImpl extends AbstractDaoImpl<MovieCrewMember> imp
                     updated = true;
                 }
             }
+            connection.commit();
+            connection.setAutoCommit(true);
         } catch (SQLException | InterruptedException e) {
             LOGGER.error("Failed to update entity", new DAOException(e.getMessage()));
             Thread.currentThread().interrupt();
@@ -109,6 +112,7 @@ public class MovieCrewMemberDaoImpl extends AbstractDaoImpl<MovieCrewMember> imp
     public List<MovieCrewMember> findAllActorsByMovieId(Integer id) throws DAOException {
         List<MovieCrewMember> entitiesList = new ArrayList<>();
         try (Connection connection = connectionPool.getConnection()) {
+            connection.setAutoCommit(false);
             try (PreparedStatement preparedStatement = connection.prepareStatement(getFindAllMovieActorsSql())) {
                 preparedStatement.setInt(1, id);
                 ResultSet resultSet = preparedStatement.executeQuery();
@@ -117,6 +121,8 @@ public class MovieCrewMemberDaoImpl extends AbstractDaoImpl<MovieCrewMember> imp
                     entityOptional.ifPresent(entitiesList::add);
                 }
             }
+            connection.commit();
+            connection.setAutoCommit(true);
         } catch (SQLException | InterruptedException e) {
             LOGGER.error(new DAOException(e));
             Thread.currentThread().interrupt();
@@ -126,23 +132,22 @@ public class MovieCrewMemberDaoImpl extends AbstractDaoImpl<MovieCrewMember> imp
 
     @Override
     public MovieCrewMember findDirectorByMovieId(Integer id) throws DAOException {
+        Optional<MovieCrewMember> crewMember = Optional.empty();
         try (Connection connection = connectionPool.getConnection()) {
+            connection.setAutoCommit(false);
             try (PreparedStatement preparedStatement = connection.prepareStatement(getFindMovieDirectorSql())) {
                 preparedStatement.setInt(1, id);
                 ResultSet resultSet = preparedStatement.executeQuery();
                 while (resultSet.next()) {
-                    Optional<MovieCrewMember> entityOptional = parseResultSet(resultSet);
-                    if (entityOptional.isPresent()) {
-                        return entityOptional.get();
-                    }
+                    crewMember = parseResultSet(resultSet);
                 }
             }
+            connection.commit();
+            connection.setAutoCommit(true);
         } catch (SQLException | InterruptedException e) {
             LOGGER.error(new DAOException(e));
             Thread.currentThread().interrupt();
         }
-        return MovieCrewMember.builder().build();
+        return crewMember.orElseGet(() -> MovieCrewMember.builder().build());
     }
-
-
 }

@@ -187,7 +187,11 @@ body {
     color: #222;
 }
 
-.p2 .is-active li{
+.image_box .pagination a :hover {
+    color: #ee6c4d;
+}
+
+.p2 .is-active li {
     font-weight: bold;
     border-bottom: 3px solid #ee6c4d;
 }

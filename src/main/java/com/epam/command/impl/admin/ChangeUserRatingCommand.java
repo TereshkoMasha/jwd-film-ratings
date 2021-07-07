@@ -16,6 +16,16 @@ public class ChangeUserRatingCommand implements CommandRequest {
     private static final Logger LOGGER = LogManager.getLogger(ChangeUserRatingCommand.class);
     UserService userService = new UserServiceImpl();
 
+    /**
+     * Change of user rating. The desired rating is transmitted as a request parameter.
+     * The validity of the rating value is checked.
+     * Administrator rating can not be changed.
+     * Replaces the old user in the list, which is stored in the session attributes.
+     *
+     * @param requestData an object that
+     *                    contains the request the client has made
+     * @see UserService#updateRating(Integer, Double)
+     */
     @Override
     public CommandExecute executeCommand(RequestData requestData) {
         Integer id = Integer.parseInt(requestData.getRequestParameter(AttributeName.ID));
@@ -24,28 +34,31 @@ public class ChangeUserRatingCommand implements CommandRequest {
             if (optionalUser.isPresent()) {
                 User user = optionalUser.get();
                 if (user.getRole() == UserRole.USER) {
-                    List<User> users = (List<User>) requestData.getSessionAttribute("users_list");
-                    Double rating = Double.parseDouble(requestData.getRequestParameter("rating"));
+                    List<User> users = (List<User>) requestData.getSessionAttribute(AttributeName.USERS_L);
+                    Double rating = Double.parseDouble(requestData.getRequestParameter(AttributeName.RATING));
+
                     if (!rating.isNaN() && rating < 9.5 && rating > 0) {
                         for (int i = 0; i < users.size(); i++) {
                             if (users.get(i).getId().equals(id)) {
                                 userService.updateRating(id, rating);
-                                users.set(i, userService.getById(id).get());
+                                Optional<User> optional = userService.getById(id);
+                                if (optional.isPresent()) {
+                                    users.set(i, optional.get());
+                                }
                                 break;
                             }
                         }
                     } else {
                         requestData.addRequestAttribute(AttributeName.ERROR_INVALID_INPUT, "error.message.invalid.input");
                     }
-                    requestData.addSessionAttribute("users_list", users);
+                    requestData.addSessionAttribute(AttributeName.USERS_L, users);
                 }
             }
         } catch (ServiceException e) {
             LOGGER.error("Exception while changing user rating", e);
-            return new CommandExecute(RouteType.REDIRECT, Destination.USERS.getPath());
+
         } catch (NumberFormatException e) {
             requestData.addRequestAttribute(AttributeName.ERROR_INVALID_INPUT, "error.message.invalid.input");
-            return new CommandExecute(RouteType.FORWARD, Destination.USERS.getPath());
         }
         return new CommandExecute(RouteType.FORWARD, Destination.USERS.getPath());
     }

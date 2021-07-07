@@ -116,13 +116,16 @@ public class FilmDaoImpl extends AbstractDaoImpl<Movie> implements FilmDao {
     public boolean update(Movie entity) throws DAOException {
         boolean updated = false;
         try (Connection connection = connectionPool.getConnection()) {
+            connection.setAutoCommit(false);
             try (PreparedStatement preparedStatement = connection.prepareStatement(getUpdateSql())) {
                 preparedStatement.setString(1, entity.getName());
                 preparedStatement.setInt(2, entity.getId());
-                if (preparedStatement.executeUpdate() != 0) {
+                if (!(preparedStatement.executeUpdate() == 0)) {
                     updated = true;
                 }
             }
+            connection.commit();
+            connection.setAutoCommit(true);
         } catch (SQLException | InterruptedException e) {
             LOGGER.error("Failed to update movie", new DAOException(e.getMessage()));
             Thread.currentThread().interrupt();
@@ -134,6 +137,7 @@ public class FilmDaoImpl extends AbstractDaoImpl<Movie> implements FilmDao {
     public Optional<Movie> findByName(String name) throws DAOException {
         Optional<Movie> entityOptional = Optional.empty();
         try (Connection connection = connectionPool.getConnection()) {
+            connection.setAutoCommit(false);
             try (PreparedStatement statement = connection.prepareStatement(getFindByNameSql())) {
                 statement.setString(1, name);
                 ResultSet resultSet = statement.executeQuery();
@@ -141,6 +145,8 @@ public class FilmDaoImpl extends AbstractDaoImpl<Movie> implements FilmDao {
                     entityOptional = parseResultSet(resultSet);
                 }
             }
+            connection.commit();
+            connection.setAutoCommit(true);
         } catch (SQLException | InterruptedException e) {
             LOGGER.error(new DAOException(e));
             Thread.currentThread().interrupt();
@@ -152,6 +158,7 @@ public class FilmDaoImpl extends AbstractDaoImpl<Movie> implements FilmDao {
     public List<Movie> findAllByGenre(Genre genre) throws DAOException {
         List<Movie> movies = new ArrayList<>();
         try (Connection connection = connectionPool.getConnection()) {
+            connection.setAutoCommit(false);
             try (PreparedStatement statement = connection.prepareStatement(getFindByGenreSql())) {
                 statement.setInt(1, genre.getId());
                 ResultSet resultSet = statement.executeQuery();
@@ -160,6 +167,8 @@ public class FilmDaoImpl extends AbstractDaoImpl<Movie> implements FilmDao {
                     optionalUser.ifPresent(movies::add);
                 }
             }
+            connection.commit();
+            connection.setAutoCommit(true);
         } catch (SQLException | InterruptedException e) {
             LOGGER.error(new DAOException(e.getMessage()));
             Thread.currentThread().interrupt();
@@ -171,6 +180,7 @@ public class FilmDaoImpl extends AbstractDaoImpl<Movie> implements FilmDao {
     public List<Movie> findAllByPublicationYear(Integer year) throws DAOException {
         List<Movie> movies = new ArrayList<>();
         try (Connection connection = connectionPool.getConnection()) {
+            connection.setAutoCommit(false);
             try (PreparedStatement statement = connection.prepareStatement(getFindByPublicationYearSql())) {
                 statement.setInt(1, year);
                 ResultSet resultSet = statement.executeQuery();
@@ -179,6 +189,8 @@ public class FilmDaoImpl extends AbstractDaoImpl<Movie> implements FilmDao {
                     optionalUser.ifPresent(movies::add);
                 }
             }
+            connection.commit();
+            connection.setAutoCommit(true);
         } catch (SQLException | InterruptedException e) {
             LOGGER.error(new DAOException(e.getMessage()));
             Thread.currentThread().interrupt();
@@ -190,6 +202,7 @@ public class FilmDaoImpl extends AbstractDaoImpl<Movie> implements FilmDao {
     public List<Movie> findAllByCountry(Country country) throws DAOException {
         List<Movie> movies = new ArrayList<>();
         try (Connection connection = connectionPool.getConnection()) {
+            connection.setAutoCommit(false);
             try (PreparedStatement statement = connection.prepareStatement(getFindByCountrySql())) {
                 statement.setInt(1, country.getId());
                 ResultSet resultSet = statement.executeQuery();
@@ -198,6 +211,8 @@ public class FilmDaoImpl extends AbstractDaoImpl<Movie> implements FilmDao {
                     optionalUser.ifPresent(movies::add);
                 }
             }
+            connection.commit();
+            connection.setAutoCommit(true);
         } catch (SQLException | InterruptedException e) {
             LOGGER.error(new DAOException(e.getMessage()));
             Thread.currentThread().interrupt();
