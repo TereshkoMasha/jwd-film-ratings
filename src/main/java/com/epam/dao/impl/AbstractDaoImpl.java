@@ -59,7 +59,6 @@ public abstract class AbstractDaoImpl<T extends BaseEntity> implements Dao<T> {
                     ResultSet resultSet = statement.executeQuery();
                     while (resultSet.next()) {
                         id = resultSet.getInt("last_insert_id()");
-
                     }
                     connection.commit();
                     connection.setAutoCommit(true);

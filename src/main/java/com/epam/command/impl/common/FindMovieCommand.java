@@ -12,7 +12,7 @@ import java.util.Optional;
 
 public class FindMovieCommand implements CommandRequest {
     private static final Logger LOGGER = LogManager.getLogger(FindMovieCommand.class);
-    MovieService movieService = new MovieServiceImpl();
+    private static final MovieService movieService = new MovieServiceImpl();
 
     @Override
     public CommandExecute executeCommand(RequestData requestData) {
@@ -21,7 +21,7 @@ public class FindMovieCommand implements CommandRequest {
             Optional<Movie> optionalFilm = movieService.findByName(filmName);
             if (optionalFilm.isPresent()) {
                 requestData.addSessionAttribute(AttributeName.MOVIE, optionalFilm.get());
-                requestData.addRequestAttribute("reload", "reload");
+                requestData.addRequestAttribute(AttributeName.RELOAD, AttributeName.RELOAD);
                 requestData.deleteSessionAttribute(AttributeName.PAGE);
 
                 if (requestData.getSessionAttributes().containsKey(AttributeName.REVIEW)) {

@@ -56,15 +56,15 @@ public class Controller extends HttpServlet {
 
     @Override
     public void init() throws ServletException {
-        super.init();
         ConnectionPool.getInstance();
         Application.start();
+        super.init();
     }
 
     @Override
     public void destroy() {
-        super.destroy();
         ConnectionPool.getInstance().closePool();
         LOGGER.debug("Connection pool closed");
+        super.destroy();
     }
 }

@@ -13,7 +13,7 @@ import java.util.Optional;
 
 public class LoginCommand implements CommandRequest {
     private static final Logger LOGGER = LogManager.getLogger(LoginCommand.class);
-    UserService userService = new UserServiceImpl();
+    private static final UserService userService = new UserServiceImpl();
 
     @Override
     public CommandExecute executeCommand(RequestData requestData) {
@@ -29,7 +29,7 @@ public class LoginCommand implements CommandRequest {
                     requestData.addSessionAttribute(AttributeName.USER, user);
                     requestData.addSessionAttribute(AttributeName.ROLE, user.getRole().getId());
                     if (user.getRole() == UserRole.ADMIN) {
-                        requestData.addSessionAttribute("users_list", userService.findAll());
+                        requestData.addSessionAttribute(AttributeName.USERS_L, userService.findAll());
                         commandExecute.setPagePath(Destination.USERS.getPath());
                     }
                 }

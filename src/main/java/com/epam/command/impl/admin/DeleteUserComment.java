@@ -14,8 +14,8 @@ import java.util.List;
 
 public class DeleteUserComment implements CommandRequest {
     private static final Logger LOGGER = LogManager.getLogger(DeleteUserComment.class);
-    ReviewService reviewService = new ReviewServiceImpl();
-    UserService userService = new UserServiceImpl();
+    private static final ReviewService reviewService = new ReviewServiceImpl();
+    private static final UserService userService = new UserServiceImpl();
 
     /**
      * Removes a user's comment on a movie.

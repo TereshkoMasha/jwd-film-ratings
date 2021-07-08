@@ -12,21 +12,21 @@ import org.apache.logging.log4j.Logger;
 
 public class MainCommand implements CommandRequest {
     private static final Logger LOGGER = LogManager.getLogger(MainCommand.class);
-    MovieService movieService = new MovieServiceImpl();
-    GenreService genreService = new GenreServiceImpl();
+    private static final MovieService movieService = new MovieServiceImpl();
+    private static final GenreService genreService = new GenreServiceImpl();
 
     @Override
     public CommandExecute executeCommand(RequestData requestData) {
-        if (requestData.getRequestParametersValues().containsKey("page")) {
-            String page = requestData.getRequestParameter("page");
-            requestData.addSessionAttribute("page", Integer.parseInt(page));
+        if (requestData.getRequestParametersValues().containsKey(AttributeName.PAGE)) {
+            String page = requestData.getRequestParameter(AttributeName.PAGE);
+            requestData.addSessionAttribute(AttributeName.PAGE, Integer.parseInt(page));
         }
         try {
-            if ((!requestData.getSessionAttributes().containsKey("movies") && !requestData.getSessionAttributes().containsKey("genres"))
-                    || !requestData.getRequestParametersValues().containsKey("page")) {
-                requestData.addSessionAttribute("movies", movieService.findAll());
-                requestData.addSessionAttribute("genres", genreService.findAll());
-                requestData.addSessionAttribute("page", 0);
+            if ((!requestData.getSessionAttributes().containsKey(AttributeName.MOVIES) && !requestData.getSessionAttributes().containsKey(AttributeName.GENRES))
+                    || !requestData.getRequestParametersValues().containsKey(AttributeName.PAGE)) {
+                requestData.addSessionAttribute(AttributeName.MOVIES, movieService.findAll());
+                requestData.addSessionAttribute(AttributeName.GENRES, genreService.findAll());
+                requestData.addSessionAttribute(AttributeName.PAGE, 0);
             }
         } catch (ServiceException e) {
             LOGGER.error("Error while trying to load information for the page", e);

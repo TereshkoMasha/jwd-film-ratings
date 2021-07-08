@@ -49,7 +49,6 @@ public class GenreDaoImpl implements GenreDao {
             connection.setAutoCommit(true);
         } catch (SQLException | InterruptedException e) {
             LOGGER.error(new DAOException(e));
-            Thread.currentThread().interrupt();
         }
         return entitiesList;
     }

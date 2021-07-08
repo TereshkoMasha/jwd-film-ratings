@@ -11,6 +11,8 @@ import java.io.IOException;
 
 public class PaginationTag extends SimpleTagSupport {
 
+    private static final int entitiesPerPage = 3;
+
     private Integer reviewOnProfileListSize;
 
     private Integer movieListSize;
@@ -33,13 +35,13 @@ public class PaginationTag extends SimpleTagSupport {
     public void doTag() {
         if (reviewOnProfileListSize != null) {
             try {
-                int pages = reviewOnProfileListSize / 3;
-                if (pages * 3 + 1 == reviewOnProfileListSize) {
+                int pages = reviewOnProfileListSize / entitiesPerPage;
+                if (pages * entitiesPerPage + 1 == reviewOnProfileListSize) {
                     pages++;
                 }
                 StringBuilder stringBuilder = new StringBuilder();
                 for (int i = 1; i < pages + 1; i++) {
-                    int k = (i - 1) * 3;
+                    int k = (i - 1) * entitiesPerPage;
                     stringBuilder.append("<a href=\"/jwdFilms_war_exploded/controller?command=view-user-profile&page=")
                             .append(k)
                             .append("\">")
@@ -55,13 +57,13 @@ public class PaginationTag extends SimpleTagSupport {
         }
         if (movieReviewListSize != null) {
             try {
-                int pages = movieReviewListSize / 3;
-                if (pages * 3 + 1 <= movieReviewListSize) {
+                int pages = movieReviewListSize / entitiesPerPage;
+                if (pages * entitiesPerPage + 1 <= movieReviewListSize) {
                     pages++;
                 }
                 StringBuilder stringBuilder = new StringBuilder();
                 for (int i = 1; i < pages + 1; i++) {
-                    int k = (i - 1) * 3;
+                    int k = (i - 1) * entitiesPerPage;
                     stringBuilder.append("<a href=\"/jwdFilms_war_exploded/controller?command=movie-info&page=")
                             .append(k)
                             .append("\">")
@@ -77,13 +79,13 @@ public class PaginationTag extends SimpleTagSupport {
         }
         if (movieListSize != null) {
             try {
-                int pages = (movieListSize - 1) / 3;
-                if (pages * 3 + 1 <= (movieListSize - 1)) {
+                int pages = (movieListSize - 1) / entitiesPerPage;
+                if (pages * entitiesPerPage + 1 <= (movieListSize - 1)) {
                     pages++;
                 }
                 StringBuilder stringBuilder = new StringBuilder();
                 for (int i = 1; i < pages + 1; i++) {
-                    int k = (i - 1) * 3;
+                    int k = (i - 1) * entitiesPerPage;
                     stringBuilder.append("<a href=\"/jwdFilms_war_exploded/controller?command=main&page=")
                             .append(k)
                             .append("\">")

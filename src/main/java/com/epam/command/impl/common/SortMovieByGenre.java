@@ -13,7 +13,7 @@ import java.util.List;
 
 public class SortMovieByGenre implements CommandRequest {
     private static final Logger LOGGER = LogManager.getLogger(SortMovieByGenre.class);
-    MovieService movieService = new MovieServiceImpl();
+    private static final MovieService movieService = new MovieServiceImpl();
 
     @Override
     public CommandExecute executeCommand(RequestData requestData) {
@@ -21,8 +21,8 @@ public class SortMovieByGenre implements CommandRequest {
             String genre = requestData.getRequestParameter(AttributeName.GENRE);
             List<Movie> movieList = movieService.findAllByGenre(Genre.resolveGenreByName(genre));
             if (!movieList.isEmpty()) {
-                requestData.addSessionAttribute("movies", movieList);
-                //requestData.deleteSessionAttribute(AttributeName.PAGE);
+                requestData.addSessionAttribute(AttributeName.MOVIES, movieList);
+
                 if (requestData.getRequestParametersValues().containsKey(AttributeName.PAGE)) {
                     String page = requestData.getRequestParameter(AttributeName.PAGE);
                     requestData.addRequestAttribute(AttributeName.PAGE, Integer.parseInt(page));

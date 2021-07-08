@@ -14,7 +14,7 @@ import java.util.Optional;
 
 public class BanUserCommand implements CommandRequest {
     private static final Logger LOGGER = LogManager.getLogger(BanUserCommand.class);
-    UserService userService = new UserServiceImpl();
+    private static final UserService userService = new UserServiceImpl();
 
     /**
      * Changing user status. By the request parameter, the blocking / unlock operation is determined.

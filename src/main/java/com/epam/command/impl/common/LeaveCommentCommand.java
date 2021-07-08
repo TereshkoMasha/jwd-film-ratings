@@ -22,8 +22,8 @@ import java.util.stream.Collectors;
 
 public class LeaveCommentCommand implements CommandRequest {
     private static final Logger LOGGER = LogManager.getLogger(LeaveCommentCommand.class);
-    ReviewService reviewService = new ReviewServiceImpl();
-    UserService userService = new UserServiceImpl();
+    private static final ReviewService reviewService = new ReviewServiceImpl();
+    private static final UserService userService = new UserServiceImpl();
 
     @Override
     public CommandExecute executeCommand(RequestData requestData) {
@@ -99,7 +99,7 @@ public class LeaveCommentCommand implements CommandRequest {
             List<Review> reviewListWithText = reviewList.stream().filter(review -> !review.getText().isEmpty()).sorted().collect(Collectors.toList());
             requestData.addSessionAttribute(AttributeName.REVIEW, reviewListWithText);
 
-            requestData.addRequestAttribute("appraisalNumber", reviewService.findAllByMovieId(movieId).size());
+            requestData.addRequestAttribute(AttributeName.APPRAISAL, reviewService.findAllByMovieId(movieId).size());
 
 
         } catch (ServiceException e) {

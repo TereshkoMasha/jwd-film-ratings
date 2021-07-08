@@ -25,10 +25,10 @@ import java.util.stream.Collectors;
 
 public class ViewMovieInfoCommand implements CommandRequest {
     private static final Logger LOGGER = LogManager.getLogger(ViewMovieInfoCommand.class);
-    MovieService movieService = new MovieServiceImpl();
-    MovieCrewService movieCrewService = new MovieCrewServiceImpl();
-    ReviewService reviewService = new ReviewServiceImpl();
-    UserService userService = new UserServiceImpl();
+    private static final MovieService movieService = new MovieServiceImpl();
+    private static final MovieCrewService movieCrewService = new MovieCrewServiceImpl();
+    private static final ReviewService reviewService = new ReviewServiceImpl();
+    private static final UserService userService = new UserServiceImpl();
 
     @Override
     public CommandExecute executeCommand(RequestData requestData) {
@@ -76,7 +76,7 @@ public class ViewMovieInfoCommand implements CommandRequest {
                     requestData.deleteSessionAttribute(AttributeName.USERS);
                     requestData.addSessionAttribute(AttributeName.USERS, users);
                     if (!reviewList.isEmpty()) {
-                        requestData.addRequestAttribute("appraisalNumber", reviewList.size());
+                        requestData.addRequestAttribute(AttributeName.APPRAISAL, reviewList.size());
                     }
 
                     if (requestData.getSessionAttributes().containsKey(AttributeName.ERROR_REVIEW)) {

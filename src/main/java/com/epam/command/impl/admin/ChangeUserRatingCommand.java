@@ -14,7 +14,7 @@ import java.util.Optional;
 
 public class ChangeUserRatingCommand implements CommandRequest {
     private static final Logger LOGGER = LogManager.getLogger(ChangeUserRatingCommand.class);
-    UserService userService = new UserServiceImpl();
+    private static final UserService userService = new UserServiceImpl();
 
     /**
      * Change of user rating. The desired rating is transmitted as a request parameter.

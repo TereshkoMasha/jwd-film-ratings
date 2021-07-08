@@ -11,7 +11,9 @@ public interface AttributeName {
     String LAST_NAME = "lastName";
     String ID = "id";
     String MOVIE = "movie";
+    String MOVIES = "movies";
     String GENRE = "genre";
+    String GENRES = "genres";
     String APPRAISAL = "appraisalNumber";
     String USERS_L = "users_list";
 

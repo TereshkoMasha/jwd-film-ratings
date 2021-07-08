@@ -11,7 +11,7 @@ public class RequestData {
     private final Map<String, Object> sessionAttributes;
     private final Map<String, Object> requestAttributeValues;
     private boolean isInvalidated = false;
-    private String path;
+    private final String path;
 
     public RequestData(HttpServletRequest request) {
         this.requestParametersValues = new HashMap<>();

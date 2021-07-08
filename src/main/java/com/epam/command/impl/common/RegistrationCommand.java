@@ -13,8 +13,8 @@ import java.util.Optional;
 
 public class RegistrationCommand implements CommandRequest {
     private static final Logger LOGGER = LogManager.getLogger(RegistrationCommand.class);
-    UserService userService = new UserServiceImpl();
-    DataValidator dataValidator = DataValidator.getInstance();
+    private static final UserService userService = new UserServiceImpl();
+    private static final DataValidator dataValidator = DataValidator.getInstance();
 
     @Override
     public CommandExecute executeCommand(RequestData requestData) {

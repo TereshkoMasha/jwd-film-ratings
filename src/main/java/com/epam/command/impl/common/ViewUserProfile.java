@@ -16,8 +16,8 @@ import java.util.Optional;
 
 public class ViewUserProfile implements CommandRequest {
     private static final Logger LOGGER = LogManager.getLogger(ViewUserProfile.class);
-    ReviewService reviewService = new ReviewServiceImpl();
-    UserService userService = new UserServiceImpl();
+    private static final ReviewService reviewService = new ReviewServiceImpl();
+    private static final UserService userService = new UserServiceImpl();
 
     @Override
     public CommandExecute executeCommand(RequestData requestData) {

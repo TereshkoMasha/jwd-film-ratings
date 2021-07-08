@@ -12,7 +12,7 @@ import java.util.List;
 
 public class ShowUsersCommand implements CommandRequest {
     private static final Logger LOGGER = LogManager.getLogger(ShowUsersCommand.class);
-    UserService userService = new UserServiceImpl();
+    private static final UserService userService = new UserServiceImpl();
 
     /**
      * Gets all users from the database,
